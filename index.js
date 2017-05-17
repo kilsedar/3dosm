@@ -8,32 +8,23 @@
  * @version $Id: Polygons.js 3320 2015-07-15 20:53:05Z dcollins $
  */
 
-/*requirejs.config({
-  baseUrl: './src',
-  paths: {
-    'osmtogeojson': '../osmtogeojson',
-    'WorldWind': 'WorldWind',
-    'LayerManager': '../LayerManager',
-    'OSM3D': '../OSM3D'
-  }
-});*/
-
 requirejs.config({
   baseUrl: './WebWorldWind/src',
   paths: {
     'WorldWind': 'WorldWind',
     'LayerManager': '../LayerManager',
-    'OSM3D': '../../libraries/OSM3D',
-    'osmtogeojson': '../../libraries/osmtogeojson'
+    'OSMLayer': '../../libraries/OSMLayer',
+    'osmtogeojson': '../../libraries/osmtogeojson',
+    'jquery': '../../libraries/jquery-3.2.1.min'
   }
 });
 
-define(['WorldWind', 'OSM3D'],
-  function (WorldWind, OSM3D) {
+define(['WorldWind', 'OSMLayer'],
+  function (WorldWind, OSMLayer) {
     "use strict";
 
-    WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_INFO);
-    WorldWind.configuration.baseUrl = "http://localhost/3dosm/"
+    WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_WARNING);
+    WorldWind.configuration.baseUrl = "http://localhost/3dosm/WebWorldWind/"
 
     // Create the World Window.
     var wwd = new WorldWind.WorldWindow("canvas");
@@ -57,5 +48,11 @@ define(['WorldWind', 'OSM3D'],
         wwd.addLayer(layers[l].layer);
     }
 
-    var osmMilan = new OSM3D(9, 10, 48, 49, ['buildings']);
+    var osmMilanBuilding = new OSMLayer(wwd, [45.45, 9.15, 45.46, 9.16], 'way', 'building');
+    // osmMilanBuilding.log();
+    osmMilanBuilding.get();
+
+    var osmMilanAmenity = new OSMLayer(wwd, [45.45, 9.15, 45.46, 9.16], 'node', 'amenity');
+    // osmMilanAmenity.log();
+    osmMilanAmenity.get();
 });
