@@ -55,4 +55,5 @@ define(['WorldWind', 'OSMLayer'],
     var osmMilanAmenity = new OSMLayer(wwd, [45.45, 9.15, 45.46, 9.16], 'node', 'amenity');
     // osmMilanAmenity.log();
     osmMilanAmenity.get();
+    osmMilanAmenity.zoomToLayer();
 });

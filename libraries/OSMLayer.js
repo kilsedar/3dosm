@@ -102,19 +102,29 @@ define(['WorldWind', 'jquery', 'osmtogeojson'],
             console.log("No features are found.");
             return;
           }
-          // console.log(JSON.stringify(data));
-          // console.log(JSON.stringify(osmtogeojson(data)));
           var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
-          console.log(dataOverpassGeoJSON);
-          /* var OSMLayer = new WorldWind.RenderableLayer("OSMLayer");
-          var OSMLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSON);
+          var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
+          // console.log(dataOverpassGeoJSONString);
+          var OSMLayer = new WorldWind.RenderableLayer("OSMLayer");
+          var OSMLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
           OSMLayerGeoJSON.load(null, this.shapeConfigurationCallback, OSMLayer);
-          wwd.addLayer(OSMLayer); */
+          wwd.addLayer(OSMLayer);
         },
         error: function (e) {
           console.log("Error: " + JSON.stringify(e));
         }
       });
+    };
+
+    OSMLayer.prototype.zoomToLayer = function () {
+      var boundingBox = this.boundingBox;
+      var centerX = (boundingBox[0] + boundingBox[2])/2;
+      var centerY = (boundingBox[1] + boundingBox[3])/2;
+      this.wwd.navigator.lookAtLocation.latitude = centerX;
+      this.wwd.navigator.lookAtLocation.longitude = centerY;
+      // console.log(centerX + ", " + centerY);
+      this.wwd.navigator.range = 5e3; // Should be automatically calculated. 
+      this.wwd.redraw();
     };
 
     return OSMLayer;
