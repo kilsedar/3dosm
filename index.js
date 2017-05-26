@@ -9,13 +9,13 @@
  */
 
 requirejs.config({
-  baseUrl: './WebWorldWind/src',
+  baseUrl: './libraries/WebWorldWind/src',
   paths: {
     'WorldWind': 'WorldWind',
     'LayerManager': '../LayerManager',
-    'OSMLayer': '../../libraries/OSMLayer',
-    'osmtogeojson': '../../libraries/osmtogeojson',
-    'jquery': '../../libraries/jquery-3.2.1.min'
+    'OSMLayer': '../../../src/OSMLayer',
+    'osmtogeojson': '../../osmtogeojson',
+    'jquery': '../../jquery-3.2.1.min'
   }
 });
 
@@ -24,7 +24,7 @@ define(['WorldWind', 'OSMLayer'],
     "use strict";
 
     WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_WARNING);
-    WorldWind.configuration.baseUrl = "http://localhost/3dosm/WebWorldWind/"
+    WorldWind.configuration.baseUrl = "http://localhost/3dosm/libraries/WebWorldWind/"
 
     // Create the World Window.
     var wwd = new WorldWind.WorldWindow("canvas");
@@ -40,20 +40,24 @@ define(['WorldWind', 'OSMLayer'],
         {layer: new WorldWind.AtmosphereLayer(), enabled: true}
     ];
 
-    layers[0].detailControl = 1;
-    layers[1].detailControl = 1;
+    layers[0].layer.detailControl = 1;
+    layers[1].layer.detailControl = 1;
 
     for (var l = 0; l < layers.length; l++) {
         layers[l].layer.enabled = layers[l].enabled;
         wwd.addLayer(layers[l].layer);
     }
 
-    var osmMilanBuilding = new OSMLayer(wwd, [45.45, 9.15, 45.46, 9.16], 'way', 'building');
-    // osmMilanBuilding.log();
-    osmMilanBuilding.get();
+    var osmMilanBuilding1 = new OSMLayer(wwd, [45.45, 9.14, 45.46, 9.15], true);
+    // osmMilanBuilding1.log();
+    osmMilanBuilding1.add();
 
-    var osmMilanAmenity = new OSMLayer(wwd, [45.45, 9.15, 45.46, 9.16], 'node', 'amenity');
+    var osmMilanBuilding2 = new OSMLayer(wwd, [45.45, 9.15, 45.46, 9.16], true, 'way', 'building');
+    // osmMilanBuilding2.log();
+    osmMilanBuilding2.add();
+
+    var osmMilanAmenity = new OSMLayer(wwd, [45.45, 9.14, 45.46, 9.16], false, 'node', 'amenity');
     // osmMilanAmenity.log();
-    osmMilanAmenity.get();
-    osmMilanAmenity.zoomToLayer();
+    osmMilanAmenity.add();
+    osmMilanAmenity.zoom();
 });
