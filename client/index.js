@@ -9,7 +9,7 @@
  */
 
 requirejs.config({
-  baseUrl: './libraries/WebWorldWind/src',
+  baseUrl: '../libraries/WebWorldWind/src',
   paths: {
     'WorldWind': 'WorldWind',
     'LayerManager': '../LayerManager',
