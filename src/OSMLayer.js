@@ -34,8 +34,8 @@ define(['WorldWind', 'jquery', 'osmtogeojson'],
       if (this.tag.includes("building")) {
         configuration.attributes =  new WorldWind.ShapeAttributes(null);
         configuration.attributes.drawOutline = true;
-        configuration.attributes.outlineColor = new WorldWind.Color(0.67, 0.25, 0.020, 1.0);
-        configuration.attributes.interiorColor = new WorldWind.Color(0.67, 0.25, 0.020, 0.8);
+        configuration.attributes.outlineColor = new WorldWind.Color(0.67, 0.25, 0.020, 1.0); // rgb(173, 64, 52)
+        configuration.attributes.interiorColor = new WorldWind.Color(0.67, 0.25, 0.020, 0.8); // rgb(173, 64, 52)
         configuration.attributes.outlineWidth = 1.0;
       }
       else {
