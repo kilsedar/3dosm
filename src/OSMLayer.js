@@ -1,7 +1,7 @@
 /**
  * @exports OSMLayer
  */
-define(['WorldWind', 'jquery', 'osmtogeojson'],
+define(['libraries/WebWorldWind/src/WorldWind', 'jquery', 'osmtogeojson'],
   function (WorldWind, $, osmtogeojson) {
     "use strict";
 

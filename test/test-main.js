@@ -16,6 +16,11 @@ require.config({
   // Karma serves files under /base, which is the basePath from your config file.
   baseUrl: '/base',
 
+  paths: {
+    'osmtogeojson': 'libraries/osmtogeojson',
+    'jquery': 'libraries/jquery-3.2.1.min'
+  },
+
   // Dynamically load all test files.
   deps: allTestFiles,
 

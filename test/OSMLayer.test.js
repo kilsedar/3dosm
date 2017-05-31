@@ -1,7 +1,7 @@
-define(['../libraries/WebWorldWind/WorldWind', '../src/OSMLayer'], function (WorldWind, OSMLayer) {
+define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer'], function (WorldWind, OSMLayer) {
   "use strict";
 
-  var wwd = new WorldWind();
+  var wwd = "temp";
 
   describe("OSMLayerTest", function() {
     var osmMilanBuilding = new OSMLayer(wwd, [45.45, 9.14, 45.46, 9.15], true);

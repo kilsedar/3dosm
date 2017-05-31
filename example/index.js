@@ -1,30 +1,9 @@
-/*
- * Copyright (C) 2014 United States Government as represented by the Administrator of the
- * National Aeronautics and Space Administration. All Rights Reserved.
- */
-/**
- * Illustrates how to display and pick Polygons.
- *
- * @version $Id: Polygons.js 3320 2015-07-15 20:53:05Z dcollins $
- */
-
-requirejs.config({
-  baseUrl: '../libraries/WebWorldWind/src',
-  paths: {
-    'WorldWind': 'WorldWind',
-    'LayerManager': '../LayerManager',
-    'OSMLayer': '../../../src/OSMLayer',
-    'osmtogeojson': '../../osmtogeojson',
-    'jquery': '../../jquery-3.2.1.min'
-  }
-});
-
-define(['WorldWind', 'OSMLayer'],
+define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer'],
   function (WorldWind, OSMLayer) {
     "use strict";
 
-    WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_WARNING);
-    WorldWind.configuration.baseUrl = "http://localhost/3dosm/libraries/WebWorldWind/"
+    WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_ERROR);
+    WorldWind.configuration.baseUrl = "http://localhost/3dosm/libraries/WebWorldWind/";
 
     // Create the World Window.
     var wwd = new WorldWind.WorldWindow("canvas");
