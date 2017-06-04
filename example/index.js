@@ -1,5 +1,5 @@
-define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer'],
-  function (WorldWind, OSMLayer) {
+define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
+  function (WorldWind, OSMBuildingLayer) {
     "use strict";
 
     WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_ERROR);
@@ -19,7 +19,6 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer'],
         {layer: new WorldWind.AtmosphereLayer(), enabled: true}
     ];
 
-    layers[0].layer.detailControl = 1;
     layers[1].layer.detailControl = 1;
 
     for (var l = 0; l < layers.length; l++) {
@@ -27,16 +26,16 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer'],
         wwd.addLayer(layers[l].layer);
     }
 
-    var osmMilanBuilding1 = new OSMLayer(wwd, [45.45, 9.14, 45.46, 9.15], true);
-    // osmMilanBuilding1.log();
-    osmMilanBuilding1.add();
-
-    var osmMilanBuilding2 = new OSMLayer(wwd, [45.45, 9.15, 45.46, 9.16], true, 'way', 'building');
-    // osmMilanBuilding2.log();
-    osmMilanBuilding2.add();
-
-    var osmMilanAmenity = new OSMLayer(wwd, [45.45, 9.14, 45.46, 9.16], false, 'node', 'amenity');
-    // osmMilanAmenity.log();
-    osmMilanAmenity.add();
-    osmMilanAmenity.zoom();
+    var configuration = {
+      interiorColor: new WorldWind.Color(0.67, 0.25, 0.020, 0.8),
+      outlineColor: new WorldWind.Color(0.67, 0.25, 0.020, 1.0),
+      outlineWidth: 5.0,
+      drawInterior: true,
+      drawOutline: true,
+      height: 1e2
+    };
+    var osmMilanBuilding = new OSMBuildingLayer(wwd, [45.45, 9.14, 45.46, 9.15], configuration, true);
+    osmMilanBuilding.log();
+    osmMilanBuilding.add();
+    osmMilanBuilding.zoom();
 });
