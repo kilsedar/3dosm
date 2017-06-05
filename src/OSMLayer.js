@@ -41,30 +41,14 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
 
     if (geometry.isPointType() || geometry.isMultiPointType()) {
       var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
-      placemarkAttributes.depthTest = this._configuration.depthTest;
-      placemarkAttributes.drawLeaderLine = this._configuration.drawLeaderLine;
-      placemarkAttributes.imageColor = this._configuration.imageColor;
-      placemarkAttributes.imageOffset = this._configuration.imageOffset;
-      placemarkAttributes.imageScale = this._configuration.imageScale;
-      placemarkAttributes.imageSource = this._configuration.imageSource;
-      placemarkAttributes.labelAttributes = this._configuration.labelAttributes;
-      placemarkAttributes.leaderLineAttributes = this._configuration.leaderLineAttributes;
+      for (var key in this._configuration)
+        placemarkAttributes.attributes[key] = this._configuration[key];
       configuration.attributes = new WorldWind.PlacemarkAttributes(placemarkAttributes);
     }
     else {
       configuration.attributes =  new WorldWind.ShapeAttributes(null);
-      configuration.attributes.applyLighting = this._configuration.applyLighting;
-      configuration.attributes.depthTest = this._configuration.depthTest;
-      configuration.attributes.drawInterior = this._configuration.drawInterior;
-      configuration.attributes.drawOutline = this._configuration.drawOutline;
-      configuration.attributes.drawVerticals = this._configuration.drawVerticals;
-      configuration.attributes.enableLighting = this._configuration.enableLighting;
-      configuration.attributes.imageSource = this._configuration.imageSource;
-      configuration.attributes.interiorColor = this._configuration.interiorColor;
-      configuration.attributes.outlineColor = this._configuration.outlineColor;
-      configuration.attributes.outlineStippleFactor = this._configuration.outlineStippleFactor;
-      configuration.attributes.outlineStipplePattern = this._configuration.outlineStipplePattern;
-      configuration.attributes.outlineWidth = this._configuration.outlineWidth;
+      for (var key in this._configuration)
+        configuration.attributes[key] = this._configuration[key];
     }
 
     return configuration;
