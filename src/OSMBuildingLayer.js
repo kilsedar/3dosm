@@ -50,8 +50,10 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
       contentType: false,
       type: 'POST',
       success: function (dataOverpass) {
+        console.log("dataOverpass --> " + JSON.stringify(dataOverpass));
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
+        console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
         var OSMBuildingLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
