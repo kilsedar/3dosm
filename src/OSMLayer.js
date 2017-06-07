@@ -11,13 +11,31 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
    * @classdesc
    * @param
    */
-  var OSMLayer = function (wwd, boundingBox, configuration) {
-    this._wwd = wwd;
+  var OSMLayer = function (worldWindow, boundingBox, configuration) {
+    this._worldWindow = worldWindow;
     this._boundingBox = boundingBox;
     this._configuration = configuration;
+    this._type = null;
+    this._tag = null;
   };
 
   Object.defineProperties (OSMLayer.prototype, {
+    boundingBox: {
+      get: function() {
+        return this._boundingBox;
+      },
+      set: function(boundingBox) {
+        this._boundingBox = boundingBox;
+      }
+    },
+    configuration: {
+      get: function() {
+        return this._configuration;
+      },
+      set: function(configuration) {
+        this._configuration = configuration;
+      }
+    },
     type: {
       get: function() {
         return this._type;
@@ -52,17 +70,17 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
     }
 
     return configuration;
-  }
+  };
 
   OSMLayer.prototype.zoom = function () {
     var boundingBox = this._boundingBox;
     var centerX = (boundingBox[0] + boundingBox[2])/2;
     var centerY = (boundingBox[1] + boundingBox[3])/2;
-    this._wwd.navigator.lookAtLocation.latitude = centerX;
-    this._wwd.navigator.lookAtLocation.longitude = centerY;
+    this._worldWindow.navigator.lookAtLocation.latitude = centerX;
+    this._worldWindow.navigator.lookAtLocation.longitude = centerY;
     // console.log(centerX + ", " + centerY);
-    this._wwd.navigator.range = 5e3; // Should be automatically calculated.
-    this._wwd.redraw();
+    this._worldWindow.navigator.range = 5e3; // Should be automatically calculated.
+    this._worldWindow.redraw();
   };
 
   return OSMLayer;

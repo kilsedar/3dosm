@@ -11,8 +11,8 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
    * @classdesc
    * @param
    */
-  var OSMBuildingLayer = function (wwd, boundingBox, configuration, extruded) {
-    OSMLayer.call(this, wwd, boundingBox, configuration);
+  var OSMBuildingLayer = function (worldWindow, boundingBox, configuration, extruded) {
+    OSMLayer.call(this, worldWindow, boundingBox, configuration);
     this._type = "way";
     this._tag = "building";
     this._extruded = extruded;
@@ -35,7 +35,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
   OSMBuildingLayer.prototype.add = function () {
 
     var boundingBox = this._boundingBox;
-    var wwd = this._wwd;
+    var worldWindow = this._worldWindow;
     var _self = this;
 
     var data = '[out:json][timeout:25];';
@@ -58,7 +58,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
         var OSMBuildingLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
         // console.log(OSMBuildingLayerGeoJSON.geoJSONType);
-        wwd.addLayer(OSMBuildingLayer);
+        worldWindow.addLayer(OSMBuildingLayer);
       },
       error: function (e) {
         console.log("Error: " + JSON.stringify(e));
