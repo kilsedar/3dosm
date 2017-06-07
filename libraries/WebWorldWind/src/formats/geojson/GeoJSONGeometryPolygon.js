@@ -49,11 +49,11 @@ define(['../../error/ArgumentError',
                         "invalidCoordinatesType"));
             }
 
-            if (coordinates[0][0] !== coordinates[0][coordinates.length - 1]) {
+            /* if (coordinates[0][0] !== coordinates[0][coordinates.length - 1]) {
                 throw new ArgumentError(
                     Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSONGeometryPolygon", "constructor",
                         "invalidLinearRing"));
-            }
+            } */
 
             if (!type) {
                 throw new ArgumentError(

@@ -30,7 +30,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
       interiorColor: new WorldWind.Color(0.67, 0.25, 0.020, 0.8),
       outlineColor: new WorldWind.Color(1.0, 0.25, 0.020, 1.0),
       outlineWidth: 2.0,
-      height: 1e2
+      altitude: 1e2
     };
     var osmMilanBuilding = new OSMBuildingLayer(wwd, [45.455, 9.145, 45.46, 9.15], configuration, true);
     osmMilanBuilding.log();

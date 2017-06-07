@@ -42,7 +42,7 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
     if (geometry.isPointType() || geometry.isMultiPointType()) {
       var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
       for (var key in this._configuration)
-        placemarkAttributes.attributes[key] = this._configuration[key];
+        placemarkAttributes[key] = this._configuration[key];
       configuration.attributes = new WorldWind.PlacemarkAttributes(placemarkAttributes);
     }
     else {

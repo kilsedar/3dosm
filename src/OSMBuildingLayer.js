@@ -25,7 +25,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
 
     if (this._extruded == true) {
       configuration.extrude = this._extruded;
-      configuration.altitude = this._configuration.height || 1e2;
+      configuration.altitude = this._configuration.altitude || 1e2;
       configuration.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
     }
 
@@ -40,8 +40,8 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
 
     var data = '[out:json][timeout:25];';
     data += '(' + this._type + '[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + '); ';
-    data += 'relation[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + ');); (._;>;); out skel qt;';
-    // console.log(data);
+    data += 'relation[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + ');); (._;>;); out body qt;';
+    console.log("data --> " + data);
 
     $.ajax({
       url: 'http://overpass-api.de/api/interpreter',
@@ -51,12 +51,13 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
       type: 'POST',
       success: function (dataOverpass) {
         console.log("dataOverpass --> " + JSON.stringify(dataOverpass));
-        var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
+        var dataOverpassGeoJSON = osmtogeojson(dataOverpass, {flatProperties: true, polygonFeatures: {"building": true}});
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
         console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
         var OSMBuildingLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
+        // console.log(OSMBuildingLayerGeoJSON.geoJSONType);
         wwd.addLayer(OSMBuildingLayer);
       },
       error: function (e) {
