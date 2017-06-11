@@ -28,13 +28,14 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer', 'src/Geo
       interiorColor: new WorldWind.Color(0.67, 0.25, 0.020, 0.8),
       outlineColor: new WorldWind.Color(1.0, 0.25, 0.020, 1.0),
       outlineWidth: 2.0,
-      altitude: 1e2
+      extrude: true,
+      altitude: 1e2,
+      altitudeMode: WorldWind.RELATIVE_TO_GROUND
     };
-    var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.455, 9.145, 45.46, 9.15], configuration, true);
+    var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.455, 9.145, 45.46, 9.15], configuration);
     osmMilanBuilding.log();
     osmMilanBuilding.add();
     osmMilanBuilding.zoom();
-
 
 
     var shapeConfigurationCallback = function (geometry, properties) {
@@ -42,16 +43,16 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer', 'src/Geo
       configuration.attributes =  new WorldWind.ShapeAttributes(null);
       configuration.attributes.interiorColor = new WorldWind.Color(0.67, 0.25, 0.020, 0.8);
       configuration.attributes.outlineColor = new WorldWind.Color(1.0, 0.25, 0.020, 1.0);
-      configuration.attributes.outlineWidth = 2.0;
+      configuration.attributes.outlineWidth = 0.5;
       configuration.extrude = true;
-      configuration.altitude = 1e4;
+      configuration.altitude = 1e3;
       configuration.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
 
       return configuration;
     }
 
     var polygon = new WorldWind.RenderableLayer("Polygon");
-    var polygonGeoJSON = new GeoJSONParserTriangulation('{"type": "FeatureCollection","features": [{"type": "Feature","properties": {},"geometry": {"type": "Polygon","coordinates": [[[7.7838134765625,45.598665689820635],[8.052978515625,45.598665689820635],[8.052978515625,45.794339630460705],[7.7838134765625,45.794339630460705],[7.7838134765625,45.598665689820635]]]}}]}');
+    var polygonGeoJSON = new GeoJSONParserTriangulation('{"type": "FeatureCollection","features": [{"type": "Feature","properties": {},"geometry": {"type": "Polygon","coordinates": [[[9.155130386352539,45.44429526006493],[9.179420471191406,45.44429526006493],[9.179420471191406,45.45693983584491],[9.155130386352539,45.45693983584491],[9.155130386352539,45.44429526006493]]]}}]}');
     polygonGeoJSON.log();
     polygonGeoJSON.load(null, shapeConfigurationCallback, polygon);
     worldWindow.addLayer(polygon);

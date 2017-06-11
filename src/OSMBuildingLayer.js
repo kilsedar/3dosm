@@ -1,7 +1,7 @@
 /**
  * @exports OSMBuildingLayer
  */
-define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmtogeojson'], function (WorldWind, OSMLayer, $, osmtogeojson) {
+define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONParserTriangulation', 'jquery', 'osmtogeojson'], function (WorldWind, OSMLayer, GeoJSONParserTriangulation, $, osmtogeojson) {
   "use strict";
 
   /**
@@ -11,11 +11,10 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
    * @classdesc
    * @param
    */
-  var OSMBuildingLayer = function (worldWindow, boundingBox, configuration, extruded) {
+  var OSMBuildingLayer = function (worldWindow, boundingBox, configuration) {
     OSMLayer.call(this, worldWindow, boundingBox, configuration);
     this._type = "way";
     this._tag = "building";
-    this._extruded = extruded;
   };
 
   OSMBuildingLayer.prototype = Object.create(OSMLayer.prototype);
@@ -23,10 +22,10 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
   OSMBuildingLayer.prototype.shapeConfigurationCallback = function (geometry, properties) {
     var configuration = OSMLayer.prototype.shapeConfigurationCallback.call(this, geometry, properties);
 
-    if (this._extruded == true) {
-      configuration.extrude = this._extruded;
+    if (this._configuration.extrude == true) {
+      configuration.extrude = this._configuration.extrude;
       configuration.altitude = this._configuration.altitude || 1e2;
-      configuration.altitudeMode = WorldWind.RELATIVE_TO_GROUND;
+      configuration.altitudeMode = this._configuration.altitudeMode || WorldWind.RELATIVE_TO_GROUND;
     }
 
     return configuration;
@@ -55,6 +54,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
         console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
+        // var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulation(dataOverpassGeoJSONString);
         var OSMBuildingLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
         // console.log(OSMBuildingLayerGeoJSON.geoJSONType);
@@ -69,7 +69,6 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'jquery', 'osmto
   OSMLayer.prototype.log = function () {
     console.log(this._boundingBox);
     console.log(this._configuration);
-    console.log(this._extruded);
     console.log(this._type);
     console.log(this._tag);
   }
