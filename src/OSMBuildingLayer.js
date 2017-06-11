@@ -53,11 +53,13 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass, {flatProperties: true, polygonFeatures: {"building": true}});
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
         console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
+        console.time("triangulationTimeGain");
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
-        // var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulation(dataOverpassGeoJSONString);
-        var OSMBuildingLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
+        var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulation(dataOverpassGeoJSONString);
+        // var OSMBuildingLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
         // console.log(OSMBuildingLayerGeoJSON.geoJSONType);
+        console.timeEnd("triangulationTimeGain");
         worldWindow.addLayer(OSMBuildingLayer);
       },
       error: function (e) {

@@ -45,16 +45,16 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
     /* if (!this.crs || this.crs.isCRSSupported()) {
       for (var boundariesIndex = 0, boundaries = geometry.coordinates; boundariesIndex < boundaries.length; boundariesIndex++) {
-        console.log("geometry --> " + JSON.stringify(geometry));
-        console.log("boundaries -- > " + boundaries);
-        console.log("boundariesIndex -- > " + boundariesIndex);
+        // console.log("geometry --> " + JSON.stringify(geometry));
+        // console.log("boundaries -- > " + boundaries);
+        // console.log("boundariesIndex -- > " + boundariesIndex);
 
         var positions = [];
 
         for (var positionIndex = 0, points = boundaries[boundariesIndex]; positionIndex < points.length; positionIndex++) {
 
-          console.log("points --> " + points);
-          console.log("positionIndex --> " + positionIndex);
+          // console.log("points --> " + points);
+          // console.log("positionIndex --> " + positionIndex);
 
           var longitude = points[positionIndex][0],
           latitude = points[positionIndex][1],
@@ -99,10 +99,10 @@ define(['libraries/WebWorldWind/src/WorldWind',
       // one boundary -> one polygon
       for (var boundariesIndex = 0, boundaries = geometry.coordinates; boundariesIndex < boundaries.length; boundariesIndex++) {
 
-        console.log("geometry --> " + JSON.stringify(geometry));
-        console.log("boundaries -- > " + boundaries);
-        console.log("boundariesIndex -- > " + boundariesIndex);
-        console.log("configuration --> " + JSON.stringify(configuration));
+        // console.log("geometry --> " + JSON.stringify(geometry));
+        // console.log("boundaries -- > " + boundaries);
+        // console.log("boundariesIndex -- > " + boundariesIndex);
+        // console.log("configuration --> " + JSON.stringify(configuration));
 
         var extrude = configuration && configuration.extrude ? configuration.extrude : null;
 
@@ -141,15 +141,15 @@ define(['libraries/WebWorldWind/src/WorldWind',
             indices.push(positionIndex*6+0, positionIndex*6+1, positionIndex*6+2, positionIndex*6+3, positionIndex*6+4, positionIndex*6+5);
           }
 
-          console.log("positionsLateralSurfaces --> " + positionsLateralSurfaces);
-          console.log("indices --> " + indices);
+          // console.log("positionsLateralSurfaces --> " + positionsLateralSurfaces);
+          // console.log("indices --> " + indices);
 
           var shapeLateralSurfaces = new TriangleMesh(positionsLateralSurfaces, indices, configuration && configuration.attributes ? configuration.attributes : null);
           // shapeConfigurationCallback sets only "configuration.attributes", not "altitudeMode". configuration object literal currently also returns "altutude" and "extrude".
           shapeLateralSurfaces.altitudeMode = configuration.altitudeMode || WorldWind.RELATIVE_TO_GROUND;
           layer.addRenderable(shapeLateralSurfaces);
 
-          console.log("positionsTop --> " + positionsTop);
+          // console.log("positionsTop --> " + positionsTop);
           var shapeTop = new Polygon(positionsTop, configuration && configuration.attributes ? configuration.attributes : null);
           shapeTop.altitudeMode = configuration.altitudeMode || WorldWind.RELATIVE_TO_GROUND;
           layer.addRenderable(shapeTop);
@@ -167,7 +167,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
             positions.push(position);
           }
 
-          console.log("positions --> " + positions);
+          // console.log("positions --> " + positions);
           var shape = new SurfacePolygon(positions, configuration && configuration.attributes ? configuration.attributes : null);
           layer.addRenderable(shape);
         }
