@@ -2,7 +2,8 @@ requirejs.config({
   baseUrl: '../',
   paths: {
     'osmtogeojson': 'libraries/osmtogeojson-3.0.0',
-    'jquery': 'libraries/jquery-3.2.1.min'
+    'jquery': 'libraries/jquery-3.2.1.min',
+    'earcut': 'libraries/earcut-2.1.1.min'
   }
 });
 

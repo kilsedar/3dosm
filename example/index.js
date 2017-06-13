@@ -33,7 +33,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer', 'src/Geo
       altitudeMode: WorldWind.RELATIVE_TO_GROUND
     };
     var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.95, 9.95, 46, 10], configuration);
-    osmMilanBuilding.log();
+    // osmMilanBuilding.log();
     osmMilanBuilding.add();
     osmMilanBuilding.zoom();
 

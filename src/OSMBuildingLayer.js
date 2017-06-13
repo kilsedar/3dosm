@@ -40,7 +40,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
     var data = '[out:json][timeout:25];';
     data += '(' + this._type + '[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + '); ';
     data += 'relation[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + ');); (._;>;); out body qt;';
-    console.log("data --> " + data);
+    // console.log("data --> " + data);
 
     $.ajax({
       url: 'http://overpass-api.de/api/interpreter',
@@ -49,10 +49,10 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
       contentType: false,
       type: 'POST',
       success: function (dataOverpass) {
-        console.log("dataOverpass --> " + JSON.stringify(dataOverpass));
+        // console.log("dataOverpass --> " + JSON.stringify(dataOverpass));
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass, {flatProperties: true, polygonFeatures: {"building": true}});
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
-        console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
+        // console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
         console.time("triangulationTimeGain");
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
         var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulation(dataOverpassGeoJSONString);
