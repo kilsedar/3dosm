@@ -26,6 +26,37 @@ define(['libraries/WebWorldWind/src/WorldWind',
     console.log("GeoJSONParserTriangulation object is successfully created.");
   };
 
+  GeoJSONParserTriangulation.prototype.addRenderablesForPolygon = function (layer, geometry, properties) {
+    // console.log("Inside GeoJSONParserTriangulation, addRenderablesForPolygon.");
+    if (!layer) {
+      throw new ArgumentError(
+        Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSON", "addRenderablesForPolygon", "missingLayer")
+      );
+    }
+
+    if (!geometry) {
+      throw new ArgumentError(
+        Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSON", "addRenderablesForPolygon", "missingGeometry")
+      );
+    }
+
+    var configuration = this.shapeConfigurationCallback(geometry, properties);
+    var extrude = configuration && configuration.extrude ? configuration.extrude : false;
+    var boundaries = geometry._coordinates;
+    var shapeLateral, shapeTop;
+
+    // console.log("configuration --> " + JSON.stringify(configuration));
+    // console.log("geometry --> " + JSON.stringify(geometry));
+    // console.log("boundaries --> " + boundaries);
+    // console.log("boundaries.length --> " + boundaries.length);
+
+    if (!this.crs || this.crs.isCRSSupported()) {
+        if (extrude == true)
+          this.lateralSurfaces(configuration, boundaries);
+        this.topSurface(configuration, boundaries);
+    }
+  };
+
   GeoJSONParserTriangulation.prototype.lateralSurfaces = function (configuration, boundaries) {
     var altitude = configuration && configuration.altitude ? configuration.altitude : 1e2;
     var points = [], positions = [], indices = [], longitude_0, latitude_0, reprojectedCoordinate_0, longitude_1, latitude_1, reprojectedCoordinate_1, position;
@@ -67,20 +98,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
     // console.log("positions --> " + positions);
     // console.log("indices --> " + indices);
 
-    var shape = new TriangleMesh(positions, indices, configuration && configuration.attributes ? configuration.attributes : null);
-
-    // shapeConfigurationCallback sets only "configuration.attributes", not "altitudeMode". configuration object literal currently also returns "altitude" and "extrude".
-    shape.altitudeMode = configuration && configuration.altitudeMode ? configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
-    if (configuration.highlightAttributes) {
-      shape.highlightAttributes = configuration.highlightAttributes;
-    }
-    if (configuration && configuration.pickDelegate) {
-      shape.pickDelegate = configuration.pickDelegate;
-    }
-    if (configuration && configuration.userProperties) {
-      shape.userProperties = configuration.userProperties;
-    }
-    this._layer.addRenderable(shape);
+    this.addTriangleMesh(positions, indices, configuration);
   };
 
   GeoJSONParserTriangulation.prototype.topSurface = function (configuration, boundaries) {
@@ -115,8 +133,11 @@ define(['libraries/WebWorldWind/src/WorldWind',
     // console.log("positions --> " + positions);
     // console.log("indices --> " + indices);
 
-    var shape = new TriangleMesh(positions, indices, configuration && configuration.attributes ? configuration.attributes : null);
+    this.addTriangleMesh(positions, indices, configuration);
+  };
 
+  GeoJSONParserTriangulation.prototype.addTriangleMesh = function (positions, indices, configuration) {
+    var shape = new TriangleMesh(positions, indices, configuration && configuration.attributes ? configuration.attributes : null);
     // shapeConfigurationCallback sets only "configuration.attributes", not "altitudeMode". configuration object literal currently also returns "altitude" and "extrude".
     shape.altitudeMode = configuration && configuration.altitudeMode ? configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
     if (configuration.highlightAttributes) {
@@ -129,37 +150,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
       shape.userProperties = configuration.userProperties;
     }
     this._layer.addRenderable(shape);
-  };
-
-  GeoJSONParserTriangulation.prototype.addRenderablesForPolygon = function (layer, geometry, properties) {
-    // console.log("Inside GeoJSONParserTriangulation, addRenderablesForPolygon.");
-    if (!layer) {
-      throw new ArgumentError(
-        Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSON", "addRenderablesForPolygon", "missingLayer")
-      );
-    }
-
-    if (!geometry) {
-      throw new ArgumentError(
-        Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSON", "addRenderablesForPolygon", "missingGeometry")
-      );
-    }
-
-    var configuration = this.shapeConfigurationCallback(geometry, properties);
-    var extrude = configuration && configuration.extrude ? configuration.extrude : false;
-    var boundaries = geometry._coordinates;
-
-    // console.log("configuration --> " + JSON.stringify(configuration));
-    // console.log("geometry --> " + JSON.stringify(geometry));
-    // console.log("boundaries --> " + boundaries);
-    // console.log("boundaries.length --> " + boundaries.length);
-
-    if (!this.crs || this.crs.isCRSSupported()) {
-        if (extrude == true)
-          this.lateralSurfaces(configuration, boundaries);
-        this.topSurface(configuration, boundaries);
-    }
-  };
+  }
 
   return GeoJSONParserTriangulation;
 });
