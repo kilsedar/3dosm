@@ -22,7 +22,9 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
   OSMBuildingLayer.prototype.shapeConfigurationCallback = function (geometry, properties) {
     var configuration = OSMLayer.prototype.shapeConfigurationCallback.call(this, geometry, properties);
 
-    if (this._configuration.extrude == true) {
+    var extrude = this._configuration.extrude ? this._configuration.extrude : false;
+
+    if (extrude == true) {
       configuration.extrude = this._configuration.extrude;
       configuration.altitude = this._configuration.altitude || 1e2;
       configuration.altitudeMode = this._configuration.altitudeMode || WorldWind.RELATIVE_TO_GROUND;
@@ -58,7 +60,6 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
         var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulation(dataOverpassGeoJSONString);
         // var OSMBuildingLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
-        // console.log(OSMBuildingLayerGeoJSON.geoJSONType);
         console.timeEnd("triangulationTimeGain");
         worldWindow.addLayer(OSMBuildingLayer);
       },
