@@ -10,11 +10,11 @@ define(['libraries/WebWorldWind/src/WorldWind',
   "use strict";
 
   /**
-   * Triangulates polygons to improve the performance.
+   * Creates a subclass of the [GeoJSONParser]{@link GeoJSONParser} class.
    * @alias GeoJSONParserTriangulation
    * @constructor
-   * @classdesc
-   * @param
+   * @classdesc Triangulates polygons to improve the rendering performance.
+   * @param {String} dataSource The data source in GeoJSON format. Can be a string or a URL for the data.
    */
   var GeoJSONParserTriangulation = function (dataSource) {
     GeoJSONParser.call(this, dataSource);

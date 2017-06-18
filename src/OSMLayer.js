@@ -5,11 +5,13 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
   "use strict";
 
   /**
-   * Constructs an OSM layer for a specified WorldWindow.
+   * Constructs an OSM layer for a specified [WorldWindow]{@link WorldWindow}.
    * @alias OSMLayer
-   * @constructor boundingBox is expected to be in array format, the order of the coordinates for the boundingBox is "x1, y1, x2, y2".
-   * @classdesc
-   * @param
+   * @constructor
+   * @classdesc Sets the properties and functions viable for any OSM data. It is intended to be an abstract class, only to be extended for specific OSM data.
+   * @param {WorldWindow} worldWindow The WorldWindow to be associated this layer manager with.
+   * {Array} boundingBox Bounding box is expected to be in array format, the order of the coordinates for the boundingBox is "x1, y1, x2, y2".
+   * {Object literal} configuration Configuration is used to set the attributes of [PlacemarkAttributes]{@link PlacemarkAttributes} or [ShapeAttributes]{@link ShapeAttributes}, depending on the geometry type.
    */
   var OSMLayer = function (worldWindow, boundingBox, configuration) {
     this._worldWindow = worldWindow;

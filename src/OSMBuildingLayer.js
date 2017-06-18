@@ -5,11 +5,11 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
   "use strict";
 
   /**
-   * Constructs an OSM building layer for a specified WorldWindow.
+   * Extends the [OSMLayer]{@link OSMLayer} class.
    * @alias OSMBuildingLayer
    * @constructor
-   * @classdesc
-   * @param
+   * @classdesc Fetches the OSM data, converts it to GeoJSON, and adds it to the WorldWindow.
+   * @param 
    */
   var OSMBuildingLayer = function (worldWindow, boundingBox, configuration) {
     OSMLayer.call(this, worldWindow, boundingBox, configuration);
