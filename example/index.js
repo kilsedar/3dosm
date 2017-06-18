@@ -30,7 +30,8 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
       altitude: 3e2,
       altitudeMode: WorldWind.RELATIVE_TO_GROUND
     };
-    var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.48, 9.45, 45.50, 9.50], configuration);
+    // var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.48, 9.45, 45.50, 9.50], configuration);
+    var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.3871, 9.04284, 45.536, 9.27791], configuration);
     // osmMilanBuilding.log();
     osmMilanBuilding.add();
     osmMilanBuilding.zoom();

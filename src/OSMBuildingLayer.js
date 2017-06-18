@@ -9,7 +9,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
    * @alias OSMBuildingLayer
    * @constructor
    * @classdesc Fetches the OSM data, converts it to GeoJSON, and adds it to the WorldWindow.
-   * @param 
+   * @param
    */
   var OSMBuildingLayer = function (worldWindow, boundingBox, configuration) {
     OSMLayer.call(this, worldWindow, boundingBox, configuration);
@@ -55,6 +55,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass, {flatProperties: true, polygonFeatures: {"building": true}});
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
         // console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
+        console.log("dataOverpassGeoJSON.features.length (number of polygons) --> " + dataOverpassGeoJSON.features.length);
         console.time("triangulationTimeGain");
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
         var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulation(dataOverpassGeoJSONString);
