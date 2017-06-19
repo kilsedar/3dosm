@@ -81,7 +81,7 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
     this._worldWindow.navigator.lookAtLocation.latitude = centerX;
     this._worldWindow.navigator.lookAtLocation.longitude = centerY;
     // console.log(centerX + ", " + centerY);
-    this._worldWindow.navigator.range = 1e4; // Should be automatically calculated.
+    this._worldWindow.navigator.range = 3e4; // Should be automatically calculated.
     this._worldWindow.redraw();
   };
 
