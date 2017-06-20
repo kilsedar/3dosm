@@ -41,8 +41,9 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
 
     var data = '[out:json][timeout:25];';
     data += '(' + this._type + '[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + '); ';
-    data += 'relation[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + ');); (._;>;); out body qt;';
-    // console.log("data --> " + data);
+    // data += 'relation[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + ');); (._;>;); out body qt;';
+    data += 'relation[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + ');); out body; >; out skel qt;';
+    console.log("data --> " + data);
 
     $.ajax({
       url: 'http://overpass-api.de/api/interpreter',
@@ -52,16 +53,17 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
       type: 'POST',
       success: function (dataOverpass) {
         // console.log("dataOverpass --> " + JSON.stringify(dataOverpass));
-        var dataOverpassGeoJSON = osmtogeojson(dataOverpass, {flatProperties: true, polygonFeatures: {"building": true}});
+        // var dataOverpassGeoJSON = osmtogeojson(dataOverpass, {flatProperties: true, polygonFeatures: {"building": true}});
+        var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
         // console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
         console.log("dataOverpassGeoJSON.features.length (number of polygons) --> " + dataOverpassGeoJSON.features.length);
-        console.time("triangulationTimeGain");
+        console.time("creatingOSMBuildingLayer");
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
         var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulation(dataOverpassGeoJSONString);
         // var OSMBuildingLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
-        console.timeEnd("triangulationTimeGain");
+        console.timeEnd("creatingOSMBuildingLayer");
         worldWindow.addLayer(OSMBuildingLayer);
       },
       error: function (e) {

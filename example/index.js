@@ -5,7 +5,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
     WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_ERROR);
     WorldWind.configuration.baseUrl = "http://localhost/3dosm/libraries/WebWorldWind/";
 
-    // Create the World Window.
+    // Create the WorldWindow.
     var worldWindow = new WorldWind.WorldWindow("canvas");
 
     /**
@@ -31,9 +31,10 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
       extrude: true,
       altitude: 5e1
     };
-    // var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.48, 9.45, 45.50, 9.50], configuration); // 238 buildings
-    var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.45, 9.05, 45.5, 9.1], configuration); // 1676 buildings
-    // var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.3871, 9.04284, 45.536, 9.27791], configuration); // 63121 buildings
+    // var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.48, 9.45, 45.50, 9.50], configuration);
+    var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.45, 9.05, 45.5, 9.1], configuration);
+    // var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.3871, 9.04284, 45.536, 9.27791], configuration);
+    // var osmMilanBuilding = new OSMBuildingLayer(worldWindow, [45.48, 9.2, 45.49, 9.21], configuration); // buggy region (nodes)
     // osmMilanBuilding.log();
     osmMilanBuilding.add();
     osmMilanBuilding.zoom();

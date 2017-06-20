@@ -43,7 +43,6 @@ define(['libraries/WebWorldWind/src/WorldWind',
     var configuration = this.shapeConfigurationCallback(geometry, properties);
     var extrude = configuration && configuration.extrude ? configuration.extrude : false;
     var boundaries = geometry._coordinates;
-    var shapeLateral, shapeTop;
 
     // console.log("configuration --> " + JSON.stringify(configuration));
     // console.log("geometry --> " + JSON.stringify(geometry));
@@ -51,9 +50,36 @@ define(['libraries/WebWorldWind/src/WorldWind',
     // console.log("boundaries.length --> " + boundaries.length);
 
     if (!this.crs || this.crs.isCRSSupported()) {
+      if (extrude == true)
+        this.lateralSurfaces(configuration, boundaries);
+      this.topSurface(configuration, boundaries);
+    }
+  };
+
+  GeoJSONParser.prototype.addRenderablesForMultiPolygon = function (layer, geometry, properties) {
+    if (!layer) {
+      throw new ArgumentError(
+        Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSON", "addRenderablesForMultiPolygon", "missingLayer")
+      );
+    }
+
+    if (!geometry) {
+      throw new ArgumentError(
+        Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSON", "addRenderablesForMultiPolygon", "missingGeometry")
+      );
+    }
+
+    var configuration = this.shapeConfigurationCallback(geometry, properties);
+    var extrude = configuration && configuration.extrude ? configuration.extrude : false;
+    var polygons = geometry._coordinates, boundaries = [];
+
+    if (!this.crs || this.crs.isCRSSupported()) {
+      for (var polygonsIndex = 0; polygonsIndex < polygons.length; polygonsIndex++) {
+        boundaries = polygons[polygonsIndex];
         if (extrude == true)
           this.lateralSurfaces(configuration, boundaries);
         this.topSurface(configuration, boundaries);
+      }
     }
   };
 
