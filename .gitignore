@@ -4,3 +4,4 @@ node_modules
 src/OSMLayer_0.js
 src/GeoJSONParserTriangulation_0.js
 src/GeoJSONParserTriangulation_1.js
+out

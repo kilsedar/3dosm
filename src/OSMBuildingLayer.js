@@ -5,11 +5,13 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
   "use strict";
 
   /**
-   * Extends the [OSMLayer]{@link OSMLayer} class.
+   * Creates a sublass of the {@link OSMLayer} class.
    * @alias OSMBuildingLayer
    * @constructor
-   * @classdesc Fetches the OSM data, converts it to GeoJSON, and adds it to the WorldWindow.
-   * @param
+   * @classdesc Fetches OSM buildings, converts them to GeoJSON, and adds them to the WorldWindow.
+   * @param {WorldWindow} worldWindow The OSMBuildingLayer is added to this WorldWindow.
+   * @param {Float[]} boundingBox Bounding box is expected to be in array format. The order of coordinates of the bounding box is "x1, y1, x2, y2".
+   * @param {Object} configuration Configuration is used to set the attributes of {@link ShapeAttributes}. Three more attributes can be defined, which are "extrude", "altitude" and "altitudeMode".
    */
   var OSMBuildingLayer = function (worldWindow, boundingBox, configuration) {
     OSMLayer.call(this, worldWindow, boundingBox, configuration);
@@ -71,13 +73,6 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
       }
     });
   };
-
-  OSMLayer.prototype.log = function () {
-    console.log(this._boundingBox);
-    console.log(this._configuration);
-    console.log(this._type);
-    console.log(this._tag);
-  }
 
   return OSMBuildingLayer;
 });

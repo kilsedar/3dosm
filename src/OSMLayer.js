@@ -5,23 +5,48 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
   "use strict";
 
   /**
-   * Constructs an OSM layer for a specified [WorldWindow]{@link WorldWindow}.
+   * Constructs an OSMLayer for a specified {@link WorldWindow}.
    * @alias OSMLayer
    * @constructor
    * @classdesc Sets the properties and functions viable for any OSM data. It is intended to be an abstract class, only to be extended for specific OSM data.
-   * @param {WorldWindow} worldWindow The WorldWindow to be associated this layer manager with.
-   * {Array} boundingBox Bounding box is expected to be in array format, the order of the coordinates for the boundingBox is "x1, y1, x2, y2".
-   * {Object literal} configuration Configuration is used to set the attributes of [PlacemarkAttributes]{@link PlacemarkAttributes} or [ShapeAttributes]{@link ShapeAttributes}, depending on the geometry type.
+   * @param {WorldWindow} worldWindow The OSMLayer is added to this WorldWindow.
+   * @param {Float[]} boundingBox Bounding box is expected to be in array format. The order of coordinates of the bounding box is "x1, y1, x2, y2".
+   * @param {ShapeAttributes | PlacemarkAttributes} configuration Configuration is used to set the attributes of {@link PlacemarkAttributes} or {@link ShapeAttributes}, depending on the geometry type.
    */
   var OSMLayer = function (worldWindow, boundingBox, configuration) {
+    // Documented in defineProperties below.
     this._worldWindow = worldWindow;
+
+    // Documented in defineProperties below.
     this._boundingBox = boundingBox;
+
+    // Documented in defineProperties below.
     this._configuration = configuration;
+
+    // Documented in defineProperties below.
     this._type = null;
+
+    // Documented in defineProperties below.
     this._tag = null;
   };
 
   Object.defineProperties (OSMLayer.prototype, {
+    /**
+     *
+     * @memberof OSMLayer.prototype
+     * @type {WorldWindow}
+     * @readonly
+     */
+    worldWindow: {
+      get: function() {
+        return this._worldWindow;
+      }
+    },
+    /**
+     *
+     * @memberof OSMLayer.prototype
+     * @type {Float[]}
+     */
     boundingBox: {
       get: function() {
         return this._boundingBox;
@@ -30,6 +55,11 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
         this._boundingBox = boundingBox;
       }
     },
+    /**
+     *
+     * @memberof OSMLayer.prototype
+     * @type {ShapeAttributes | PlacemarkAttributes}
+     */
     configuration: {
       get: function() {
         return this._configuration;
@@ -38,6 +68,11 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
         this._configuration = configuration;
       }
     },
+    /**
+     *
+     * @memberof OSMLayer.prototype
+     * @type {String}
+     */
     type: {
       get: function() {
         return this._type;
@@ -46,6 +81,11 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
         this._type = type;
       }
     },
+    /**
+     *
+     * @memberof OSMLayer.prototype
+     * @type {String}
+     */
     tag: {
       get: function() {
         return this._tag;
