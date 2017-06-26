@@ -9,18 +9,16 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
    * @alias OSMLayer
    * @constructor
    * @classdesc Sets the properties and functions viable for any OSM data. It is intended to be an abstract class, only to be extended for specific OSM data.
-   * @param {WorldWindow} worldWindow The OSMLayer is added to this WorldWindow.
-   * @param {Float[]} boundingBox Bounding box is expected to be in array format. The order of coordinates of the bounding box is "x1, y1, x2, y2".
-   * @param {ShapeAttributes | PlacemarkAttributes} configuration Configuration is used to set the attributes of {@link PlacemarkAttributes} or {@link ShapeAttributes}, depending on the geometry type.
+   * @param {WorldWindow} worldWindow The WorldWindow where the OSMLayer is added to.
+   * @param {Float[]} boundingBox It defines the bounding box of the OSM data for the OSMLayer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
+   * @param {Object} configuration Configuration is used to set the attributes of {@link PlacemarkAttributes} if the geometry is Point or MultiPoint; or of {@link ShapeAttributes} otherwise.
    */
   var OSMLayer = function (worldWindow, boundingBox, configuration) {
     // Documented in defineProperties below.
     this._worldWindow = worldWindow;
 
-    // Documented in defineProperties below.
     this._boundingBox = boundingBox;
 
-    // Documented in defineProperties below.
     this._configuration = configuration;
 
     // Documented in defineProperties below.
@@ -32,7 +30,7 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
 
   Object.defineProperties (OSMLayer.prototype, {
     /**
-     *
+     * The WorldWindow where the OSMLayer is added to.
      * @memberof OSMLayer.prototype
      * @type {WorldWindow}
      * @readonly
@@ -43,33 +41,7 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
       }
     },
     /**
-     *
-     * @memberof OSMLayer.prototype
-     * @type {Float[]}
-     */
-    boundingBox: {
-      get: function() {
-        return this._boundingBox;
-      },
-      set: function(boundingBox) {
-        this._boundingBox = boundingBox;
-      }
-    },
-    /**
-     *
-     * @memberof OSMLayer.prototype
-     * @type {ShapeAttributes | PlacemarkAttributes}
-     */
-    configuration: {
-      get: function() {
-        return this._configuration;
-      },
-      set: function(configuration) {
-        this._configuration = configuration;
-      }
-    },
-    /**
-     *
+     * The type of the OSM data. It can be "node", "way", or "relation".
      * @memberof OSMLayer.prototype
      * @type {String}
      */
@@ -82,7 +54,8 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
       }
     },
     /**
-     *
+     * The tag of the OSM data. It can have values defined at http://wiki.openstreetmap.org/wiki/Map_Features.
+     * Some examples are "amenity", "amenity=education"; "building", "building=farm" ...
      * @memberof OSMLayer.prototype
      * @type {String}
      */
@@ -96,7 +69,13 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
     }
   });
 
-  OSMLayer.prototype.shapeConfigurationCallback = function (geometry, properties) {
+  /**
+   * Sets the attributes of {@link PlacemarkAttributes} if the geometry is Point or MultiPoint; or of {@link ShapeAttributes} otherwise.
+   * @param {GeoJSONGeometry} geometry An object containing the geometry of the OSM data in GeoJSON format for the OSMLayer.
+   * @returns {Object} An object with its attributes set as {@link PlacemarkAttributes} or {@link ShapeAttributes},
+   * where for both their attributes are defined in the configuration of the OSMLayer.
+   */
+  OSMLayer.prototype.shapeConfigurationCallback = function (geometry) {
     var configuration = {};
 
     if (geometry.isPointType() || geometry.isMultiPointType()) {
@@ -114,6 +93,10 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
     return configuration;
   };
 
+  /**
+   * Zooms to the OSMLayer, by setting the center of the viewport to the center of the bounding box.
+   * It uses an arbitrary value for the range of {@link LookAtNavigator}.
+   */
   OSMLayer.prototype.zoom = function () {
     var boundingBox = this._boundingBox;
     var centerX = (boundingBox[0] + boundingBox[2])/2;

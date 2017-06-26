@@ -9,8 +9,8 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
    * @alias OSMBuildingLayer
    * @constructor
    * @classdesc Fetches OSM buildings, converts them to GeoJSON, and adds them to the WorldWindow.
-   * @param {WorldWindow} worldWindow The OSMBuildingLayer is added to this WorldWindow.
-   * @param {Float[]} boundingBox Bounding box is expected to be in array format. The order of coordinates of the bounding box is "x1, y1, x2, y2".
+   * @param {WorldWindow} worldWindow The WorldWindow where the OSMBuildingLayer is added to.
+   * @param {Float[]} boundingBox It defines the bounding box of the OSM data for the OSMLayer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
    * @param {Object} configuration Configuration is used to set the attributes of {@link ShapeAttributes}. Three more attributes can be defined, which are "extrude", "altitude" and "altitudeMode".
    */
   var OSMBuildingLayer = function (worldWindow, boundingBox, configuration) {
@@ -21,8 +21,14 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
 
   OSMBuildingLayer.prototype = Object.create(OSMLayer.prototype);
 
-  OSMBuildingLayer.prototype.shapeConfigurationCallback = function (geometry, properties) {
-    var configuration = OSMLayer.prototype.shapeConfigurationCallback.call(this, geometry, properties);
+  /**
+   * Sets the attributes of {@link ShapeAttributes} and three more attributes defined specifically for OSMBuildingLayer, which are "extrude", "altitude" and "altitudeMode".
+   * @param {GeoJSONGeometry} geometry An object containing the geometry of the OSM data in GeoJSON format for the OSMBuildingLayer.
+   * @returns {Object} An object with the attributes {@link ShapeAttributes} and three more attributes, which are "extrude", "altitude" and "altitudeMode", where all of them are defined in the configuration of the OSMBuildingLayer.
+   * The default value for extrude is false. If extrude is set true, the default value for altitude is "1e2" and the default value for altitudeMode is "RELATIVE_TO_GROUND".
+   */
+  OSMBuildingLayer.prototype.shapeConfigurationCallback = function (geometry) {
+    var configuration = OSMLayer.prototype.shapeConfigurationCallback.call(this, geometry);
 
     var extrude = this._configuration.extrude ? this._configuration.extrude : false;
 
@@ -35,6 +41,10 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
     return configuration;
   }
 
+  /**
+   * Using the boundingBox of the OSMBuildingLayer, fetches the OSM building data using Overpass API, converts it to GeoJSON using osmtogeojson API,
+   * adds the GeoJSON data to the WorldWindow using the {@link GeoJSONParserTriangulation}.
+   */
   OSMBuildingLayer.prototype.add = function () {
 
     var boundingBox = this._boundingBox;
