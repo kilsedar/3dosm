@@ -11,7 +11,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
    * @classdesc Fetches OSM buildings, converts them to GeoJSON, and adds them to the WorldWindow.
    * @param {WorldWindow} worldWindow The WorldWindow where the OSMBuildingLayer is added to.
    * @param {Float[]} boundingBox It defines the bounding box of the OSM data for the OSMLayer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
-   * @param {Object} configuration Configuration is used to set the attributes of {@link ShapeAttributes}. Three more attributes can be defined, which are "extrude", "altitude" and "altitudeMode".
+   * @param {Object} configuration Configuration is used to set the attributes of {@link ShapeAttributes}. Four more attributes can be defined, which are "extrude", "heatmap", "altitude" and "altitudeMode".
    */
   var OSMBuildingLayer = function (worldWindow, boundingBox, configuration) {
     OSMLayer.call(this, worldWindow, boundingBox, configuration);
@@ -24,22 +24,24 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
   /**
    * Sets the attributes of {@link ShapeAttributes} and three more attributes defined specifically for OSMBuildingLayer, which are "extrude", "altitude" and "altitudeMode".
    * @param {GeoJSONGeometry} geometry An object containing the geometry of the OSM data in GeoJSON format for the OSMBuildingLayer.
-   * @returns {Object} An object with the attributes {@link ShapeAttributes} and three more attributes, which are "extrude", "altitude" and "altitudeMode", where all of them are defined in the configuration of the OSMBuildingLayer.
-   * The default value for extrude is false. If extrude is set true, the default value for altitude is "1e2" and the default value for altitudeMode is "RELATIVE_TO_GROUND".
+   * @returns {Object} An object with the attributes {@link ShapeAttributes} and four more attributes, which are "extrude", "heatmap", "altitude" and "altitudeMode", where all of them are defined in the configuration of the OSMBuildingLayer.
    */
   OSMBuildingLayer.prototype.shapeConfigurationCallback = function (geometry) {
     var configuration = OSMLayer.prototype.shapeConfigurationCallback.call(this, geometry);
 
-    var extrude = this._configuration.extrude ? this._configuration.extrude : false;
-
-    if (extrude == true) {
-      configuration.extrude = this._configuration.extrude;
-      configuration.altitude = this._configuration.altitude || 1e2;
-      configuration.altitudeMode = this._configuration.altitudeMode || WorldWind.RELATIVE_TO_GROUND;
+    configuration.extrude = this._configuration.extrude ? this._configuration.extrude : false;
+    configuration.heatmap = this._configuration.heatmap ? this._configuration.heatmap : undefined;
+    if (configuration.heatmap) {
+      configuration.heatmap.enabled = this._configuration.heatmap.enabled ? this._configuration.heatmap.enabled : false;
+      configuration.heatmap.thresholds = this._configuration.heatmap.thresholds ? this._configuration.heatmap.thresholds : [0, 15, 900];
     }
+    configuration.altitude = this._configuration.altitude ? this._configuration.altitude : 15;
+    configuration.altitudeMode = this._configuration.altitudeMode ? this._configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
+
+   // console.log(JSON.stringify(configuration));
 
     return configuration;
-  }
+  };
 
   /**
    * Using the boundingBox of the OSMBuildingLayer, fetches the OSM building data using Overpass API, converts it to GeoJSON using osmtogeojson API,
