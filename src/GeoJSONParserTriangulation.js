@@ -5,8 +5,9 @@ define(['libraries/WebWorldWind/src/WorldWind',
         'libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
         'libraries/WebWorldWind/src/geom/Position',
         'libraries/WebWorldWind/src/shapes/TriangleMesh',
+        'src/OSMBuildingShape',
         'earcut'],
-       function (WorldWind, GeoJSONParser, Position, TriangleMesh, earcut) {
+       function (WorldWind, GeoJSONParser, Position, TriangleMesh, OSMBuildingShape, earcut) {
   "use strict";
 
   /**
@@ -23,107 +24,11 @@ define(['libraries/WebWorldWind/src/WorldWind',
   GeoJSONParserTriangulation.prototype = Object.create(GeoJSONParser.prototype);
 
   /**
-   * Colors the polygons based on their altitude.
-   * As the altitude increases the red component of the color increases.
-   * The thresholds could be calculated automatically based on the data.
-   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback}.
-   * @param {Float} altitude The altitude of the polygon.
-   */
-  GeoJSONParserTriangulation.prototype.setColor = function (configuration, altitude) {
-    /* if (altitude < 30)
-      configuration.attributes.interiorColor = new WorldWind.Color(0.25, 0.31, 0.95, 1.0); // rgba(66, 80, 244, 1.0)
-    else if (altitude >= 30 && altitude < 50)
-      configuration.attributes.interiorColor = new WorldWind.Color(0.25, 0.95, 0.61, 1.0); // rgba(66, 244, 158, 1.0)
-    else if (altitude >= 50 && altitude < 100)
-      configuration.attributes.interiorColor = new WorldWind.Color(0.95, 0.74, 0.25, 1.0); // rgba(244, 191, 66, 1.0)
-    else if (altitude >= 100)
-      configuration.attributes.interiorColor = new WorldWind.Color(0.95, 0.32, 0.25, 1.0); // rgba(244, 83, 66, 1.0) */
-
-    /* if (altitude < 30)
-      configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 0.7);
-    else if (altitude >= 30 && altitude < 50)
-      configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 0.8);
-    else if (altitude >= 50 && altitude < 100)
-      configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 0.9);
-    else if (altitude >= 100)
-      configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0); */
-
-    /* if (configuration.attributes.interiorColor.red > 0.5) {
-      if (altitude < 30)
-        configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red-0.5, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
-      else if (altitude >= 30 && altitude < 50)
-        configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red-0.3, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
-      else if (altitude >= 50 && altitude < 100)
-        configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red-0.1, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
-      else if (altitude >= 100)
-        configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
-    }
-    else {
-      if (altitude < 30)
-        configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
-      else if (altitude >= 30 && altitude < 50)
-        configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red+0.1, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
-      else if (altitude >= 50 && altitude < 100)
-        configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red+0.3, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
-      else if (altitude >= 100)
-        configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red+0.5, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
-    } */
-
-    var numberOfThresholds = configuration.heatmap.thresholds.length;
-    var heat = 0.5/(numberOfThresholds-2);
-    // console.log(configuration.heatmap.thresholds + ", " + heat);
-
-    if (configuration.attributes.interiorColor.red < 0.5) {
-      for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
-        // console.log(heat*thresholdIndex);
-        if (altitude > configuration.heatmap.thresholds[thresholdIndex] && altitude <= configuration.heatmap.thresholds[thresholdIndex+1])
-          configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red+heat*thresholdIndex, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
-      }
-    }
-    else {
-      for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
-        // console.log(heat*thresholdIndex);
-        if (altitude > configuration.heatmap.thresholds[thresholdIndex] && altitude <= configuration.heatmap.thresholds[thresholdIndex+1])
-          configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red-heat*(numberOfThresholds-thresholdIndex), configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
-      }
-    }
-  };
-
-  /**
-   * Sets the altitudes of the buildings.
-   * If altitude is set to "osm", if available the value of OSM "height" tag is used. If the "height" tag is not available an approximate height value is calculated using "building:levels" tag. Every level is considered to be 3 meters.
-   * If both are not available, a default value "15" is set.
-   * If altitude is set to a floating-point number, the set value is used for all the buildings.
-   * If altitude is not set, a default value "15" is set.
-   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback}.
-   * @param {Object} properties The properties related to the polygon's geometry.
-   */
-  GeoJSONParserTriangulation.prototype.setAltitude = function (configuration, properties) {
-    var altitude;
-    if (configuration.extrude && configuration.altitude == "osm") {
-      if (properties.tags.height)
-        altitude = properties.tags.height;
-      else if (properties.tags["building:levels"])
-        altitude = properties.tags["building:levels"]*3;
-      else
-        altitude = 15;
-    }
-    else if (configuration.extrude && configuration.altitude)
-      altitude = configuration.altitude;
-    else if (configuration.extrude)
-      altitude = 15;
-    else
-      altitude = 0;
-
-    // console.log("altitude --> " + altitude);
-
-    return altitude;
-  };
-
-  /**
    * Invokes [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and/or [topSurface]{@link GeoJSONParserTriangulation#topSurface} to create a {@link TriangleMesh} for [Polygon]{@link GeoJSONGeometryPolygon} geometry.
-   * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry. [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback} is extended by three attributes in the {@link OSMBuildingLayer}.
-   * These attributes are "extrude", "altitude" and "altitudeMode". If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulation#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulation#topSurface}.</p>
+   * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry. [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback} is extended by four attributes in the {@link OSMBuildingLayer}.
+   * These attributes are "extrude", "heatmap", "altitude" and "altitudeMode".
+   * The altitude of the Polygon is set using this function using [setAltitude]{@link OSMBuildingShape#setAltitude}. If extrude and heatmap are enabled a new color is set for the Polygon.
+   * If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulation#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulation#topSurface}.</p>
    * Applications typically do not call this method directly. It is called by [addRenderablesForGeometry]{@link GeoJSONParser#addRenderablesForGeometry}.
    * @param {RenderableLayer} layer The layer in which to place the newly created shapes.
    * @param {GeoJSONGeometryPolygon} geometry The Polygon geometry object.
@@ -146,10 +51,11 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
     var configuration = this.shapeConfigurationCallback(geometry, properties);
     var boundaries = geometry._coordinates;
-    var altitude = this.setAltitude(configuration, properties);
+    var OSMBuildingPolygon = new OSMBuildingShape(properties);
+    OSMBuildingPolygon.setAltitude(configuration);
+    var altitude = OSMBuildingPolygon.altitude;
     if (configuration.extrude && configuration.heatmap.enabled)
-      this.setColor(configuration, altitude);
-
+      OSMBuildingPolygon.setColor(configuration);
 
     // console.log("configuration --> " + JSON.stringify(configuration));
     // console.log("geometry --> " + JSON.stringify(geometry));
@@ -169,7 +75,9 @@ define(['libraries/WebWorldWind/src/WorldWind',
   /**
    * Invokes [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and/or [topSurface]{@link GeoJSONParserTriangulation#topSurface} to create a {@link TriangleMesh} for [MultiPolygon]{@link GeoJSONGeometryMultiPolygon} geometry.
    * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry. [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback} is extended by three attributes in the {@link OSMBuildingLayer}.
-   * These attributes are "extrude", "altitude" and "altitudeMode". If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulation#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulation#topSurface}.</p>
+   * These attributes are "extrude", "heatmap", "altitude" and "altitudeMode".
+   * The altitude of the MultiPolygon is set using this function using [setAltitude]{@link OSMBuildingShape#setAltitude}. If extrude and heatmap are enabled a new color is set for the MultiPolygon.
+   * If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulation#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulation#topSurface}.</p>
    * Applications typically do not call this method directly. It is called by [addRenderablesForGeometry]{@link GeoJSONParser#addRenderablesForGeometry}.
    * @param {RenderableLayer} layer The layer in which to place the newly created shapes.
    * @param {GeoJSONGeometryMultiPolygon} geometry The MultiPolygon geometry object.
@@ -192,9 +100,11 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
     var configuration = this.shapeConfigurationCallback(geometry, properties);
     var polygons = geometry._coordinates, boundaries = [];
-    var altitude = this.setAltitude(configuration, properties);
+    var OSMBuildingMultiPolygon = new OSMBuildingShape(properties);
+    OSMBuildingMultiPolygon.setAltitude(configuration);
+    var altitude = OSMBuildingMultiPolygon.altitude;
     if (configuration.extrude && configuration.heatmap.enabled)
-      this.setColor(configuration, altitude);
+      OSMBuildingMultiPolygon.setColor(configuration);
 
     // console.log("properties --> " + JSON.stringify(properties));
     // console.log("properties.tags.height (MultiPolygon) --> " + properties.tags.height);
@@ -212,7 +122,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
   /**
    * Creates a {@link TriangleMesh} for the lateral surfaces of polygons. It creates two triangles for each lateral surface.
-   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback}.
+   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link OSMBuildingLayer#shapeConfigurationCallback}.
    * @param {Object | Object[]} boundaries Boundaries of the polygons. If the geometry is [Polygon]{@link GeoJSONGeometryPolygon} the number of boundaries is one.
    * If the geometry is [MultiPolygon]{@link GeoJSONGeometryMultiPolygon} the number of boundaries is more than one.
    */
@@ -261,7 +171,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
   /**
    * Creates a {@link TriangleMesh} for the top surface of polygons, using earcut algorithm.
-   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback}.
+   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link OSMBuildingLayer#shapeConfigurationCallback}.
    * @param {Object | Object[]} boundaries Boundaries of the polygons. If the geometry is [Polygon]{@link GeoJSONGeometryPolygon} the number of boundaries is one.
    * If the geometry is [MultiPolygon]{@link GeoJSONGeometryMultiPolygon} the number of boundaries is more than one.
    */
@@ -300,7 +210,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
    * Invoked by [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} or [topSurface]{@link GeoJSONParserTriangulation#topSurface}, it adds the {@link TriangleMesh} to the layer.
    * @param {Position[]} positions Positions of the vertices of the triangles given in order, which means starting from index 0, every three vertices constitutes one triangle.
    * @param {Integer[]} indices Indices of the positions in the positions array.
-   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback}.
+   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link OSMBuildingLayer#shapeConfigurationCallback}.
    */
   GeoJSONParserTriangulation.prototype.addTriangleMesh = function (positions, indices, configuration) {
     var shape = new TriangleMesh(positions, indices, configuration && configuration.attributes ? configuration.attributes : null);
