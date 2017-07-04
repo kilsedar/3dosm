@@ -33,7 +33,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
       altitude: "osm",
       altitudeMode: WorldWind.RELATIVE_TO_GROUND
     };
-    // v3ar osmMilan = new OSMBuildingLayer(worldWindow, [45.48, 9.45, 45.50, 9.50], configuration);
+    // var osmMilan = new OSMBuildingLayer(worldWindow, [45.48, 9.45, 45.50, 9.50], configuration);
     // var osmMilan = new OSMBuildingLayer(worldWindow, [45.45, 9.05, 45.5, 9.1], configuration);
     // var osmMilan = new OSMBuildingLayer(worldWindow, [45.3871, 9.04284, 45.536, 9.27791], configuration);
     // var osmMilan = new OSMBuildingLayer(worldWindow, [45.48, 9.2, 45.49, 9.21], configuration); // buggy region (nodes)
