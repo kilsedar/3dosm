@@ -225,7 +225,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
     if (configuration && configuration.userProperties) {
       shape.userProperties = configuration.userProperties;
     }
-    this._layer.addRenderable(shape);
+    this.layer.addRenderable(shape);
   }
 
   return GeoJSONParserTriangulation;

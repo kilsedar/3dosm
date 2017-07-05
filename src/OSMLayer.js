@@ -10,21 +10,14 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
    * @constructor
    * @classdesc Sets the properties and functions viable for any OSM data. It is intended to be an abstract class, only to be extended for specific OSM data.
    * @param {WorldWindow} worldWindow The WorldWindow where the OSMLayer is added to.
-   * @param {Float[]} boundingBox It defines the bounding box of the OSM data for the OSMLayer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
-   * @param {Object} configuration Configuration is used to set the attributes of {@link PlacemarkAttributes} if the geometry is Point or MultiPoint; or of {@link ShapeAttributes} otherwise.
+   * @param {Float[]} boundingBox It defines the bounding box of the OSM data for the OSMLayer.
+   * @param {Object} configuration Configuration is used to set the attributes of {@link PlacemarkAttributes} or {@link ShapeAttributes}.
    */
   var OSMLayer = function (worldWindow, boundingBox, configuration) {
-    // Documented in defineProperties below.
     this._worldWindow = worldWindow;
-
     this._boundingBox = boundingBox;
-
     this._configuration = configuration;
-
-    // Documented in defineProperties below.
     this._type = null;
-
-    // Documented in defineProperties below.
     this._tag = null;
   };
 
@@ -38,6 +31,30 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
     worldWindow: {
       get: function() {
         return this._worldWindow;
+      }
+    },
+    /**
+     * It defines the bounding box of the OSM data for the OSMLayer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
+     * @memberof OSMLayer.prototype
+     * @type {Float[]}
+     * @readonly
+     */
+    boundingBox: {
+      get: function() {
+        return this._boundingBox;
+      }
+    },
+    /**
+     * Configuration is used to set the attributes of {@link PlacemarkAttributes} if the geometry is Point or MultiPoint; or of {@link ShapeAttributes} otherwise.
+     * @memberof OSMLayer.prototype
+     * @type {Object}
+     */
+    configuration: {
+      get: function() {
+        return this._configuration;
+      },
+      set: function(configuration) {
+        this._configuration = configuration;
       }
     },
     /**
@@ -80,14 +97,14 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
 
     if (geometry.isPointType() || geometry.isMultiPointType()) {
       var placemarkAttributes = new WorldWind.PlacemarkAttributes(null);
-      for (var key in this._configuration)
-        placemarkAttributes[key] = this._configuration[key];
+      for (var key in this.configuration)
+        placemarkAttributes[key] = this.configuration[key];
       configuration.attributes = new WorldWind.PlacemarkAttributes(placemarkAttributes);
     }
     else {
       configuration.attributes =  new WorldWind.ShapeAttributes(null);
-      for (var key in this._configuration)
-        configuration.attributes[key] = this._configuration[key];
+      for (var key in this.configuration)
+        configuration.attributes[key] = this.configuration[key];
     }
 
     return configuration;
@@ -98,14 +115,14 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
    * It uses an arbitrary value for the range of {@link LookAtNavigator}.
    */
   OSMLayer.prototype.zoom = function () {
-    var boundingBox = this._boundingBox;
+    var boundingBox = this.boundingBox;
     var centerX = (boundingBox[0] + boundingBox[2])/2;
     var centerY = (boundingBox[1] + boundingBox[3])/2;
-    this._worldWindow.navigator.lookAtLocation.latitude = centerX;
-    this._worldWindow.navigator.lookAtLocation.longitude = centerY;
+    this.worldWindow.navigator.lookAtLocation.latitude = centerX;
+    this.worldWindow.navigator.lookAtLocation.longitude = centerY;
     // console.log(centerX + ", " + centerY);
-    this._worldWindow.navigator.range = 1e4; // Should be automatically calculated.
-    this._worldWindow.redraw();
+    this.worldWindow.navigator.range = 1e4; // Should be automatically calculated.
+    this.worldWindow.redraw();
   };
 
   return OSMLayer;

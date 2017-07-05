@@ -15,8 +15,8 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
    */
   var OSMBuildingLayer = function (worldWindow, boundingBox, configuration) {
     OSMLayer.call(this, worldWindow, boundingBox, configuration);
-    this._type = "way";
-    this._tag = "building";
+    this.type = "way";
+    this.tag = "building";
   };
 
   OSMBuildingLayer.prototype = Object.create(OSMLayer.prototype);
@@ -29,14 +29,14 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
   OSMBuildingLayer.prototype.shapeConfigurationCallback = function (geometry) {
     var configuration = OSMLayer.prototype.shapeConfigurationCallback.call(this, geometry);
 
-    configuration.extrude = this._configuration.extrude ? this._configuration.extrude : false;
-    configuration.heatmap = this._configuration.heatmap ? this._configuration.heatmap : undefined;
+    configuration.extrude = this.configuration.extrude ? this.configuration.extrude : false;
+    configuration.heatmap = this.configuration.heatmap ? this.configuration.heatmap : undefined;
     if (configuration.heatmap) {
-      configuration.heatmap.enabled = this._configuration.heatmap.enabled ? this._configuration.heatmap.enabled : false;
-      configuration.heatmap.thresholds = this._configuration.heatmap.thresholds ? this._configuration.heatmap.thresholds : [0, 15, 900];
+      configuration.heatmap.enabled = this.configuration.heatmap.enabled ? this.configuration.heatmap.enabled : false;
+      configuration.heatmap.thresholds = this.configuration.heatmap.thresholds ? this.configuration.heatmap.thresholds : [0, 15, 900];
     }
-    configuration.altitude = this._configuration.altitude ? this._configuration.altitude : 15;
-    configuration.altitudeMode = this._configuration.altitudeMode ? this._configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
+    configuration.altitude = this.configuration.altitude ? this.configuration.altitude : 15;
+    configuration.altitudeMode = this.configuration.altitudeMode ? this.configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
 
    // console.log(JSON.stringify(configuration));
 
@@ -49,8 +49,8 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
    */
   OSMBuildingLayer.prototype.add = function () {
 
-    var boundingBox = this._boundingBox;
-    var worldWindow = this._worldWindow;
+    var boundingBox = this.boundingBox;
+    var worldWindow = this.worldWindow;
     var _self = this;
 
     var data = '[out:json][timeout:25];';
