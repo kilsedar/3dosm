@@ -1,7 +1,13 @@
 /**
  * @exports OSMBuildingLayer
  */
-define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONParserTriangulation', 'jquery', 'osmtogeojson'], function (WorldWind, OSMLayer, GeoJSONParserTriangulation, $, osmtogeojson) {
+define(['libraries/WebWorldWind/src/WorldWind',
+        'libraries/WebWorldWind/src/cache/MemoryCache',
+        'src/OSMLayer',
+        'src/GeoJSONParserTriangulation',
+        'jquery',
+        'osmtogeojson'],
+       function (WorldWind, MemoryCache, OSMLayer, GeoJSONParserTriangulation, $, osmtogeojson) {
   "use strict";
 
   /**
@@ -17,9 +23,54 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
     OSMLayer.call(this, worldWindow, boundingBox, configuration);
     this.type = "way";
     this.tag = "building";
+    this._geometryCache = new MemoryCache(30000, 24000);
+    this._propertiesCache = new MemoryCache(50000, 40000);
   };
 
   OSMBuildingLayer.prototype = Object.create(OSMLayer.prototype);
+
+  Object.defineProperties (OSMBuildingLayer.prototype, {
+    /**
+     * The cache for the geometry of each feature of the OSMBuildingLayer.
+     * @memberof OSMBuildingLayer.prototype
+     * @type {MemoryCache}
+     */
+    geometryCache: {
+      get: function() {
+        return this._geometryCache;
+      },
+      set: function(geometryCache) {
+        this._geometryCache = geometryCache;
+      }
+    },
+    /**
+     * The cache for the properties of each feature of the OSMBuildingLayer.
+     * @memberof OSMBuildingLayer.prototype
+     * @type {MemoryCache}
+     */
+    propertiesCache: {
+      get: function() {
+        return this._propertiesCache;
+      },
+      set: function(propertiesCache) {
+        this._propertiesCache = propertiesCache;
+      }
+    }
+  });
+
+  OSMBuildingLayer.prototype.cache = function(dataOverpassGeoJSON) {
+    // console.log(JSON.stringify(dataOverpassGeoJSON));
+    for (var featureIndex = 0; featureIndex < dataOverpassGeoJSON.features.length; featureIndex++) {
+      this.geometryCache.putEntry(dataOverpassGeoJSON.features[featureIndex].id, dataOverpassGeoJSON.features[featureIndex].geometry, Object.keys(dataOverpassGeoJSON.features[featureIndex].geometry).length);
+      this.propertiesCache.putEntry(dataOverpassGeoJSON.features[featureIndex].id, dataOverpassGeoJSON.features[featureIndex].properties, Object.keys(dataOverpassGeoJSON.features[featureIndex].properties).length);
+      /* console.log(Object.keys(dataOverpassGeoJSON.features[featureIndex].geometry).length);
+      console.log(dataOverpassGeoJSON.features[featureIndex].geometry);
+      console.log(Object.keys(dataOverpassGeoJSON.features[featureIndex].properties).length);
+      console.log(dataOverpassGeoJSON.features[featureIndex].properties); */
+    }
+    /* console.log(this.geometryCache);
+    console.log(this.propertiesCache); */
+  };
 
   /**
    * Sets the attributes of {@link ShapeAttributes} and three more attributes defined specifically for OSMBuildingLayer, which are "extrude", "altitude" and "altitudeMode".
@@ -69,6 +120,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMLayer', 'src/GeoJSONPars
         // console.log("dataOverpass --> " + JSON.stringify(dataOverpass));
         // var dataOverpassGeoJSON = osmtogeojson(dataOverpass, {flatProperties: true, polygonFeatures: {"building": true}});
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
+        _self.cache(dataOverpassGeoJSON);
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
         // console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
         // console.log("dataOverpassGeoJSON.features.length (number of polygons) --> " + dataOverpassGeoJSON.features.length);
