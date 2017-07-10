@@ -4,10 +4,10 @@
 define(['libraries/WebWorldWind/src/WorldWind',
         'libraries/WebWorldWind/src/cache/MemoryCache',
         'src/OSMLayer',
-        'src/GeoJSONParserTriangulation',
+        'src/GeoJSONParserTriangulationOSM',
         'jquery',
         'osmtogeojson'],
-       function (WorldWind, MemoryCache, OSMLayer, GeoJSONParserTriangulation, $, osmtogeojson) {
+       function (WorldWind, MemoryCache, OSMLayer, GeoJSONParserTriangulationOSM, $, osmtogeojson) {
   "use strict";
 
   /**
@@ -81,7 +81,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
     var configuration = OSMLayer.prototype.shapeConfigurationCallback.call(this, geometry);
 
     configuration.extrude = this.configuration.extrude ? this.configuration.extrude : false;
-    configuration.heatmap = this.configuration.heatmap ? this.configuration.heatmap : undefined;
+    configuration.heatmap = this.configuration.heatmap ? this.configuration.heatmap : false;
     if (configuration.heatmap) {
       configuration.heatmap.enabled = this.configuration.heatmap.enabled ? this.configuration.heatmap.enabled : false;
       configuration.heatmap.thresholds = this.configuration.heatmap.thresholds ? this.configuration.heatmap.thresholds : [0, 15, 900];
@@ -96,7 +96,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
   /**
    * Using the boundingBox of the OSMBuildingLayer, fetches the OSM building data using Overpass API, converts it to GeoJSON using osmtogeojson API,
-   * adds the GeoJSON data to the WorldWindow using the {@link GeoJSONParserTriangulation}.
+   * adds the GeoJSON data to the WorldWindow using the {@link GeoJSONParserTriangulationOSM}.
    */
   OSMBuildingLayer.prototype.add = function () {
 
@@ -126,7 +126,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
         // console.log("dataOverpassGeoJSON.features.length (number of polygons) --> " + dataOverpassGeoJSON.features.length);
         // console.time("creatingOSMBuildingLayer");
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
-        var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulation(dataOverpassGeoJSONString);
+        var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(dataOverpassGeoJSONString);
         // var OSMBuildingLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
         // console.timeEnd("creatingOSMBuildingLayer");

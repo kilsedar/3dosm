@@ -1,26 +1,26 @@
 /**
- * @exports OSMBuildingShape
+ * @exports BuildingShape
  */
 define([''], function () {
   "use strict";
 
   /**
    *
-   * @alias OSMBuildingShape
+   * @alias BuildingShape
    * @constructor
-   * @classdesc Sets the color and altitude of the OSMBuildingShape, which can be either {@link Polygon} or {@link MultiPolygon}.
+   * @classdesc Sets the color and altitude of the BuildingShape, which can be either {@link Polygon} or {@link MultiPolygon}.
    * @param {Object} properties The properties related to the shape's geometry.
    */
-   var OSMBuildingShape = function (properties) {
+   var BuildingShape = function (properties) {
      this._properties = properties;
      this._altitude;
      this._color;
    };
 
-   Object.defineProperties (OSMBuildingShape.prototype, {
+   Object.defineProperties (BuildingShape.prototype, {
      /**
       * The properties related to the shape's geometry.
-      * @memberof OSMBuildingShape.prototype
+      * @memberof BuildingShape.prototype
       * @type {Object}
       */
      properties: {
@@ -33,7 +33,7 @@ define([''], function () {
      },
      /**
       * The altitude of the shape.
-      * @memberof OSMBuildingShape.prototype
+      * @memberof BuildingShape.prototype
       * @type {Float}
       */
      altitude: {
@@ -46,7 +46,7 @@ define([''], function () {
      },
      /**
       * The color of the shape.
-      * @memberof OSMBuildingShape.prototype
+      * @memberof BuildingShape.prototype
       * @type {Color}
       */
      color: {
@@ -65,7 +65,7 @@ define([''], function () {
    * The thresholds could be calculated automatically based on the data.
    * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link OSMBuildingLayer#shapeConfigurationCallback}.
    */
-  OSMBuildingShape.prototype.setColor = function (configuration) {
+  BuildingShape.prototype.setColor = function (configuration) {
 
     var numberOfThresholds = configuration.heatmap.thresholds.length;
     var heat = 0.5/(numberOfThresholds-2);
@@ -95,7 +95,7 @@ define([''], function () {
    * For the {@link OSMBuildingLayer} if extrude is false, 0 is used.
    * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link OSMBuildingLayer#shapeConfigurationCallback}.
    */
-  OSMBuildingShape.prototype.setAltitude = function (configuration) {
+  BuildingShape.prototype.setAltitude = function (configuration) {
     var altitude;
     if (configuration.extrude && configuration.altitude == "osm") {
       if (this.properties.tags.height)
@@ -117,5 +117,5 @@ define([''], function () {
     this.altitude = altitude;
   };
 
-  return OSMBuildingShape;
+  return BuildingShape;
 });

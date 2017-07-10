@@ -5,9 +5,9 @@ define(['libraries/WebWorldWind/src/WorldWind',
         'libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
         'libraries/WebWorldWind/src/geom/Position',
         'libraries/WebWorldWind/src/shapes/TriangleMesh',
-        'src/OSMBuildingShape',
+        'src/shapes/BuildingShape',
         'earcut'],
-       function (WorldWind, GeoJSONParser, Position, TriangleMesh, OSMBuildingShape, earcut) {
+       function (WorldWind, GeoJSONParser, Position, TriangleMesh, BuildingShape, earcut) {
   "use strict";
 
   /**
@@ -25,9 +25,8 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
   /**
    * Invokes [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and/or [topSurface]{@link GeoJSONParserTriangulation#topSurface} to create a {@link TriangleMesh} for [Polygon]{@link GeoJSONGeometryPolygon} geometry.
-   * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry. [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback} is extended by four attributes in the {@link OSMBuildingLayer}.
-   * These attributes are "extrude", "heatmap", "altitude" and "altitudeMode".
-   * The altitude of the Polygon is set using this function using [setAltitude]{@link OSMBuildingShape#setAltitude}. If extrude and heatmap are enabled a new color is set for the Polygon.
+   * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry.
+   * It assumes extude and altitude is set in the configuration.
    * If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulation#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulation#topSurface}.</p>
    * Applications typically do not call this method directly. It is called by [addRenderablesForGeometry]{@link GeoJSONParser#addRenderablesForGeometry}.
    * @param {RenderableLayer} layer The layer in which to place the newly created shapes.
@@ -51,19 +50,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
     var configuration = this.shapeConfigurationCallback(geometry, properties);
     var boundaries = geometry._coordinates;
-    var OSMBuildingPolygon = new OSMBuildingShape(properties);
-    OSMBuildingPolygon.setAltitude(configuration);
-    var altitude = OSMBuildingPolygon.altitude;
-    if (configuration.extrude && configuration.heatmap.enabled)
-      OSMBuildingPolygon.setColor(configuration);
-
-    // console.log("configuration --> " + JSON.stringify(configuration));
-    // console.log("geometry --> " + JSON.stringify(geometry));
-    // console.log("boundaries --> " + boundaries);
-    // console.log("boundaries.length --> " + boundaries.length);
-    // console.log("properties --> " + JSON.stringify(properties));
-    // console.log("properties.tags.height --> " + properties.tags.height);
-    // console.log("altitude --> " + altitude);
+    var altitude = configuration.altitude;
 
     if (!this.crs || this.crs.isCRSSupported()) {
       if (configuration.extrude == true)
@@ -74,9 +61,8 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
   /**
    * Invokes [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and/or [topSurface]{@link GeoJSONParserTriangulation#topSurface} to create a {@link TriangleMesh} for [MultiPolygon]{@link GeoJSONGeometryMultiPolygon} geometry.
-   * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry. [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback} is extended by three attributes in the {@link OSMBuildingLayer}.
-   * These attributes are "extrude", "heatmap", "altitude" and "altitudeMode".
-   * The altitude of the MultiPolygon is set using this function using [setAltitude]{@link OSMBuildingShape#setAltitude}. If extrude and heatmap are enabled a new color is set for the MultiPolygon.
+   * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry.
+   * It assumes extude and altitude is set in the configuration.
    * If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulation#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulation#topSurface}.</p>
    * Applications typically do not call this method directly. It is called by [addRenderablesForGeometry]{@link GeoJSONParser#addRenderablesForGeometry}.
    * @param {RenderableLayer} layer The layer in which to place the newly created shapes.
@@ -85,7 +71,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
    * @throws {ArgumentError} If the specified layer is null or undefined.
    * @throws {ArgumentError} If the specified geometry is null or undefined.
    */
-  GeoJSONParser.prototype.addRenderablesForMultiPolygon = function (layer, geometry, properties) {
+  GeoJSONParserTriangulation.prototype.addRenderablesForMultiPolygon = function (layer, geometry, properties) {
     if (!layer) {
       throw new ArgumentError(
         Logger.logMessage(Logger.LEVEL_SEVERE, "GeoJSON", "addRenderablesForMultiPolygon", "missingLayer")
@@ -100,15 +86,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
     var configuration = this.shapeConfigurationCallback(geometry, properties);
     var polygons = geometry._coordinates, boundaries = [];
-    var OSMBuildingMultiPolygon = new OSMBuildingShape(properties);
-    OSMBuildingMultiPolygon.setAltitude(configuration);
-    var altitude = OSMBuildingMultiPolygon.altitude;
-    if (configuration.extrude && configuration.heatmap.enabled)
-      OSMBuildingMultiPolygon.setColor(configuration);
-
-    // console.log("properties --> " + JSON.stringify(properties));
-    // console.log("properties.tags.height (MultiPolygon) --> " + properties.tags.height);
-    // console.log("altitude --> " + altitude);
+    var altitude = configuration.altitude;
 
     if (!this.crs || this.crs.isCRSSupported()) {
       for (var polygonsIndex = 0; polygonsIndex < polygons.length; polygonsIndex++) {
@@ -122,7 +100,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
   /**
    * Creates a {@link TriangleMesh} for the lateral surfaces of polygons. It creates two triangles for each lateral surface.
-   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link OSMBuildingLayer#shapeConfigurationCallback}.
+   * @param {Object} configuration Configuration is the object returned by shapeConfigurationCallback of GeoJSONParser or OSMBuildingLayer.
    * @param {Object | Object[]} boundaries Boundaries of the polygons. If the geometry is [Polygon]{@link GeoJSONGeometryPolygon} the number of boundaries is one.
    * If the geometry is [MultiPolygon]{@link GeoJSONGeometryMultiPolygon} the number of boundaries is more than one.
    */
@@ -171,7 +149,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
   /**
    * Creates a {@link TriangleMesh} for the top surface of polygons, using earcut algorithm.
-   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link OSMBuildingLayer#shapeConfigurationCallback}.
+   * @param {Object} configuration Configuration is the object returned by shapeConfigurationCallback of GeoJSONParser or OSMBuildingLayer.
    * @param {Object | Object[]} boundaries Boundaries of the polygons. If the geometry is [Polygon]{@link GeoJSONGeometryPolygon} the number of boundaries is one.
    * If the geometry is [MultiPolygon]{@link GeoJSONGeometryMultiPolygon} the number of boundaries is more than one.
    */
@@ -210,11 +188,10 @@ define(['libraries/WebWorldWind/src/WorldWind',
    * Invoked by [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} or [topSurface]{@link GeoJSONParserTriangulation#topSurface}, it adds the {@link TriangleMesh} to the layer.
    * @param {Position[]} positions Positions of the vertices of the triangles given in order, which means starting from index 0, every three vertices constitutes one triangle.
    * @param {Integer[]} indices Indices of the positions in the positions array.
-   * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link OSMBuildingLayer#shapeConfigurationCallback}.
+   * @param {Object} configuration Configuration is the object returned by shapeConfigurationCallback of GeoJSONParser or OSMBuildingLayer.
    */
   GeoJSONParserTriangulation.prototype.addTriangleMesh = function (positions, indices, configuration) {
     var shape = new TriangleMesh(positions, indices, configuration && configuration.attributes ? configuration.attributes : null);
-    // shapeConfigurationCallback sets only "configuration.attributes", not "altitudeMode". configuration object literal currently also returns "altitude" and "extrude".
     shape.altitudeMode = configuration.altitudeMode;
     if (configuration.highlightAttributes) {
       shape.highlightAttributes = configuration.highlightAttributes;
