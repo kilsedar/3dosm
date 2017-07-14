@@ -98,9 +98,9 @@ define([''], function () {
   BuildingShape.prototype.setAltitude = function (configuration) {
     var altitude;
     if (configuration.extrude && configuration.altitude == "osm") {
-      if (this.properties.tags.height)
+      if (this.properties.tags && this.properties.tags.height)
         altitude = this.properties.tags.height;
-      else if (this.properties.tags["building:levels"])
+      else if (this.properties.tags && this.properties.tags["building:levels"])
         altitude = this.properties.tags["building:levels"]*3;
       else
         altitude = 15;

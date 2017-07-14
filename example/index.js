@@ -33,18 +33,18 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
       altitude: "osm",
       altitudeMode: WorldWind.RELATIVE_TO_GROUND
     };
-    // var osmMilan = new OSMBuildingLayer(worldWindow, [45.48, 9.45, 45.50, 9.50], configuration);
-    // var osmMilan = new OSMBuildingLayer(worldWindow, [45.45, 9.05, 45.5, 9.1], configuration);
-    // var osmMilan = new OSMBuildingLayer(worldWindow, [45.3871, 9.04284, 45.536, 9.27791], configuration);
-    // var osmMilan = new OSMBuildingLayer(worldWindow, [45.48, 9.2, 45.49, 9.21], configuration); // buggy region (nodes)
-    // var osmMilan = new OSMBuildingLayer(worldWindow, [45.4557, 9.1705, 45.4735, 9.2021], configuration); // center
-    /* osmMilan.add();
-    osmMilan.zoom(); */
-    // var osmNewYork = new OSMBuildingLayer(worldWindow, [40.6998, -74.0232, 40.74, -73.97], configuration);
-    var osmNewYork = new OSMBuildingLayer(worldWindow, configuration);
-    osmNewYork.addByBoundingBox([40.70, -74.03, 40.72, -74.0]);
-    osmNewYork.zoom();
-    /* var osmMilan = new OSMBuildingLayer(worldWindow, [45.18, 9.48, 45.19, 9.53], configuration);
-    osmMilan.add();
-    osmMilan.zoom(); */
+
+    // var osmNewYork = new OSMBuildingLayer(worldWindow, configuration);
+    // osmNewYork.addByBoundingBox([-74.0232, 40.6998, -73.97, 40.74]);
+    // osmNewYork.addByBoundingBox([-74.03, 40.70, -74.0, 40.72]);
+    // var osmMilan = new OSMBuildingLayer(worldWindow, configuration);
+    // osmMilan.addByBoundingBox([9.45, 45.48, 9.50, 45.50]);
+    // osmMilan.addByBoundingBox([9.05, 45.45, 9.10, 45.50]);
+    // osmMilan.addByBoundingBox([9.04284, 45.3871, 9.27791, 45.536]);
+    // osmMilan.addByBoundingBox([9.2, 45.48, 9.21, 45.49]); // buggy region (nodes)
+    // osmMilan.addByBoundingBox([9.1705, 45.4557, 9.2021, 45.4735]); // center
+    // osmMilan.addByBoundingBox([9.48, 45.18, 9.53, 45.19]); // region tested in GRASS
+    // osmMilan.zoom();
+    var test = new OSMBuildingLayer(worldWindow, configuration);
+    test.addByGeoJSONFile("data/test.geojson");
 });

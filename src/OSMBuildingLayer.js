@@ -107,9 +107,9 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
     var _self = this;
 
     var data = '[out:json][timeout:25];';
-    data += '(' + this._type + '[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + '); ';
-    // data += 'relation[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + ');); (._;>;); out body qt;';
-    data += 'relation[' + this._tag + '](' + boundingBox[0] + ',' + boundingBox[1] + ',' + boundingBox[2] + ',' + boundingBox[3] + ');); out body; >; out skel qt;';
+    data += '(' + this._type + '[' + this._tag + '](' + boundingBox[1] + ',' + boundingBox[0] + ',' + boundingBox[3] + ',' + boundingBox[2] + '); ';
+    // data += 'relation[' + this._tag + '](' + boundingBox[1] + ',' + boundingBox[0] + ',' + boundingBox[3] + ',' + boundingBox[2] + ');); (._;>;); out body qt;';
+    data += 'relation[' + this._tag + '](' + boundingBox[1] + ',' + boundingBox[0] + ',' + boundingBox[3] + ',' + boundingBox[2] + ');); out body; >; out skel qt;';
     // console.log("data --> " + data);
 
     $.ajax({
@@ -124,7 +124,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
         _self.cache(dataOverpassGeoJSON);
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
-        // console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
+        console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
         // console.log("dataOverpassGeoJSON.features.length (number of polygons) --> " + dataOverpassGeoJSON.features.length);
         // console.time("creatingOSMBuildingLayer");
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
@@ -133,6 +133,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
         // console.timeEnd("creatingOSMBuildingLayer");
         worldWindow.addLayer(OSMBuildingLayer);
+        _self.zoom();
       },
       error: function (e) {
         console.log("Error: " + JSON.stringify(e));
@@ -142,16 +143,47 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
 
   /**
    *
+   * @param
    */
-  OSMBuildingLayer.prototype.addByFile = function (path) {
+  OSMBuildingLayer.prototype.calculateBoundingBox = function (GeoJSON) {
+    var boundingBox = [Infinity, Infinity, -Infinity, -Infinity], polygons, coordinates, latitude, longitude;
 
+    for (var featureIndex = 0; featureIndex < GeoJSON.features.length; featureIndex++) {
+      polygons = GeoJSON.features[featureIndex].geometry.coordinates;
+
+      for (var polygonsIndex = 0; polygonsIndex < polygons.length; polygonsIndex++) {
+        for (var coordinatesIndex = 0; coordinatesIndex < polygons[polygonsIndex].length; coordinatesIndex++) {
+          longitude = polygons[polygonsIndex][coordinatesIndex][0];
+          latitude = polygons[polygonsIndex][coordinatesIndex][1];
+          // console.log(longitude + ", " + latitude);
+          boundingBox[0] = boundingBox[0] < longitude ? boundingBox[0] : longitude; // minimum longitude (x1)
+          boundingBox[1] = boundingBox[1] < latitude ? boundingBox[1] : latitude; // minimum latitude (y1)
+          boundingBox[2] = boundingBox[2] > longitude ? boundingBox[2] : longitude; // maximum longitude (x2)
+          boundingBox[3] = boundingBox[3] > latitude ? boundingBox[3] : latitude; // maximum latitude (y2)
+        }
+      }
+    }
+    this.boundingBox = boundingBox;
+    // console.log(this.boundingBox);
   };
 
   /**
    *
+   * @param
    */
-  OSMBuildingLayer.prototype.addByURL = function (path) {
+  OSMBuildingLayer.prototype.addByGeoJSONFile = function (path) {
+    var worldWindow = this.worldWindow;
+    var _self = this;
 
+    $.getJSON(path, function(data) {
+      _self.calculateBoundingBox(data);
+      var GeoJSONString = JSON.stringify(data);
+      var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
+      var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(GeoJSONString);
+      OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
+      worldWindow.addLayer(OSMBuildingLayer);
+      _self.zoom();
+    })
   };
 
   return OSMBuildingLayer;

@@ -116,6 +116,7 @@ define(['libraries/WebWorldWind/src/error/ArgumentError',
   /**
    * Zooms to the OSMLayer, by setting the center of the viewport to the center of the bounding box.
    * It uses an arbitrary value for the range of {@link LookAtNavigator}.
+   * To be removed later. 
    * @throws {ArgumentError} If boundingBox of the layer is null.
    */
   OSMLayer.prototype.zoom = function () {
@@ -123,8 +124,8 @@ define(['libraries/WebWorldWind/src/error/ArgumentError',
       var boundingBox = this.boundingBox;
       var centerX = (boundingBox[0] + boundingBox[2])/2;
       var centerY = (boundingBox[1] + boundingBox[3])/2;
-      this.worldWindow.navigator.lookAtLocation.latitude = centerX;
-      this.worldWindow.navigator.lookAtLocation.longitude = centerY;
+      this.worldWindow.navigator.lookAtLocation.longitude = centerX;
+      this.worldWindow.navigator.lookAtLocation.latitude = centerY;
       // console.log(centerX + ", " + centerY);
       this.worldWindow.navigator.range = 1e4; // Should be automatically calculated.
       this.worldWindow.redraw();
