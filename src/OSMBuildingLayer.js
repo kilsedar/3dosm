@@ -1,13 +1,12 @@
 /**
  * @exports OSMBuildingLayer
  */
-define(['libraries/WebWorldWind/src/WorldWind',
-        'libraries/WebWorldWind/src/cache/MemoryCache',
+define(['libraries/WebWorldWind/src/cache/MemoryCache',
         'src/OSMLayer',
         'src/GeoJSONParserTriangulationOSM',
         'jquery',
         'osmtogeojson'],
-       function (WorldWind, MemoryCache, OSMLayer, GeoJSONParserTriangulationOSM, $, osmtogeojson) {
+       function (MemoryCache, OSMLayer, GeoJSONParserTriangulationOSM, $, osmtogeojson) {
   "use strict";
 
   /**
@@ -16,11 +15,10 @@ define(['libraries/WebWorldWind/src/WorldWind',
    * @constructor
    * @classdesc Fetches OSM buildings, converts them to GeoJSON, and adds them to the WorldWindow.
    * @param {WorldWindow} worldWindow The WorldWindow where the OSMBuildingLayer is added to.
-   * @param {Float[]} boundingBox It defines the bounding box of the OSM data for the OSMLayer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
    * @param {Object} configuration Configuration is used to set the attributes of {@link ShapeAttributes}. Four more attributes can be defined, which are "extrude", "heatmap", "altitude" and "altitudeMode".
    */
-  var OSMBuildingLayer = function (worldWindow, boundingBox, configuration) {
-    OSMLayer.call(this, worldWindow, boundingBox, configuration);
+  var OSMBuildingLayer = function (worldWindow, configuration) {
+    OSMLayer.call(this, worldWindow, configuration);
     this.type = "way";
     this.tag = "building";
     this._geometryCache = new MemoryCache(30000, 24000);
@@ -95,13 +93,17 @@ define(['libraries/WebWorldWind/src/WorldWind',
   };
 
   /**
-   * Using the boundingBox of the OSMBuildingLayer, fetches the OSM building data using Overpass API, converts it to GeoJSON using osmtogeojson API,
-   * adds the GeoJSON data to the WorldWindow using the {@link GeoJSONParserTriangulationOSM}.
+   * Using the boundingBox fetches the OSM building data using Overpass API, converts it to GeoJSON using osmtogeojson API,
+   * adds the GeoJSON to the WorldWindow using the {@link GeoJSONParserTriangulationOSM}.
+   * It also sets the boundingBox of the {@link OSMLayer}.
+   * @param {Float[]} boundingBox It defines the bounding box of the OSM data to add.
    */
-  OSMBuildingLayer.prototype.add = function () {
+  OSMBuildingLayer.prototype.addByBoundingBox = function (boundingBox) {
 
-    var boundingBox = this.boundingBox;
+    this.boundingBox = boundingBox;
     var worldWindow = this.worldWindow;
+    /* var dc = this.worldWindow.drawContext;
+    console.log("dc.globe --> " + dc.globe); */
     var _self = this;
 
     var data = '[out:json][timeout:25];';
@@ -136,6 +138,20 @@ define(['libraries/WebWorldWind/src/WorldWind',
         console.log("Error: " + JSON.stringify(e));
       }
     });
+  };
+
+  /**
+   *
+   */
+  OSMBuildingLayer.prototype.addByFile = function (path) {
+
+  };
+
+  /**
+   *
+   */
+  OSMBuildingLayer.prototype.addByURL = function (path) {
+
   };
 
   return OSMBuildingLayer;

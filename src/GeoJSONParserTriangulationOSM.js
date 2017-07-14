@@ -1,13 +1,9 @@
 /**
  * @exports GeoJSONParserTriangulationOSM
  */
-define(['libraries/WebWorldWind/src/WorldWind',
-        'libraries/WebWorldWind/src/geom/Position',
-        'libraries/WebWorldWind/src/shapes/TriangleMesh',
-        'src/GeoJSONParserTriangulation',
-        'src/shapes/BuildingShape',
-        'earcut'],
-       function (WorldWind, Position, TriangleMesh, GeoJSONParserTriangulation, BuildingShape, earcut) {
+define(['src/GeoJSONParserTriangulation',
+        'src/shapes/BuildingShape'],
+       function (GeoJSONParserTriangulation, BuildingShape) {
   "use strict";
 
   /**

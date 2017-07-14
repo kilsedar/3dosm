@@ -1,7 +1,9 @@
 /**
  * @exports OSMLayer
  */
-define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
+define(['libraries/WebWorldWind/src/error/ArgumentError',
+        'libraries/WebWorldWind/src/util/Logger'],
+       function (ArgumentError, Logger) {
   "use strict";
 
   /**
@@ -10,13 +12,12 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
    * @constructor
    * @classdesc Sets the properties and functions viable for any OSM data. It is intended to be an abstract class, only to be extended for specific OSM data.
    * @param {WorldWindow} worldWindow The WorldWindow where the OSMLayer is added to.
-   * @param {Float[]} boundingBox It defines the bounding box of the OSM data for the OSMLayer.
    * @param {Object} configuration Configuration is used to set the attributes of {@link PlacemarkAttributes} or {@link ShapeAttributes}.
    */
-  var OSMLayer = function (worldWindow, boundingBox, configuration) {
+  var OSMLayer = function (worldWindow, configuration) {
     this._worldWindow = worldWindow;
-    this._boundingBox = boundingBox;
     this._configuration = configuration;
+    this._boundingBox = null;
     this._type = null;
     this._tag = null;
   };
@@ -34,17 +35,6 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
       }
     },
     /**
-     * It defines the bounding box of the OSM data for the OSMLayer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
-     * @memberof OSMLayer.prototype
-     * @type {Float[]}
-     * @readonly
-     */
-    boundingBox: {
-      get: function() {
-        return this._boundingBox;
-      }
-    },
-    /**
      * Configuration is used to set the attributes of {@link PlacemarkAttributes} if the geometry is Point or MultiPoint; or of {@link ShapeAttributes} otherwise.
      * @memberof OSMLayer.prototype
      * @type {Object}
@@ -55,6 +45,19 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
       },
       set: function(configuration) {
         this._configuration = configuration;
+      }
+    },
+    /**
+     * It defines the bounding box of the OSM data for the OSMLayer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
+     * @memberof OSMLayer.prototype
+     * @type {Float[]}
+     */
+    boundingBox: {
+      get: function() {
+        return this._boundingBox;
+      },
+      set: function(boundingBox) {
+        this._boundingBox = boundingBox;
       }
     },
     /**
@@ -113,16 +116,24 @@ define(['libraries/WebWorldWind/src/WorldWind'], function (WorldWind) {
   /**
    * Zooms to the OSMLayer, by setting the center of the viewport to the center of the bounding box.
    * It uses an arbitrary value for the range of {@link LookAtNavigator}.
+   * @throws {ArgumentError} If boundingBox of the layer is null.
    */
   OSMLayer.prototype.zoom = function () {
-    var boundingBox = this.boundingBox;
-    var centerX = (boundingBox[0] + boundingBox[2])/2;
-    var centerY = (boundingBox[1] + boundingBox[3])/2;
-    this.worldWindow.navigator.lookAtLocation.latitude = centerX;
-    this.worldWindow.navigator.lookAtLocation.longitude = centerY;
-    // console.log(centerX + ", " + centerY);
-    this.worldWindow.navigator.range = 1e4; // Should be automatically calculated.
-    this.worldWindow.redraw();
+    if (this.boundingBox != null) {
+      var boundingBox = this.boundingBox;
+      var centerX = (boundingBox[0] + boundingBox[2])/2;
+      var centerY = (boundingBox[1] + boundingBox[3])/2;
+      this.worldWindow.navigator.lookAtLocation.latitude = centerX;
+      this.worldWindow.navigator.lookAtLocation.longitude = centerY;
+      // console.log(centerX + ", " + centerY);
+      this.worldWindow.navigator.range = 1e4; // Should be automatically calculated.
+      this.worldWindow.redraw();
+    }
+    else {
+      throw new ArgumentError(
+        Logger.logMessage(Logger.LEVEL_SEVERE, "OSMLayer", "zoom", "The bounding box of the layer is null.")
+      );
+    }
   };
 
   return OSMLayer;

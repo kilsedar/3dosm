@@ -41,7 +41,10 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
     /* osmMilan.add();
     osmMilan.zoom(); */
     // var osmNewYork = new OSMBuildingLayer(worldWindow, [40.6998, -74.0232, 40.74, -73.97], configuration);
-    var osmNewYork = new OSMBuildingLayer(worldWindow, [40.70, -74.03, 40.72, -74.0], configuration);
-    osmNewYork.add();
+    var osmNewYork = new OSMBuildingLayer(worldWindow, configuration);
+    osmNewYork.addByBoundingBox([40.70, -74.03, 40.72, -74.0]);
     osmNewYork.zoom();
+    /* var osmMilan = new OSMBuildingLayer(worldWindow, [45.18, 9.48, 45.19, 9.53], configuration);
+    osmMilan.add();
+    osmMilan.zoom(); */
 });
