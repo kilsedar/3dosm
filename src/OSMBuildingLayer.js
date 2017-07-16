@@ -4,11 +4,13 @@
 define(['libraries/WebWorldWind/src/cache/MemoryCache',
         'libraries/WebWorldWind/src/error/ArgumentError',
         'libraries/WebWorldWind/src/util/Logger',
+        'libraries/WebWorldWind/src/geom/BoundingBox',
+        'libraries/WebWorldWind/src/geom/Sector',
         'src/OSMLayer',
         'src/GeoJSONParserTriangulationOSM',
         'jquery',
         'osmtogeojson'],
-       function (MemoryCache, ArgumentError, Logger, OSMLayer, GeoJSONParserTriangulationOSM, $, osmtogeojson) {
+       function (MemoryCache, ArgumentError, Logger, BoundingBox, Sector, OSMLayer, GeoJSONParserTriangulationOSM, $, osmtogeojson) {
   "use strict";
 
   /**
@@ -50,6 +52,53 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
   };
 
   OSMBuildingLayer.prototype = Object.create(OSMLayer.prototype);
+
+  /**
+   * Sectorizes a bounding box. Each sector initially will be 0.01 to 0.01 degrees for all the zoom levels.
+   * @param {Float[]} boundingBox The bounding box to be sectorized. Intended to be the bounding box of the whole layer.
+   */
+  OSMBuildingLayer.prototype.createSectors = function(boundingBox) {
+    var sectorSize = 0.01;
+    var decimalCount = 5; // Can be derived from the coordinates.
+    var sectors = [];
+    var sectorsOnXCount = Math.ceil((boundingBox[2]-boundingBox[0]).toFixed(decimalCount)/sectorSize);
+    var sectorsOnYCount = Math.ceil((boundingBox[3]-boundingBox[1]).toFixed(decimalCount)/sectorSize);
+
+    // console.log((x2-x1).toFixed(5) + ", " + (y2-y1).toFixed(5) + ", " + sectorsOnXCount + ", " + sectorsOnYCount);
+
+    for (var indexY = 0; indexY < sectorsOnYCount; indexY++) {
+      for (var indexX = 0; indexX < sectorsOnXCount; indexX++) {
+        var x1 = (boundingBox[0]+sectorSize*indexX).toFixed(decimalCount);
+
+        if (indexX+1 == sectorsOnXCount)
+          var x2 = boundingBox[2].toFixed(decimalCount);
+        else
+          var x2 = (boundingBox[0]+sectorSize*(indexX+1)).toFixed(decimalCount);
+
+        var y1 = (boundingBox[1]+sectorSize*indexY).toFixed(decimalCount);
+
+        if (indexY+1 == sectorsOnYCount)
+          var y2 = boundingBox[3].toFixed(decimalCount);
+        else
+        var y2 = (boundingBox[1]+sectorSize*(indexY+1)).toFixed(decimalCount);
+
+        sectors.push(new Sector(y1, y2, x1, x2));
+      }
+    }
+
+    console.log(sectors);
+  }
+
+  /**
+   * Checks if the given bounding box is visible.
+   * @param {Float[]} boundingBox Intended to be a bounding box for a {@link Sector} of the OSMBuildingLayer.
+   */
+  OSMBuildingLayer.prototype.intersectsVisible = function(boundingBox) {
+    var boundingBox = new BoundingBox();
+    boundingBox.setToSector(new Sector(boundingBox[1], boundingBox[3], boundingBox[0], boundingBox[2]), this._worldWindow.drawContext.globe, 0, 15); // Maximum elevation 15 should be changed.
+
+    return boundingBox.intersectsFrustum(this._worldWindow.drawContext.navigatorState.frustumInModelCoordinates);
+  }
 
   /**
    * Caches the features of the {@link OSMBuildingLayer}. The features' geometry is cached in the layer's "_geometryCache" member variable, properties are cached in the layer's "_propertiesCache" member variable.
