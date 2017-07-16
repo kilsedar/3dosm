@@ -86,7 +86,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
       }
     }
     // console.log(sectors);
-  }
+  };
 
   /**
    * Checks if a given bounding box is visible.
@@ -98,7 +98,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
     boundingBox.setToSector(new Sector(boundingBox[1], boundingBox[3], boundingBox[0], boundingBox[2]), this._worldWindow.drawContext.globe, 0, 15); // Maximum elevation 15 should be changed.
 
     return boundingBox.intersectsFrustum(this._worldWindow.drawContext.navigatorState.frustumInModelCoordinates);
-  }
+  };
 
   /**
    * Caches the features of the {@link OSMBuildingLayer}. The features' geometry is cached in the layer's "_geometryCache" member variable, properties are cached in the layer's "_propertiesCache" member variable.
