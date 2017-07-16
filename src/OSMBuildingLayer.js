@@ -64,8 +64,6 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
     var sectorsOnXCount = Math.ceil((boundingBox[2]-boundingBox[0]).toFixed(decimalCount)/sectorSize);
     var sectorsOnYCount = Math.ceil((boundingBox[3]-boundingBox[1]).toFixed(decimalCount)/sectorSize);
 
-    // console.log((x2-x1).toFixed(5) + ", " + (y2-y1).toFixed(5) + ", " + sectorsOnXCount + ", " + sectorsOnYCount);
-
     for (var indexY = 0; indexY < sectorsOnYCount; indexY++) {
       for (var indexX = 0; indexX < sectorsOnXCount; indexX++) {
         var x1 = (boundingBox[0]+sectorSize*indexX).toFixed(decimalCount);
@@ -85,7 +83,6 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         sectors.push(new Sector(y1, y2, x1, x2));
       }
     }
-    // console.log(sectors);
   };
 
   /**
@@ -105,17 +102,10 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
    * @param {Object} dataOverpassGeoJSON GeoJSON object to be cached.
    */
   OSMBuildingLayer.prototype.cache = function(dataOverpassGeoJSON) {
-    // console.log(JSON.stringify(dataOverpassGeoJSON));
     for (var featureIndex = 0; featureIndex < dataOverpassGeoJSON.features.length; featureIndex++) {
       this._geometryCache.putEntry(dataOverpassGeoJSON.features[featureIndex].id, dataOverpassGeoJSON.features[featureIndex].geometry, Object.keys(dataOverpassGeoJSON.features[featureIndex].geometry).length);
       this._propertiesCache.putEntry(dataOverpassGeoJSON.features[featureIndex].id, dataOverpassGeoJSON.features[featureIndex].properties, Object.keys(dataOverpassGeoJSON.features[featureIndex].properties).length);
-      /* console.log(Object.keys(dataOverpassGeoJSON.features[featureIndex].geometry).length);
-      console.log(dataOverpassGeoJSON.features[featureIndex].geometry);
-      console.log(Object.keys(dataOverpassGeoJSON.features[featureIndex].properties).length);
-      console.log(dataOverpassGeoJSON.features[featureIndex].properties); */
     }
-    /* console.log(this._geometryCache);
-    console.log(this._propertiesCache); */
   };
 
   /**
@@ -134,8 +124,6 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
     }
     configuration.altitude = this._configuration.altitude ? this._configuration.altitude : 15;
     configuration.altitudeMode = this._configuration.altitudeMode ? this._configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
-
-   // console.log(JSON.stringify(configuration));
 
     return configuration;
   };
@@ -178,28 +166,19 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
 
     var data = '[out:json][timeout:25];';
     data += '(' + this._type + '[' + this._tag + '](' + this._boundingBox[1] + ',' + this._boundingBox[0] + ',' + this._boundingBox[3] + ',' + this._boundingBox[2] + '); ';
-    // data += 'relation[' + this._tag + '](' + this._boundingBox[1] + ',' + this._boundingBox[0] + ',' + this._boundingBox[3] + ',' + this._boundingBox[2] + ');); (._;>;); out body qt;';
     data += 'relation[' + this._tag + '](' + this._boundingBox[1] + ',' + this._boundingBox[0] + ',' + this._boundingBox[3] + ',' + this._boundingBox[2] + ');); out body; >; out skel qt;';
-    // console.log("data --> " + data);
 
     $.ajax({
       url: 'http://overpass-api.de/api/interpreter',
       data: data,
       type: 'POST',
       success: function(dataOverpass) {
-        // console.log("dataOverpass --> " + JSON.stringify(dataOverpass));
-        // var dataOverpassGeoJSON = osmtogeojson(dataOverpass, {flatProperties: true, polygonFeatures: {"building": true}});
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
         _self.cache(dataOverpassGeoJSON);
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
-        // console.log("dataOverpassGeoJSONString --> " + dataOverpassGeoJSONString);
-        // console.log("dataOverpassGeoJSON.features.length (number of polygons) --> " + dataOverpassGeoJSON.features.length);
-        // console.time("creatingOSMBuildingLayer");
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
         var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(dataOverpassGeoJSONString);
-        // var OSMBuildingLayerGeoJSON = new WorldWind.GeoJSONParser(dataOverpassGeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
-        // console.timeEnd("creatingOSMBuildingLayer");
         worldWindow.addLayer(OSMBuildingLayer);
         _self.zoom();
       },
@@ -226,7 +205,6 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         for (var coordinatesIndex = 0; coordinatesIndex < polygons[polygonsIndex].length; coordinatesIndex++) {
           longitude = polygons[polygonsIndex][coordinatesIndex][0];
           latitude = polygons[polygonsIndex][coordinatesIndex][1];
-          // console.log(longitude + ", " + latitude);
           boundingBox[0] = boundingBox[0] < longitude ? boundingBox[0] : longitude; // minimum longitude (x1)
           boundingBox[1] = boundingBox[1] < latitude ? boundingBox[1] : latitude; // minimum latitude (y1)
           boundingBox[2] = boundingBox[2] > longitude ? boundingBox[2] : longitude; // maximum longitude (x2)
@@ -235,7 +213,6 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
       }
     }
     this._boundingBox = boundingBox;
-    // console.log(this._boundingBox);
   };
 
   /**
