@@ -26,3 +26,7 @@ sudo npm install
 sudo npm install -g karma-cli
 
 karma start
+
+### To generate the documentation run the following command:
+
+npm install -g jsdoc
