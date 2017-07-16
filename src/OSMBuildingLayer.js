@@ -85,13 +85,13 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         sectors.push(new Sector(y1, y2, x1, x2));
       }
     }
-
-    console.log(sectors);
+    // console.log(sectors);
   }
 
   /**
-   * Checks if the given bounding box is visible.
+   * Checks if a given bounding box is visible.
    * @param {Float[]} boundingBox Intended to be a bounding box for a {@link Sector} of the OSMBuildingLayer.
+   * @returns {boolean} True if the bounding box intersects the frustum, otherwise false.
    */
   OSMBuildingLayer.prototype.intersectsVisible = function(boundingBox) {
     var boundingBox = new BoundingBox();
@@ -174,8 +174,6 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
 
     this._boundingBox = this._source.coordinates;
     var worldWindow = this._worldWindow;
-    /* var dc = this._worldWindow.drawContext;
-    console.log("dc.globe --> " + dc.globe); */
     var _self = this;
 
     var data = '[out:json][timeout:25];';
