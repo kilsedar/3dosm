@@ -20,108 +20,71 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
    * @param {Object} source Defines the data source of the {@link OSMBuildingLayer}.
    * @param {Object} configuration Configuration is used to set the attributes of {@link ShapeAttributes}. Four more attributes can be defined, which are "extrude", "heatmap", "altitude" and "altitudeMode".
    */
-  var OSMBuildingLayer = function (worldWindow, source, configuration) {
+  var OSMBuildingLayer = function (worldWindow, configuration, source) {
     OSMLayer.call(this, worldWindow, configuration);
-    this.type = "way";
-    this.tag = "building";
-    this._source = source;
-    this._geometryCache = new MemoryCache(30000, 24000);
-    this._propertiesCache = new MemoryCache(50000, 40000);
-  };
+    this._type = "way";
+    this._tag = "building";
 
-  OSMBuildingLayer.prototype = Object.create(OSMLayer.prototype);
-
-  Object.defineProperties (OSMBuildingLayer.prototype, {
     /**
      * Defines the data source of the {@link OSMBuildingLayer}. Its "type" can be either "boundingBox" or "GeoJSONFile".
      * If the "type" is "boundingBox", "coordinates" must be defined. The order of the "coordinates" is "x1, y1, x2, y2".
      * If the "type" is "GeoJSONFile", "path" where the file resides must be defined.
      * @memberof OSMBuildingLayer.prototype
      * @type {Object}
-     * @throws {ArgumentError} If the source definition is wrong.
      */
-    source: {
-      get: function() {
-        return this._source;
-      },
-      set: function(source) {
-        if (source.type == "boundingBox" && source.coordinates) {
-          this._source.type = "boundingBox";
-          this._source.coordinates = source.coordinates;
-        }
-        else if (source.type == "GeoJSONFile" && source.path) {
-          this._source.type = "GeoJSONFile";
-          this._source.path = source.path;
-        }
-        else {
-          throw new ArgumentError(
-            Logger.logMessage(Logger.LEVEL_SEVERE, "OSMBuildingLayer", "source", "The source definition of the layer is wrong.")
-          );
-        }
-      }
-    },
+    this._source = source;
+
     /**
      * The cache for the geometry of each feature of the OSMBuildingLayer.
      * @memberof OSMBuildingLayer.prototype
      * @type {MemoryCache}
      */
-    geometryCache: {
-      get: function() {
-        return this._geometryCache;
-      },
-      set: function(geometryCache) {
-        this._geometryCache = geometryCache;
-      }
-    },
+    this._geometryCache = new MemoryCache(30000, 24000);
+
     /**
      * The cache for the properties of each feature of the OSMBuildingLayer.
      * @memberof OSMBuildingLayer.prototype
      * @type {MemoryCache}
      */
-    propertiesCache: {
-      get: function() {
-        return this._propertiesCache;
-      },
-      set: function(propertiesCache) {
-        this._propertiesCache = propertiesCache;
-      }
-    }
-  });
+    this._propertiesCache = new MemoryCache(50000, 40000);
+  };
+
+  OSMBuildingLayer.prototype = Object.create(OSMLayer.prototype);
 
   /**
-   * Caches the features of the {@link OSMBuildingLayer}. The features' geometry is cached in the layer's "geometryCache" member variable, properties are cached in the layer's "propertiesCache" member variable.
+   * Caches the features of the {@link OSMBuildingLayer}. The features' geometry is cached in the layer's "_geometryCache" member variable, properties are cached in the layer's "_propertiesCache" member variable.
    * @param {Object} dataOverpassGeoJSON GeoJSON object to be cached.
    */
   OSMBuildingLayer.prototype.cache = function(dataOverpassGeoJSON) {
     // console.log(JSON.stringify(dataOverpassGeoJSON));
     for (var featureIndex = 0; featureIndex < dataOverpassGeoJSON.features.length; featureIndex++) {
-      this.geometryCache.putEntry(dataOverpassGeoJSON.features[featureIndex].id, dataOverpassGeoJSON.features[featureIndex].geometry, Object.keys(dataOverpassGeoJSON.features[featureIndex].geometry).length);
-      this.propertiesCache.putEntry(dataOverpassGeoJSON.features[featureIndex].id, dataOverpassGeoJSON.features[featureIndex].properties, Object.keys(dataOverpassGeoJSON.features[featureIndex].properties).length);
+      this._geometryCache.putEntry(dataOverpassGeoJSON.features[featureIndex].id, dataOverpassGeoJSON.features[featureIndex].geometry, Object.keys(dataOverpassGeoJSON.features[featureIndex].geometry).length);
+      this._propertiesCache.putEntry(dataOverpassGeoJSON.features[featureIndex].id, dataOverpassGeoJSON.features[featureIndex].properties, Object.keys(dataOverpassGeoJSON.features[featureIndex].properties).length);
       /* console.log(Object.keys(dataOverpassGeoJSON.features[featureIndex].geometry).length);
       console.log(dataOverpassGeoJSON.features[featureIndex].geometry);
       console.log(Object.keys(dataOverpassGeoJSON.features[featureIndex].properties).length);
       console.log(dataOverpassGeoJSON.features[featureIndex].properties); */
     }
-    /* console.log(this.geometryCache);
-    console.log(this.propertiesCache); */
+    /* console.log(this._geometryCache);
+    console.log(this._propertiesCache); */
   };
 
   /**
-   * Sets the attributes of {@link ShapeAttributes} and three more attributes defined specifically for OSMBuildingLayer, which are "extrude", "altitude" and "altitudeMode".
+   * Sets the attributes of {@link ShapeAttributes} and four more attributes defined specifically for OSMBuildingLayer, which are "extrude", "heatmap", "altitude" and "altitudeMode".
    * @param {GeoJSONGeometry} geometry An object containing the geometry of the OSM data in GeoJSON format for the OSMBuildingLayer.
    * @returns {Object} An object with the attributes {@link ShapeAttributes} and four more attributes, which are "extrude", "heatmap", "altitude" and "altitudeMode", where all of them are defined in the configuration of the OSMBuildingLayer.
    */
   OSMBuildingLayer.prototype.shapeConfigurationCallback = function (geometry) {
     var configuration = OSMLayer.prototype.shapeConfigurationCallback.call(this, geometry);
 
-    configuration.extrude = this.configuration.extrude ? this.configuration.extrude : false;
-    configuration.heatmap = this.configuration.heatmap ? this.configuration.heatmap : false;
+    configuration.extrude = this._configuration.extrude ? this._configuration.extrude : false;
+    configuration.heatmap = this._configuration.heatmap ? this._configuration.heatmap : false;
     if (configuration.heatmap) {
-      configuration.heatmap.enabled = this.configuration.heatmap.enabled ? this.configuration.heatmap.enabled : false;
-      configuration.heatmap.thresholds = this.configuration.heatmap.thresholds ? this.configuration.heatmap.thresholds : [0, 15, 900];
+      configuration.heatmap.enabled = this._configuration.heatmap.enabled ? this._configuration.heatmap.enabled : false;
+      configuration.heatmap.thresholds = this._configuration.heatmap.thresholds ? this._configuration.heatmap.thresholds : [0, 15, 900];
     }
-    configuration.altitude = this.configuration.altitude ? this.configuration.altitude : 15;
-    configuration.altitudeMode = this.configuration.altitudeMode ? this.configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
+    configuration.altitude = this._configuration.altitude ? this._configuration.altitude : 15;
+    configuration.altitudeMode = this._configuration.altitudeMode ? this._configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
 
    // console.log(JSON.stringify(configuration));
 
@@ -129,14 +92,14 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
   };
 
   /**
-   * Calls [addByBoundingBox]{@link OSMBuildingLayer#addByBoundingBox} if the "type" of the layer's "source" member variable is "boundingBox" and the "coordinates" of the layer's "source" member variable is defined.
-   * Calls [addByGeoJSONFile]{@link OSMBuildingLayer#addByGeoJSONFile} if the "type" of the layer's "source" member variable is "GeoJSONFile" and the "path" of the layer's "source" member variable is defined.
+   * Calls [addByBoundingBox]{@link OSMBuildingLayer#addByBoundingBox} if the "type" of the layer's "_source" member variable is "boundingBox" and the "coordinates" of the layer's "_source" member variable is defined.
+   * Calls [addByGeoJSONFile]{@link OSMBuildingLayer#addByGeoJSONFile} if the "type" of the layer's "_source" member variable is "GeoJSONFile" and the "path" of the layer's "_source" member variable is defined.
    * @throws {ArgumentError} If the source definition is wrong.
    */
   OSMBuildingLayer.prototype.add = function () {
-    if (this.source.type == "boundingBox" && this.source.coordinates)
+    if (this._source.type == "boundingBox" && this._source.coordinates)
       this.addByBoundingBox();
-    else if (this.source.type == "GeoJSONFile" && this.source.path)
+    else if (this._source.type == "GeoJSONFile" && this._source.path)
       this.addByGeoJSONFile();
     else {
       throw new ArgumentError(
@@ -146,30 +109,30 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
   };
 
   /**
-   * Makes an AJAX request to fetch the OSM building data using the "coordinates" of the layer's "source" member variable and Overpass API, converts it to GeoJSON using osmtogeojson API,
+   * Makes an AJAX request to fetch the OSM building data using the "coordinates" of the layer's "_source" member variable and Overpass API, converts it to GeoJSON using osmtogeojson API,
    * adds the GeoJSON to the {@link WorldWindow} using the {@link GeoJSONParserTriangulationOSM}.
-   * It also sets the "boundingBox" member variable of the layer.
-   * @throws {ArgumentError} If the "coordinates" of the layer's "source" member variable doesn't have four values.
+   * It also sets the "_boundingBox" member variable of the layer.
+   * @throws {ArgumentError} If the "coordinates" of the layer's "_source" member variable doesn't have four values.
    * @throws {ArgumentError} If the request to OSM fails.
    */
   OSMBuildingLayer.prototype.addByBoundingBox = function () {
 
-    if (this.source.coordinates.length != 4) {
+    if (this._source.coordinates.length != 4) {
       throw new ArgumentError(
         Logger.logMessage(Logger.LEVEL_SEVERE, "OSMBuildingLayer", "addByBoundingBox", "The bounding box is invalid.")
       );
     }
 
-    this.boundingBox = this.source.coordinates;
-    var worldWindow = this.worldWindow;
-    /* var dc = this.worldWindow.drawContext;
+    this._boundingBox = this._source.coordinates;
+    var worldWindow = this._worldWindow;
+    /* var dc = this._worldWindow.drawContext;
     console.log("dc.globe --> " + dc.globe); */
     var _self = this;
 
     var data = '[out:json][timeout:25];';
-    data += '(' + this.type + '[' + this.tag + '](' + this.boundingBox[1] + ',' + this.boundingBox[0] + ',' + this.boundingBox[3] + ',' + this.boundingBox[2] + '); ';
-    // data += 'relation[' + this.tag + '](' + this.boundingBox[1] + ',' + this.boundingBox[0] + ',' + this.boundingBox[3] + ',' + this.boundingBox[2] + ');); (._;>;); out body qt;';
-    data += 'relation[' + this.tag + '](' + this.boundingBox[1] + ',' + this.boundingBox[0] + ',' + this.boundingBox[3] + ',' + this.boundingBox[2] + ');); out body; >; out skel qt;';
+    data += '(' + this._type + '[' + this._tag + '](' + this._boundingBox[1] + ',' + this._boundingBox[0] + ',' + this._boundingBox[3] + ',' + this._boundingBox[2] + '); ';
+    // data += 'relation[' + this._tag + '](' + this._boundingBox[1] + ',' + this._boundingBox[0] + ',' + this._boundingBox[3] + ',' + this._boundingBox[2] + ');); (._;>;); out body qt;';
+    data += 'relation[' + this._tag + '](' + this._boundingBox[1] + ',' + this._boundingBox[0] + ',' + this._boundingBox[3] + ',' + this._boundingBox[2] + ');); out body; >; out skel qt;';
     // console.log("data --> " + data);
 
     $.ajax({
@@ -203,7 +166,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
 
   /**
    * Calculates the bounding box of a GeoJSON object, where its features are expected to be of type "Polygon" or "MultiPolygon".
-   * It also sets the "boundingBox" member variable of the layer.
+   * It also sets the "_boundingBox" member variable of the layer.
    * @param {Object} dataOverpassGeoJSON GeoJSON object of which the bounding box is calculated.
    */
   OSMBuildingLayer.prototype.calculateBoundingBox = function (dataGeoJSON) {
@@ -224,23 +187,23 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         }
       }
     }
-    this.boundingBox = boundingBox;
-    // console.log(this.boundingBox);
+    this._boundingBox = boundingBox;
+    // console.log(this._boundingBox);
   };
 
   /**
-   * Makes an AJAX request using the "path" of the layer's "source" member variable to fetch the GeoJSON file, adds the GeoJSON to the {@link WorldWindow} using the {@link GeoJSONParserTriangulationOSM}.
-   * It also sets the "boundingBox" member variable of the layer by calling [calculateBoundingBox]{@link OSMBuildingLayer#calculateBoundingBox}.
+   * Makes an AJAX request using the "path" of the layer's "_source" member variable to fetch the GeoJSON file, adds the GeoJSON to the {@link WorldWindow} using the {@link GeoJSONParserTriangulationOSM}.
+   * It also sets the "_boundingBox" member variable of the layer by calling [calculateBoundingBox]{@link OSMBuildingLayer#calculateBoundingBox}.
    * @throws {ArgumentError} If the data returned from the request is empty.
    * @throws {ArgumentError} If the request fails.
    */
   OSMBuildingLayer.prototype.addByGeoJSONFile = function () {
-    var worldWindow = this.worldWindow;
+    var worldWindow = this._worldWindow;
     var _self = this;
 
     $.ajax({
       dataType: "json",
-      url: this.source.path,
+      url: this._source.path,
       success: function(data) {
         if (data.length == 0) {
           throw new ArgumentError(

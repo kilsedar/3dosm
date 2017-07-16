@@ -13,8 +13,8 @@ define([''], function () {
    */
    var BuildingShape = function (properties) {
      this._properties = properties;
-     this._altitude;
-     this._color;
+     this._altitude = 15;
+     this._color = null;
    };
 
    Object.defineProperties (BuildingShape.prototype, {
@@ -22,39 +22,33 @@ define([''], function () {
       * The properties related to the shape's geometry.
       * @memberof BuildingShape.prototype
       * @type {Object}
+      * @readonly
       */
      properties: {
        get: function() {
          return this._properties;
-       },
-       set: function(properties) {
-         this._properties = properties;
        }
      },
      /**
       * The altitude of the shape.
       * @memberof BuildingShape.prototype
       * @type {Float}
+      * @readonly
       */
      altitude: {
        get: function() {
          return this._altitude;
-       },
-       set: function(altitude) {
-         this._altitude = altitude;
        }
      },
      /**
       * The color of the shape.
       * @memberof BuildingShape.prototype
       * @type {Color}
+      * @readonly
       */
      color: {
        get: function() {
          return this._color;
-       },
-       set: function(color) {
-         this._color = color;
        }
      }
    });
@@ -74,17 +68,18 @@ define([''], function () {
     if (configuration.attributes.interiorColor.red < 0.5) {
       for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
         // console.log(heat*thresholdIndex);
-        if (this.altitude > configuration.heatmap.thresholds[thresholdIndex] && this.altitude <= configuration.heatmap.thresholds[thresholdIndex+1])
+        if (this._altitude > configuration.heatmap.thresholds[thresholdIndex] && this._altitude <= configuration.heatmap.thresholds[thresholdIndex+1])
           configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red+heat*thresholdIndex, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
       }
     }
     else {
       for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
         // console.log(heat*thresholdIndex);
-        if (this.altitude > configuration.heatmap.thresholds[thresholdIndex] && this.altitude <= configuration.heatmap.thresholds[thresholdIndex+1])
+        if (this._altitude > configuration.heatmap.thresholds[thresholdIndex] && this._altitude <= configuration.heatmap.thresholds[thresholdIndex+1])
           configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red-heat*(numberOfThresholds-thresholdIndex), configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
       }
     }
+    this._color = configuration.attributes.interiorColor;
   };
 
   /**
@@ -98,10 +93,10 @@ define([''], function () {
   BuildingShape.prototype.setAltitude = function (configuration) {
     var altitude;
     if (configuration.extrude && configuration.altitude == "osm") {
-      if (this.properties.tags && this.properties.tags.height)
-        altitude = this.properties.tags.height;
-      else if (this.properties.tags && this.properties.tags["building:levels"])
-        altitude = this.properties.tags["building:levels"]*3;
+      if (this._properties.tags && this._properties.tags.height)
+        altitude = this._properties.tags.height;
+      else if (this._properties.tags && this._properties.tags["building:levels"])
+        altitude = this._properties.tags["building:levels"]*3;
       else
         altitude = 15;
     }
@@ -114,7 +109,7 @@ define([''], function () {
 
     // console.log("altitude --> " + altitude);
 
-    this.altitude = altitude;
+    this._altitude = altitude;
   };
 
   return BuildingShape;

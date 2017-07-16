@@ -44,6 +44,6 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
       altitudeMode: WorldWind.RELATIVE_TO_GROUND
     };
 
-    var test = new OSMBuildingLayer(worldWindow, source, configuration);
+    var test = new OSMBuildingLayer(worldWindow, configuration, source);
     test.add();
 });
