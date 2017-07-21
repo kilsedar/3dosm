@@ -6,11 +6,13 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         'libraries/WebWorldWind/src/util/Logger',
         'libraries/WebWorldWind/src/geom/BoundingBox',
         'libraries/WebWorldWind/src/geom/Sector',
+        'libraries/WebWorldWind/src/gesture/DragRecognizer',
+        'libraries/WebWorldWind/src/gesture/PanRecognizer',
         'src/OSMLayer',
         'src/GeoJSONParserTriangulationOSM',
         'jquery',
         'osmtogeojson'],
-       function (MemoryCache, ArgumentError, Logger, BoundingBox, Sector, OSMLayer, GeoJSONParserTriangulationOSM, $, osmtogeojson) {
+       function (MemoryCache, ArgumentError, Logger, BoundingBox, Sector, DragRecognizer, PanRecognizer, OSMLayer, GeoJSONParserTriangulationOSM, $, osmtogeojson) {
   "use strict";
 
   /**
@@ -49,13 +51,23 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
      * @type {MemoryCache}
      */
     this._propertiesCache = new MemoryCache(50000, 40000);
+
+    this._cache = new MemoryCache(100000, 80000);
   };
 
   OSMBuildingLayer.prototype = Object.create(OSMLayer.prototype);
 
   /**
+   *
+   */
+  OSMBuildingLayer.prototype.detectVisibilityChange = function () {
+
+  }
+
+  /**
    * Sectorizes a bounding box. Each sector initially will be 0.01 to 0.01 degrees for all the zoom levels.
    * @param {Float[]} boundingBox The bounding box to be sectorized. Intended to be the bounding box of the whole layer.
+   * @returns {Sector[]} An array of [sectors]{@link Sector} making up the given bounding box.
    */
   OSMBuildingLayer.prototype.createSectors = function(boundingBox) {
     var sectorSize = 0.01;
@@ -83,16 +95,18 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         sectors.push(new Sector(y1, y2, x1, x2));
       }
     }
+
+    return sectors;
   };
 
   /**
    * Checks if a given bounding box is visible.
-   * @param {Float[]} boundingBox Intended to be a bounding box for a {@link Sector} of the OSMBuildingLayer.
-   * @returns {boolean} True if the bounding box intersects the frustum, otherwise false.
+   * @param {Sector} sector A {@link Sector} of the OSMBuildingLayer.
+   * @returns {boolean} True if the sector intersects the frustum, otherwise false.
    */
-  OSMBuildingLayer.prototype.intersectsVisible = function(boundingBox) {
+  OSMBuildingLayer.prototype.intersectsVisible = function(sector) {
     var boundingBox = new BoundingBox();
-    boundingBox.setToSector(new Sector(boundingBox[1], boundingBox[3], boundingBox[0], boundingBox[2]), this._worldWindow.drawContext.globe, 0, 15); // Maximum elevation 15 should be changed.
+    boundingBox.setToSector(sector, this._worldWindow.drawContext.globe, 0, 15); // Maximum elevation 15 should be changed.
 
     return boundingBox.intersectsFrustum(this._worldWindow.drawContext.navigatorState.frustumInModelCoordinates);
   };
@@ -109,6 +123,18 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
   };
 
   /**
+   *
+   * @param
+   * @param
+   */
+  /* OSMBuildingLayer.prototype.cache = function(id, dataOverpassGeoJSON) {
+    // console.log(id + ", " + dataOverpassGeoJSON);
+    if(dataOverpassGeoJSON.features.length > 0)
+      this._cache.putEntry(id, dataOverpassGeoJSON, dataOverpassGeoJSON.features.length);
+    // console.log(this._cache);
+  }; */
+
+  /**
    * Sets the attributes of {@link ShapeAttributes} and four more attributes defined specifically for OSMBuildingLayer, which are "extrude", "heatmap", "altitude" and "altitudeMode".
    * @param {GeoJSONGeometry} geometry An object containing the geometry of the OSM data in GeoJSON format for the OSMBuildingLayer.
    * @returns {Object} An object with the attributes {@link ShapeAttributes} and four more attributes, which are "extrude", "heatmap", "altitude" and "altitudeMode", where all of them are defined in the configuration of the OSMBuildingLayer.
@@ -122,7 +148,11 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
       configuration.heatmap.enabled = this._configuration.heatmap.enabled ? this._configuration.heatmap.enabled : false;
       configuration.heatmap.thresholds = this._configuration.heatmap.thresholds ? this._configuration.heatmap.thresholds : [0, 15, 900];
     }
-    configuration.altitude = this._configuration.altitude ? this._configuration.altitude : 15;
+    configuration.altitude = this._configuration.altitude ? this._configuration.altitude : null;
+    if (configuration.altitude) {
+      configuration.altitude.type = this._configuration.altitude.type ? this._configuration.altitude.type : "number";
+      configuration.altitude.value = this._configuration.altitude.value ? this._configuration.altitude.value : 15;
+    }
     configuration.altitudeMode = this._configuration.altitudeMode ? this._configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
 
     return configuration;
@@ -136,6 +166,15 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
   OSMBuildingLayer.prototype.add = function () {
     if (this._source.type == "boundingBox" && this._source.coordinates)
       this.addByBoundingBox();
+    /* if (this._source.type == "boundingBox" && this._source.coordinates) {
+      this.boundingBox = this._source.coordinates;
+      this.zoom(); // temporary
+      var sectors = this.createSectors(this.boundingBox);
+      for (var sectorIndex = 0; sectorIndex < sectors.length; sectorIndex++){
+        if (this.intersectsVisible(sectors[sectorIndex]))
+          this.addBySector(sectors[sectorIndex]);
+      }
+    } */
     else if (this._source.type == "GeoJSONFile" && this._source.path)
       this.addByGeoJSONFile();
     else {
@@ -146,9 +185,42 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
   };
 
   /**
+   *
+   */
+  OSMBuildingLayer.prototype.addBySector = function (sector) {
+
+    var worldWindow = this._worldWindow;
+    var _self = this;
+
+    var data = '[out:json][timeout:25];';
+    data += '(' + this._type + '[' + this._tag + '](' + sector.minLatitude + ',' + sector.minLongitude + ',' + sector.maxLatitude + ',' + sector.maxLongitude + '); ';
+    data += 'relation[' + this._tag + '](' + sector.minLatitude + ',' + sector.minLongitude + ',' + sector.maxLatitude + ',' + sector.maxLongitude + ');); out body; >; out skel qt;';
+
+    $.ajax({
+      url: 'http://overpass-api.de/api/interpreter',
+      data: data,
+      type: 'POST',
+      success: function(dataOverpass) {
+        var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
+        _self.cache(sector.minLatitude + ',' + sector.minLongitude + ',' + sector.maxLatitude + ',' + sector.maxLongitude, dataOverpassGeoJSON);
+        var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
+        var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
+        var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(dataOverpassGeoJSONString);
+        OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
+        worldWindow.addLayer(OSMBuildingLayer);
+      },
+      error: function(e) {
+        throw new ArgumentError(
+          Logger.logMessage(Logger.LEVEL_SEVERE, "OSMBuildingLayer", "addBySector", "Request failed. Error: " + JSON.stringify(e))
+        );
+      }
+    });
+  };
+
+  /**
    * Makes an AJAX request to fetch the OSM building data using the "coordinates" of the layer's "_source" member variable and Overpass API, converts it to GeoJSON using osmtogeojson API,
    * adds the GeoJSON to the {@link WorldWindow} using the {@link GeoJSONParserTriangulationOSM}.
-   * It also sets the "_boundingBox" member variable of the layer.
+   * It also sets the "boundingBox" member variable of the layer.
    * @throws {ArgumentError} If the "coordinates" of the layer's "_source" member variable doesn't have four values.
    * @throws {ArgumentError} If the request to OSM fails.
    */
@@ -160,13 +232,13 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
       );
     }
 
-    this._boundingBox = this._source.coordinates;
+    this.boundingBox = this._source.coordinates;
     var worldWindow = this._worldWindow;
     var _self = this;
 
     var data = '[out:json][timeout:25];';
-    data += '(' + this._type + '[' + this._tag + '](' + this._boundingBox[1] + ',' + this._boundingBox[0] + ',' + this._boundingBox[3] + ',' + this._boundingBox[2] + '); ';
-    data += 'relation[' + this._tag + '](' + this._boundingBox[1] + ',' + this._boundingBox[0] + ',' + this._boundingBox[3] + ',' + this._boundingBox[2] + ');); out body; >; out skel qt;';
+    data += '(' + this._type + '[' + this._tag + '](' + this.boundingBox[1] + ',' + this.boundingBox[0] + ',' + this.boundingBox[3] + ',' + this.boundingBox[2] + '); ';
+    data += 'relation[' + this._tag + '](' + this.boundingBox[1] + ',' + this.boundingBox[0] + ',' + this.boundingBox[3] + ',' + this.boundingBox[2] + ');); out body; >; out skel qt;';
 
     $.ajax({
       url: 'http://overpass-api.de/api/interpreter',
@@ -180,7 +252,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(dataOverpassGeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
         worldWindow.addLayer(OSMBuildingLayer);
-        _self.zoom();
+        _self.zoom(); // temporary
       },
       error: function(e) {
         throw new ArgumentError(
@@ -192,14 +264,14 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
 
   /**
    * Calculates the bounding box of a GeoJSON object, where its features are expected to be of type "Polygon" or "MultiPolygon".
-   * It also sets the "_boundingBox" member variable of the layer.
+   * It also sets the "boundingBox" member variable of the layer.
    * @param {Object} dataOverpassGeoJSON GeoJSON object of which the bounding box is calculated.
    */
   OSMBuildingLayer.prototype.calculateBoundingBox = function (dataGeoJSON) {
     var boundingBox = [Infinity, Infinity, -Infinity, -Infinity], polygons, coordinates, latitude, longitude;
 
-    for (var featureIndex = 0; featureIndex < GeoJSON.features.length; featureIndex++) {
-      polygons = GeoJSON.features[featureIndex].geometry.coordinates;
+    for (var featureIndex = 0; featureIndex < dataGeoJSON.features.length; featureIndex++) {
+      polygons = dataGeoJSON.features[featureIndex].geometry.coordinates;
 
       for (var polygonsIndex = 0; polygonsIndex < polygons.length; polygonsIndex++) {
         for (var coordinatesIndex = 0; coordinatesIndex < polygons[polygonsIndex].length; coordinatesIndex++) {
@@ -212,12 +284,12 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         }
       }
     }
-    this._boundingBox = boundingBox;
+    this.boundingBox = boundingBox;
   };
 
   /**
    * Makes an AJAX request using the "path" of the layer's "_source" member variable to fetch the GeoJSON file, adds the GeoJSON to the {@link WorldWindow} using the {@link GeoJSONParserTriangulationOSM}.
-   * It also sets the "_boundingBox" member variable of the layer by calling [calculateBoundingBox]{@link OSMBuildingLayer#calculateBoundingBox}.
+   * It also sets the "boundingBox" member variable of the layer by calling [calculateBoundingBox]{@link OSMBuildingLayer#calculateBoundingBox}. // Not anymore, because for big files it would take time.
    * @throws {ArgumentError} If the data returned from the request is empty.
    * @throws {ArgumentError} If the request fails.
    */
@@ -226,6 +298,10 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
     var _self = this;
 
     $.ajax({
+      beforeSend: function(xhr) {
+        if(xhr.overrideMimeType)
+          xhr.overrideMimeType("application/json");
+      },
       dataType: "json",
       url: this._source.path,
       success: function(data) {
@@ -234,13 +310,13 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
             Logger.logMessage(Logger.LEVEL_SEVERE, "OSMBuildingLayer", "addByGeoJSONFile", "File is empty.")
           );
         }
-        _self.calculateBoundingBox(data);
+        // _self.calculateBoundingBox(data);
         var GeoJSONString = JSON.stringify(data);
         var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
         var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(GeoJSONString);
         OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
         worldWindow.addLayer(OSMBuildingLayer);
-        _self.zoom();
+        // _self.zoom();
       },
       error: function(e) {
         throw new ArgumentError(

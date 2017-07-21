@@ -44,13 +44,24 @@ define(['libraries/WebWorldWind/src/error/ArgumentError',
      */
     this._tag = null;
 
+    this._boundingBox = null;
+  };
+
+  Object.defineProperties (OSMLayer.prototype, {
     /**
      * It defines the bounding box of the OSM data for the OSMLayer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
      * @memberof OSMLayer.prototype
      * @type {Float[]}
      */
-    this._boundingBox = null;
-  };
+    boundingBox: {
+      get: function() {
+        return this._boundingBox;
+      },
+      set: function(boundingBox) {
+        this._boundingBox = boundingBox;
+      }
+    }
+  });
 
   /**
    * Sets the attributes of {@link PlacemarkAttributes} if the geometry is Point or MultiPoint; or of {@link ShapeAttributes} otherwise.

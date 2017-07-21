@@ -84,15 +84,23 @@ define([''], function () {
 
   /**
    * Sets the altitude of the shape ({@link Polygon} or {@link MultiPolygon}).
-   * For the {@link OSMBuildingLayer} if extrude is true and altitude is set to "osm", if available the value of OSM "height" tag is used. If the "height" tag is not available an approximate height value is calculated using "building:levels" tag. Every level is considered to be 3 meters. If both are not available, 15 is used by default.
-   * For the {@link OSMBuildingLayer} if extrude is true and altitude is set to a floating-point number, the set value is used.
-   * For the {@link OSMBuildingLayer} if extrude is true and altitude is not set, 15 is used by default.
+   * For the {@link OSMBuildingLayer} if extrude is true, altitude is defined and altitude "type" is set to "number", altitude "value" is used. If altitude "value" is not set, 15 is used.
+   * For the {@link OSMBuildingLayer} if extrude is true, altitude is defined and altitude "type" is set to "osm", if available the value of OSM "height" tag is used. If the "height" tag is not available an approximate height value is calculated using "building:levels" tag. Every level is considered to be 3 meters. If both are not available, 15 is used by default.
+   * For the {@link OSMBuildingLayer} if extrude is true, altitude is defined and altitude "type" is set to "property", the value of the property defined in "value" is used. If value of the property is null, 15 is used.
+   * For the {@link OSMBuildingLayer} if extrude is true and altitude is undefined, 15 is used by default.
    * For the {@link OSMBuildingLayer} if extrude is false, 0 is used.
    * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link OSMBuildingLayer#shapeConfigurationCallback}.
    */
   BuildingShape.prototype.setAltitude = function (configuration) {
     var altitude;
-    if (configuration.extrude && configuration.altitude == "osm") {
+    if (configuration.extrude && configuration.altitude && configuration.altitude.type == "number") {
+      if (configuration.altitude.value)
+        altitude = configuration.altitude.value;
+      // Not necessary if the BuildingShape is one of OSMBuildingLayer.
+      else
+        altitude = 15;
+    }
+    else if (configuration.extrude && configuration.altitude && configuration.altitude.type == "osm") {
       if (this._properties.tags && this._properties.tags.height)
         altitude = this._properties.tags.height;
       else if (this._properties.tags && this._properties.tags["building:levels"])
@@ -100,8 +108,12 @@ define([''], function () {
       else
         altitude = 15;
     }
-    else if (configuration.extrude && configuration.altitude)
-      altitude = configuration.altitude;
+    else if (configuration.extrude && configuration.altitude && configuration.altitude.type == "property") {
+      if (configuration.altitude.value && this._properties[configuration.altitude.value])
+        altitude = this._properties[configuration.altitude.value];
+      else
+        altitude = 15;
+    }
     else if (configuration.extrude)
       altitude = 15;
     else
