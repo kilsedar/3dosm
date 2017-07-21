@@ -1,7 +1,12 @@
 # 2017 GSoC project "3D OSM Plugin API"
 
-The goal of this project is to create a plugin API to display OpenStreetMap (OSM) data on NASA Web World Wind virtual globe in three dimensions. The OSM data is going to be fetched in real time based on a bounding box or a URL for OSM data and some keywords. The adapter will offer a function to extrude the polygons present in the fetched data using an arbitrary height value. Additionally the project may extract the real heights of buildings using DSM data and apply these heights to extrusion, improve performance via various caching techniques, and tile the data. In case the tiling will be implemented, a new adapter may be created to tile any GeoJSON data.
+The goal of this project is to create a plugin API to display OpenStreetMap (OSM) data on NASA Web World Wind virtual globe in three dimensions. The API fetches the OpenStreetMap (OSM) data in real time based on a bounding box or uses a local OSM GeoJSON file. The project focuses on the performance of the visualization of 3D OSM buildings, and for this purpose creates triangle meshes based on the footprint available in OSM. Height information may come from OSM, a property in GeoJSON file may be used or an arbitrary value may be assigned. The API can also create a heatmap based on the heights of the buildings. The API will also use caching and tiling to improve the performance.
 
+## Milan buildings in 3D, where the height of the buildings is extracted from Lidar using GRASS. A local file is used.
+![milan](example/screenshots/milan.png)
+
+## New York buildings in 3D, where the height information is coming from OSM. The data is fetched in real time.
+![newYork](example/screenshots/newYork_2.png)
 
 ## Installation instructions for Ubuntu 16.04:
 
