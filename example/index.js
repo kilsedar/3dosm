@@ -1,5 +1,7 @@
-define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
-  function (WorldWind, OSMBuildingLayer) {
+define(['libraries/WebWorldWind/src/WorldWind',
+        'src/OSMBuildingLayer',
+        'src/OSMTBuildingLayer'],
+       function (WorldWind, OSMBuildingLayer, OSMTBuildingLayer) {
     "use strict";
 
     WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_ERROR);
@@ -47,7 +49,7 @@ define(['libraries/WebWorldWind/src/WorldWind', 'src/OSMBuildingLayer'],
       altitudeMode: WorldWind.RELATIVE_TO_GROUND
     };
 
-    var test = new OSMBuildingLayer(worldWindow, configuration, source);
+    var test = new OSMTBuildingLayer(worldWindow, configuration, source);
     test.add();
     // test.boundingBox = [9.15651, 45.44919, 9.20246, 45.48449]; // prin_small_med.geojson
     // test.boundingBox = [9.18307, 45.46073, 9.20421, 45.46957]; // prin_smaller_med.geojson
