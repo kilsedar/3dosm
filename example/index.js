@@ -13,18 +13,19 @@ define(['libraries/WebWorldWind/src/WorldWind',
     /**
      * Add imagery layers.
      */
-    var layers = [
-        {layer: new WorldWind.BMNGOneImageLayer(), enabled: true},
-        {layer: new WorldWind.BingAerialWithLabelsLayer(), enabled: true},
-        {layer: new WorldWind.CoordinatesDisplayLayer(worldWindow), enabled: true},
-        {layer: new WorldWind.ViewControlsLayer(worldWindow), enabled: true},
-        {layer: new WorldWind.AtmosphereLayer(), enabled: true}
-    ];
-    // layers[1].layer.detailControl = 1;
-    for (var l = 0; l < layers.length; l++) {
-        layers[l].layer.enabled = layers[l].enabled;
-        worldWindow.addLayer(layers[l].layer);
-    }
+    worldWindow.addLayer(new WorldWind.BMNGOneImageLayer());
+    var bingAerialWithLabels = new WorldWind.BingAerialWithLabelsLayer();
+    bingAerialWithLabels.detailControl = 1;
+    worldWindow.addLayer(bingAerialWithLabels);
+    worldWindow.addLayer(new WorldWind.CoordinatesDisplayLayer(worldWindow));
+    worldWindow.addLayer(new WorldWind.ViewControlsLayer(worldWindow));
+    var starFieldLayer = new WorldWind.StarFieldLayer();
+    starFieldLayer.time = new Date();
+    worldWindow.addLayer(starFieldLayer);
+    /* var atmosphereLayer = new WorldWind.AtmosphereLayer();
+    atmosphereLayer.lightLocation = WorldWind.SunPosition.getAsGeographicLocation(starFieldLayer.time);
+    worldWindow.addLayer(atmosphereLayer); */
+
 
     // var source = {type: "boundingBox", coordinates: [-74.0232, 40.6998, -73.97, 40.74]}; // New York (big)
     var source = {type: "boundingBox", coordinates: [-74.03, 40.70, -73.99, 40.72]}; // New York (small)
@@ -49,7 +50,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
       altitudeMode: WorldWind.RELATIVE_TO_GROUND
     };
 
-    var test = new OSMTBuildingLayer(worldWindow, configuration, source);
+    var test = new OSMBuildingLayer(worldWindow, configuration, source);
     test.add();
     // test.boundingBox = [9.15651, 45.44919, 9.20246, 45.48449]; // prin_small_med.geojson
     // test.boundingBox = [9.18307, 45.46073, 9.20421, 45.46957]; // prin_smaller_med.geojson

@@ -60,7 +60,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
     // console.log("sectors -> " + JSON.stringify(this._sectors));
     for (var sectorIndex = 0; sectorIndex < this._sectors.length; sectorIndex++) {
       if (this.intersectsVisible(this._sectors[sectorIndex].sector) && !this._sectors[sectorIndex].added) {
-        console.log("The layer in this sector has to be added.");
+        // console.log("The layer in this sector has to be added.");
         if (this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude) != null) {
           this._worldWindow.addLayer(this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude));
           this._sectors[sectorIndex].added = true;
@@ -69,14 +69,14 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
           this.addBySector(this._sectors[sectorIndex]);
       }
       else if (!this.intersectsVisible(this._sectors[sectorIndex].sector) && this._sectors[sectorIndex].added) {
-        console.log("The layer in this sector has to be removed.");
+        // console.log("The layer in this sector has to be removed.");
         this._worldWindow.removeLayer(this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude));
         this._sectors[sectorIndex].added = false;
       }
-      else {
+      /* else {
         console.log("No need to do something.");
-      }
-      console.log("the number of layers -> " + this._worldWindow.layers.length);
+      } */
+      // console.log("the number of layers -> " + this._worldWindow.layers.length);
     }
   };
 
@@ -183,7 +183,11 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         OSMTBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMTBuildingLayer);
         worldWindow.addLayer(OSMTBuildingLayer);
         _self._cache.putEntry(sector.minLatitude + ',' + sector.minLongitude + ',' + sector.maxLatitude + ',' + sector.maxLongitude, OSMTBuildingLayer, dataOverpassGeoJSON.features.length);
-        var sectorIndex = _self._sectors.findIndex(s => s.sector === sector);
+        // var sectorIndex = _self._sectors.findIndex(s => s.sector === sector);
+        var sectorIndex = _self._sectors.map(function(obj, index) {
+          if(obj.sector == sector)
+            return index;
+        }).filter(isFinite);
         _self._sectors[sectorIndex].added = true;
       },
       error: function(e) {

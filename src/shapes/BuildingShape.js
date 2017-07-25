@@ -1,7 +1,7 @@
 /**
  * @exports BuildingShape
  */
-define([''], function () {
+define([], function () {
   "use strict";
 
   /**
