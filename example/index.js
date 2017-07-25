@@ -5,7 +5,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
     "use strict";
 
     WorldWind.Logger.setLoggingLevel(WorldWind.Logger.LEVEL_ERROR);
-    WorldWind.configuration.baseUrl = "http://localhost/3dosm/libraries/WebWorldWind/";
+    WorldWind.configuration.baseUrl = "../libraries/WebWorldWind/";
 
     // Create the WorldWindow.
     var worldWindow = new WorldWind.WorldWindow("canvas");
