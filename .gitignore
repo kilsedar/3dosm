@@ -7,4 +7,4 @@ src/OSMBuildingLayer_0.js
 src/OSMBuildingLayer_1.js
 src/GeoJSONParserTriangulation_0.js
 src/GeoJSONParserTriangulation_1.js
-example/data/*
+example/data/prin*

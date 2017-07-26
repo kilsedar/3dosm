@@ -28,14 +28,15 @@ define(['libraries/WebWorldWind/src/WorldWind',
 
 
     // var source = {type: "boundingBox", coordinates: [-74.0232, 40.6998, -73.97, 40.74]}; // New York (big)
-    var source = {type: "boundingBox", coordinates: [-74.03, 40.70, -73.99, 40.72]}; // New York (small)
+    // var source = {type: "boundingBox", coordinates: [-74.03, 40.70, -73.99, 40.72]}; // New York (small)
     // var source = {type: "boundingBox", coordinates: [9.04284, 45.3871, 9.27791, 45.536]}; // Milan (PRIN & big)
     // var source = {type: "boundingBox", coordinates: [9.05, 45.45, 9.10, 45.50]}; // Milan (medium)
     // var source = {type: "boundingBox", coordinates: [9.45, 45.48, 9.50, 45.50]}; // Milan (small)
     // var source = {type: "boundingBox", coordinates: [9.1705, 45.4557, 9.2021, 45.4735]}; // Milan (center)
     // var source = {type: "boundingBox", coordinates: [9.2, 45.48, 9.21, 45.49]}; // Milan (buggy region - nodes)
     // var source = {type: "boundingBox", coordinates: [9.48, 45.18, 9.53, 45.19]}; // region tested in GRASS
-    // var source = {type: "GeoJSONFile", path: "data/prin_small_med.geojson"};
+    // var source = {type: "GeoJSONFile", path: "data/prin_smaller_med.geojson"};
+    var source = {type: "GeoJSONFile", path: "data/newYork.geojson"};
 
     var configuration = {
       // interiorColor: new WorldWind.Color(0.1, 0.7, 0.8, 1.0),
@@ -54,5 +55,6 @@ define(['libraries/WebWorldWind/src/WorldWind',
     test.add();
     // test.boundingBox = [9.15651, 45.44919, 9.20246, 45.48449]; // prin_small_med.geojson
     // test.boundingBox = [9.18307, 45.46073, 9.20421, 45.46957]; // prin_smaller_med.geojson
-    // test.zoom();
+    test.boundingBox = [-74.03, 40.70, -73.99, 40.72]; // newYork.geojson
+    test.zoom();
 });

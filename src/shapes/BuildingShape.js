@@ -101,7 +101,11 @@ define([], function () {
         altitude = 15;
     }
     else if (configuration.extrude && configuration.altitude && configuration.altitude.type == "osm") {
-      if (this._properties.tags && this._properties.tags.height)
+      if (this._properties && this._properties.height)
+        altitude = this._properties.height;
+      else if (this._properties && this._properties["building:levels"])
+        altitude = this._properties["building:levels"]*3;
+      else if (this._properties.tags && this._properties.tags.height)
         altitude = this._properties.tags.height;
       else if (this._properties.tags && this._properties.tags["building:levels"])
         altitude = this._properties.tags["building:levels"]*3;

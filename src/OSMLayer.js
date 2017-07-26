@@ -101,7 +101,7 @@ define(['libraries/WebWorldWind/src/error/ArgumentError',
       this._worldWindow.navigator.lookAtLocation.longitude = centerX;
       this._worldWindow.navigator.lookAtLocation.latitude = centerY;
       // console.log(centerX + ", " + centerY);
-      this._worldWindow.navigator.range = 1e4; // Should be automatically calculated.
+      this._worldWindow.navigator.range = 4e3; // Should be automatically calculated.
       this._worldWindow.redraw();
     }
     else {
