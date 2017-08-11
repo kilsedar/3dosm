@@ -1,10 +1,2 @@
-WebWorldWind_full
-libraries/WebWorldWind_old
 node_modules
-.idea
-src/OSMLayer_0.js
-src/OSMBuildingLayer_0.js
-src/OSMBuildingLayer_1.js
-src/GeoJSONParserTriangulation_0.js
-src/GeoJSONParserTriangulation_1.js
 example/data/prin*
