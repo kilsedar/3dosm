@@ -55,27 +55,27 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
    * For each sector of the layer, checks if it is visible. If it is and its layer is not added to the WorldWindow, checks the cache.
    * If the layer corresponding to the sector is in the cache uses the cache, otherwise makes a request to OSM. If it is not visible and it is added to the WorldWindow, removes it.
    */
-  OSMTBuildingLayer.prototype.gestureRecognizerCallback = function () {
+  OSMTBuildingLayer.prototype.gestureRecognizerCallback = function(recognizer) {
     // console.log("sectors -> " + JSON.stringify(this._sectors));
     for (var sectorIndex = 0; sectorIndex < this._sectors.length; sectorIndex++) {
       if (this.intersectsVisible(this._sectors[sectorIndex].sector) && !this._sectors[sectorIndex].added) {
-        // console.log("The layer in this sector has to be added.");
+        console.log("The layer in this sector has to be added.");
         if (this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude) != null) {
-          this._worldWindow.addLayer(this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude));
+          this.worldWindow.addLayer(this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude));
           this._sectors[sectorIndex].added = true;
         }
         else
           this.addBySector(this._sectors[sectorIndex]);
       }
       else if (!this.intersectsVisible(this._sectors[sectorIndex].sector) && this._sectors[sectorIndex].added) {
-        // console.log("The layer in this sector has to be removed.");
-        this._worldWindow.removeLayer(this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude));
+        console.log("The layer in this sector has to be removed.");
+        this.worldWindow.removeLayer(this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude));
         this._sectors[sectorIndex].added = false;
       }
-      /* else {
+      else {
         console.log("No need to do something.");
-      } */
-      // console.log("the number of layers -> " + this._worldWindow.layers.length);
+      }
+      // console.log("the number of layers -> " + this.worldWindow.layers.length);
     }
   };
 
@@ -117,9 +117,9 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
    */
   OSMTBuildingLayer.prototype.intersectsVisible = function(sector) {
     var boundingBox = new BoundingBox();
-    boundingBox.setToSector(sector, this._worldWindow.drawContext.globe, 0, 15); // Maximum elevation 15 should be changed.
+    boundingBox.setToSector(sector, this.worldWindow.drawContext.globe, 0, 15); // Maximum elevation 15 should be changed.
 
-    return boundingBox.intersectsFrustum(this._worldWindow.drawContext.navigatorState.frustumInModelCoordinates);
+    return boundingBox.intersectsFrustum(this.worldWindow.drawContext.navigatorState.frustumInModelCoordinates);
   };
 
   /**
@@ -128,7 +128,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
    * @throws {ArgumentError} If the source definition is wrong.
    */
   OSMTBuildingLayer.prototype.add = function (worldWindow) {
-    this._worldWindow = worldWindow;
+    this.worldWindow = worldWindow;
     if (this.source.type == "boundingBox" && this.source.coordinates) {
       this.boundingBox = this.source.coordinates;
       this.createSectors(this.boundingBox);
@@ -137,13 +137,13 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
           this.addBySector(this._sectors[sectorIndex].sector);
       }
 
-      var dragRecognizer = new DragRecognizer(this._worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // desktop
-      var panRecognizer = new PanRecognizer(this._worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
-      var clickRecognizer = new ClickRecognizer(this._worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // desktop
-      var tapRecognizer = new TapRecognizer(this._worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
-      var pinchRecognizer = new PinchRecognizer(this._worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
-      var rotationRecognizer = new RotationRecognizer(this._worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
-      var tiltRecognizer = new TiltRecognizer(this._worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
+      var dragRecognizer = new DragRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // desktop
+      var panRecognizer = new PanRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // mobile
+      var clickRecognizer = new ClickRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // desktop
+      var tapRecognizer = new TapRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // mobile
+      var pinchRecognizer = new PinchRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // mobile
+      var rotationRecognizer = new RotationRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // mobile
+      var tiltRecognizer = new TiltRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // mobile
     }
     else {
       throw new ArgumentError(
@@ -160,7 +160,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
    */
   OSMTBuildingLayer.prototype.addBySector = function (sector) {
 
-    var worldWindow = this._worldWindow;
+    var worldWindow = this.worldWindow;
     var _self = this;
 
     var data = '[out:json][timeout:25];(';
@@ -179,7 +179,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         var OSMTBuildingLayer = new WorldWind.RenderableLayer("OSMTBuildingLayer");
         var OSMTBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(dataOverpassGeoJSONString);
         OSMTBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMTBuildingLayer);
-        worldWindow.addLayer(OSMTBuildingLayer);
+        _self.worldWindow.addLayer(OSMTBuildingLayer);
         _self._cache.putEntry(sector.minLatitude + ',' + sector.minLongitude + ',' + sector.maxLatitude + ',' + sector.maxLongitude, OSMTBuildingLayer, dataOverpassGeoJSON.features.length);
         // var sectorIndex = _self._sectors.findIndex(s => s.sector === sector);
         var sectorIndex = _self._sectors.map(function(obj, index) {

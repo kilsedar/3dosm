@@ -64,7 +64,7 @@ define(['libraries/WebWorldWind/src/error/ArgumentError',
       var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
       var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(JSON.stringify(_self.data));
       OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
-      worldWindow.addLayer(OSMBuildingLayer);
+      _self.worldWindow.addLayer(OSMBuildingLayer);
     });
   };
 

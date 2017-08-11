@@ -280,13 +280,13 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
    * @param {WorldWindow} worldWindow The WorldWindow where the layer is added to.
    */
   OSMLayer.prototype.add = function (worldWindow) {
-    this.worldWindow = worldWindow;
+    this._worldWindow = worldWindow;
     var _self = this;
     $.when(_self.load()).then(function() {
       var OSMLayer = new WorldWind.RenderableLayer("OSMLayer");
       var OSMLayerGeoJSON = new GeoJSONParser(JSON.stringify(_self.data));
       OSMLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMLayer);
-      worldWindow.addLayer(OSMLayer);
+      self._worldWindow.addLayer(OSMLayer);
     });
   };
 
