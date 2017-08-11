@@ -27,12 +27,11 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
    * @constructor
    * @classdesc Attempts to create tiles (sectors) using the bounding box of the layer with a fixed size for all the zoom levels. For each sector makes a new request to OSM if the sector is visible.
    * Upon gestures, adds and/or removes the [layers]{@link OSMBuildingLayer} corresponding to the sectors.
-   * @param {WorldWindow} worldWindow The WorldWindow where the OSMTBuildingLayer is added to.
-   * @param {Object} configuration Configuration is used to set the attributes of {@link ShapeAttributes}. Four more attributes can be defined, which are "extrude", "heatmap", "altitude" and "altitudeMode".
-   * @param {Object} source Defines the data source of the {@link OSMTBuildingLayer}.
+   * @param {Object} configuration Configuration is used to set the attributes of {@link ShapeAttributes}. Four more attributes can be defined, which are "extrude", "altitude", "altitudeMode" and "heatmap".
+   * @param {Object} source Defines the data source of the layer.
    */
-  var OSMTBuildingLayer = function (worldWindow, configuration, source) {
-    OSMBuildingLayer.call(this, worldWindow, configuration, source);
+  var OSMTBuildingLayer = function (configuration, source) {
+    OSMBuildingLayer.call(this, configuration, source);
 
     /**
      * Holds the {@link OSMBuildingLayer} for each sector.
@@ -113,7 +112,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
 
   /**
    * Checks if a given sector is visible.
-   * @param {Sector} sector A {@link Sector} of the OSMTBuildingLayer.
+   * @param {Sector} sector A {@link Sector} of the layer.
    * @returns {boolean} True if the sector intersects the frustum, otherwise false.
    */
   OSMTBuildingLayer.prototype.intersectsVisible = function(sector) {
@@ -124,15 +123,14 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
   };
 
   /**
-   * Calls [createSectors]{@link OSMTBuildingLayer#createSectors} and [addBySector]{@link OSMTBuildingLayer#addBySector} if the "type" of the layer's "_source" member variable is "boundingBox" and the "coordinates" of the layer's "_source" member variable is defined.
+   * Calls [createSectors]{@link OSMTBuildingLayer#createSectors} and [addBySector]{@link OSMTBuildingLayer#addBySector} if the "type" property of the "source" member variable is "boundingBox" and the "coordinates" property of the "source" member variable is defined.
    * Also registers the [GestureRecognizers]{@link GestureRecognizer}, which are {@link DragRecognizer}, {@link PanRecognizer}, {@link ClickRecognizer}, {@link TapRecognizer}, {@link PinchRecognizer}, {@link RotationRecognizer} and {@link TiltRecognizer}.
-   * Calls [addByGeoJSONFile]{@link OSMBuildingLayer#addByGeoJSONFile} if the "type" of the layer's "_source" member variable is "GeoJSONFile" and the "path" of the layer's "_source" member variable is defined.
    * @throws {ArgumentError} If the source definition is wrong.
    */
-  OSMTBuildingLayer.prototype.add = function () {
-    if (this._source.type == "boundingBox" && this._source.coordinates) {
-      this.boundingBox = this._source.coordinates;
-      this.zoom(); // temporary
+  OSMTBuildingLayer.prototype.add = function (worldWindow) {
+    this._worldWindow = worldWindow;
+    if (this.source.type == "boundingBox" && this.source.coordinates) {
+      this.boundingBox = this.source.coordinates;
       this.createSectors(this.boundingBox);
       for (var sectorIndex = 0; sectorIndex < this._sectors.length; sectorIndex++){
         if (this.intersectsVisible(this._sectors[sectorIndex].sector))
@@ -147,8 +145,6 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
       var rotationRecognizer = new RotationRecognizer(this._worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
       var tiltRecognizer = new TiltRecognizer(this._worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
     }
-    else if (this._source.type == "GeoJSONFile" && this._source.path)
-      this.addByGeoJSONFile();
     else {
       throw new ArgumentError(
         Logger.logMessage(Logger.LEVEL_SEVERE, "OSMTBuildingLayer", "add", "The source definition of the layer is wrong.")
@@ -160,16 +156,18 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
    * Makes an AJAX request to fetch the OSM building data using the sector's minimum and maximum latitude and longitude and Overpass API, converts it to GeoJSON using osmtogeojson API,
    * adds the GeoJSON to the {@link WorldWindow} using the {@link GeoJSONParserTriangulationOSM}.
    * Also caches the {@link OSMBuildingLayer} corresponding to the sector using as id the sector's minimum and maximum latitude and longitude.
-   * @param {Sector} sector A {@link Sector} of the OSMTBuildingLayer.
+   * @param {Sector} sector A {@link Sector} of the layer.
    */
   OSMTBuildingLayer.prototype.addBySector = function (sector) {
 
     var worldWindow = this._worldWindow;
     var _self = this;
 
-    var data = '[out:json][timeout:25];';
-    data += '(' + this._type + '[' + this._tag + '](' + sector.minLatitude + ',' + sector.minLongitude + ',' + sector.maxLatitude + ',' + sector.maxLongitude + '); ';
-    data += 'relation[' + this._tag + '](' + sector.minLatitude + ',' + sector.minLongitude + ',' + sector.maxLatitude + ',' + sector.maxLongitude + ');); out body; >; out skel qt;';
+    var data = '[out:json][timeout:25];(';
+    for (var typeIndex = 0; typeIndex < this.type.length; typeIndex++) {
+      data += this.type[typeIndex] + '[' + this.tag + '](' + sector.minLatitude + ',' + sector.minLongitude + ',' + sector.maxLatitude + ',' + sector.maxLongitude + '); ';
+    }
+    data += '); out body; >; out skel qt;';
 
     $.ajax({
       url: 'http://overpass-api.de/api/interpreter',

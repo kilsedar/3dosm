@@ -7,4 +7,4 @@ requirejs.config({
   }
 });
 
-requirejs(['example/index']);
+requirejs(['example/main']);

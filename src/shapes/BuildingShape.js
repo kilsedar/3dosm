@@ -60,23 +60,20 @@ define([], function () {
    * @param {Object} configuration Configuration is the object returned by [shapeConfigurationCallback]{@link OSMBuildingLayer#shapeConfigurationCallback}.
    */
   BuildingShape.prototype.setColor = function (configuration) {
-
     var numberOfThresholds = configuration.heatmap.thresholds.length;
     var heat = 0.5/(numberOfThresholds-2);
-    // console.log(configuration.heatmap.thresholds + ", " + heat);
 
     if (configuration.attributes.interiorColor.red < 0.5) {
       for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
-        // console.log(heat*thresholdIndex);
-        if (this._altitude > configuration.heatmap.thresholds[thresholdIndex] && this._altitude <= configuration.heatmap.thresholds[thresholdIndex+1])
-          configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red+heat*thresholdIndex, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
+        if (this._altitude > configuration.heatmap.thresholds[thresholdIndex] && this._altitude <= configuration.heatmap.thresholds[thresholdIndex+1]) {
+          configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red+heat*thresholdIndex, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, configuration.attributes.interiorColor.alpha);
+        }
       }
     }
     else {
       for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
-        // console.log(heat*thresholdIndex);
         if (this._altitude > configuration.heatmap.thresholds[thresholdIndex] && this._altitude <= configuration.heatmap.thresholds[thresholdIndex+1])
-          configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red-heat*(numberOfThresholds-thresholdIndex), configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, 1.0);
+          configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red-heat*(numberOfThresholds-thresholdIndex), configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, configuration.attributes.interiorColor.alpha);
       }
     }
     this._color = configuration.attributes.interiorColor;

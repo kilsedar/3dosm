@@ -28,7 +28,7 @@
 
 <header>
     
-        <h2>OSMLayer</h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>OSMLayer<span class="signature">(configuration, source)</span><span class="type-signature"></span></h2>
         
             <div class="class-description">Sets the properties and functions viable for any OSM data. It is intended to be an abstract class, only to be extended for specific OSM data.</div>
         
@@ -44,14 +44,634 @@
     <h2>Constructor</h2>
     
 
-    <h4 class="name" id="OSMLayer"><span class="type-signature"></span>new OSMLayer<span class="signature">(worldWindow, configuration)</span><span class="type-signature"></span></h4>
+    
+    <h4 class="name" id="OSMLayer"><span class="type-signature"></span>new OSMLayer<span class="signature">(configuration, source)</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Constructs an OSMLayer for a specified WorldWindow.
+    Constructs an OSMLayer.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>configuration</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Configuration is used to set the attributes of PlacemarkAttributes or ShapeAttributes.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Defines the data source of the layer. Its "type" can be either "boundingBox", "GeoJSONFile" or "GeoJSONData".
+If the "type" is "boundingBox", "coordinates" must be defined. The order of the "coordinates" is "x1, y1, x2, y2".
+If the "type" is "GeoJSONFile", "path" where the file resides must be defined.
+If the "type" is "GeoJSONData", "data" itself must be defined.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="boundingBox"><span class="type-signature"></span>boundingBox<span class="type-signature"> :Array.&lt;Float></span></h4>
+
+
+
+
+<div class="description">
+    It defines the bounding box of the OSM data for the layer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Array.&lt;Float></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line111">line 111</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="data"><span class="type-signature"></span>data<span class="type-signature"> :Object</span></h4>
+
+
+
+
+<div class="description">
+    The OSM data associated with the layer.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line85">line 85</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="dataSize"><span class="type-signature"></span>dataSize<span class="type-signature"> :Number</span></h4>
+
+
+
+
+<div class="description">
+    The size in bytes of the OSM data associated with the layer.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line98">line 98</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="tag"><span class="type-signature"></span>tag<span class="type-signature"> :String</span></h4>
+
+
+
+
+<div class="description">
+    The tag of the OSM data. Some examples are "amenity", "amenity=education"; "building", "building=farm" ...
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">String</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line45">line 45</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="type"><span class="type-signature"></span>type<span class="type-signature"> :Array.&lt;String></span></h4>
+
+
+
+
+<div class="description">
+    A type can be "node", "way" or "relation". The variable can hold any number of the aforementioned types valid for the tag specified for the OSM data.
+The tags and their types can be found at http://wiki.openstreetmap.org/wiki/Map_Features.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Array.&lt;String></span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line59">line 59</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="worldWindow"><span class="type-signature"></span>worldWindow<span class="type-signature"> :WorldWindow</span></h4>
+
+
+
+
+<div class="description">
+    The WorldWindow where the layer is added to.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">WorldWindow</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line72">line 72</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="add"><span class="type-signature"></span>add<span class="signature">(worldWindow)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets the "worldWindow" member variable and adds the layer to the WorldWindow.
 </div>
 
 
@@ -103,30 +723,7 @@
 
             
 
-            <td class="description last">The WorldWindow where the OSMLayer is added to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>configuration</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Configuration is used to set the attributes of PlacemarkAttributes or ShapeAttributes.</td>
+            <td class="description last">The WorldWindow where the layer is added to.</td>
         </tr>
 
     
@@ -167,7 +764,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line17">line 17</a>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line282">line 282</a>
     </li></ul></dd>
     
 
@@ -193,44 +790,82 @@
 
 
 
-    
-    </div>
 
-    
-
-    
-
-    
-
-     
-
-    
-
-    
-        <h3 class="subsection-title">Members</h3>
 
         
             
-<h4 class="name" id="boundingBox"><span class="type-signature"></span>boundingBox<span class="type-signature"> :Array.&lt;Float></span></h4>
 
+    
+
+    
+    <h4 class="name" id="calculateBoundingBox"><span class="type-signature"></span>calculateBoundingBox<span class="signature">(dataGeoJSON)</span><span class="type-signature"> &rarr; {Array.&lt;Float>}</span></h4>
+    
+
+    
 
 
 
 <div class="description">
-    It defines the bounding box of the OSM data for the OSMLayer. The order of coordinates of the bounding box is "x1, y1, x2, y2".
+    Calculates the bounding box of a GeoJSON object, where its features are expected to be of type "Polygon" or "MultiPolygon".
+It also sets the "boundingBox" member variable.
 </div>
 
 
 
-    <h5>Type:</h5>
-    <ul>
-        <li>
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
             
-<span class="param-type">Array.&lt;Float></span>
+                <td class="name"><code>dataGeoJSON</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
 
 
-        </li>
-    </ul>
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">GeoJSON object of which the bounding box is calculated.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
 
 
 
@@ -265,7 +900,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line56">line 56</a>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line151">line 151</a>
     </li></ul></dd>
     
 
@@ -281,18 +916,538 @@
 
 
 
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
         
-    
+<div class="param-desc">
+    The bounding box for the given GeoJSON data.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;Float></span>
+
+
+    </dd>
+</dl>
 
     
-        <h3 class="subsection-title">Methods</h3>
+
+
+
+
 
         
             
 
     
 
+    
+    <h4 class="name" id="load"><span class="type-signature"></span>load<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Calls <a href="OSMLayer.html#loadByBoundingBox">loadByBoundingBox</a> if the "type" property of the "source" member variable is "boundingBox" and the "coordinates" property of the "source" member variable is defined.
+Calls <a href="OSMLayer.html#loadByGeoJSONFile">loadByGeoJSONFile</a> if the "type" property of the "source" member variable is "GeoJSONFile" and the "path" property of the "source" member variable is defined.
+Calls <a href="OSMLayer.html#loadByGeoJSONData">loadByGeoJSONData</a> if the "type" property of the "source" member variable is "GeoJSONData" and the "data" property of the "source" member variable is defined.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line181">line 181</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If the source definition is wrong.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">ArgumentError</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="loadByBoundingBox"><span class="type-signature"></span>loadByBoundingBox<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Makes an AJAX request to fetch the OSM building data using the "coordinates" property of the "source" member variable and Overpass API,
+converts them to GeoJSON using osmtogeojson API, sets "data" and "dataSize" member variables using the GeoJSON data.
+It also sets the "boundingBox" member variable.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line202">line 202</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+<ul>
+        <li>
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If the "coordinates" property of the "source" member variable doesn't have four values.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">ArgumentError</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+</li>
+    
+        <li>
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If the request to OSM fails.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">ArgumentError</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+</li>
+    </ul>
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="loadByGeoJSONData"><span class="type-signature"></span>loadByGeoJSONData<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets "data" and "dataSize" member variables using the GeoJSON data assigned to the "data" property of the "source" member variable.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line273">line 273</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="loadByGeoJSONFile"><span class="type-signature"></span>loadByGeoJSONFile<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Makes an AJAX request using the "path" property of the "source" member variable to fetch the GeoJSON file,
+sets "data" and "dataSize" member variables using the GeoJSON data.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line243">line 243</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+<ul>
+        <li>
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If the data returned from the request is empty.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">ArgumentError</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+</li>
+    
+        <li>
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If the request fails.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">ArgumentError</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+</li>
+    </ul>
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="shapeConfigurationCallback"><span class="type-signature"></span>shapeConfigurationCallback<span class="signature">(geometry)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+    
 
     
 
@@ -351,7 +1506,7 @@
 
             
 
-            <td class="description last">An object containing the geometry of the OSM data in GeoJSON format for the OSMLayer.</td>
+            <td class="description last">An object containing the geometry of the OSM data in GeoJSON format for the layer.</td>
         </tr>
 
     
@@ -392,7 +1547,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line72">line 72</a>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line127">line 127</a>
     </li></ul></dd>
     
 
@@ -420,7 +1575,7 @@
         
 <div class="param-desc">
     An object with its attributes set as PlacemarkAttributes or ShapeAttributes,
-where for both their attributes are defined in the configuration of the OSMLayer.
+where for both their attributes are defined in the configuration of the layer.
 </div>
 
 
@@ -441,19 +1596,23 @@ where for both their attributes are defined in the configuration of the OSMLayer
 
 
 
+
+
         
             
 
     
 
+    
     <h4 class="name" id="zoom"><span class="type-signature"></span>zoom<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
     
 
 
 
 <div class="description">
-    Zooms to the OSMLayer, by setting the center of the viewport to the center of the bounding box.
+    Zooms to the layer, by setting the center of the viewport to the center of the bounding box.
 It uses an arbitrary value for the range of LookAtNavigator.
 To be removed later.
 </div>
@@ -499,7 +1658,7 @@ To be removed later.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line96">line 96</a>
+        <a href="OSMLayer.js.html">OSMLayer.js</a>, <a href="OSMLayer.js.html#line299">line 299</a>
     </li></ul></dd>
     
 
@@ -554,6 +1713,8 @@ To be removed later.
 
 
 
+
+
         
     
 
@@ -576,7 +1737,7 @@ To be removed later.
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.3</a> on Tue Jul 25 2017 17:06:50 GMT+0200 (CEST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Fri Aug 11 2017 03:48:06 GMT+0200 (CEST)
 </footer>
 
 <script> prettyPrint(); </script>

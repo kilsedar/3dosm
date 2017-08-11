@@ -22,7 +22,7 @@ define(['src/GeoJSONParserTriangulation',
   /**
    * Invokes [lateralSurfaces]{@link GeoJSONParserTriangulationOSM#lateralSurfaces} and/or [topSurface]{@link GeoJSONParserTriangulationOSM#topSurface} to create a {@link TriangleMesh} for [Polygon]{@link GeoJSONGeometryPolygon} geometry.
    * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry. [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback} is extended by four attributes in the {@link OSMBuildingLayer}.
-   * These attributes are "extrude", "heatmap", "altitude" and "altitudeMode".
+   * These attributes are "extrude", "altitude", "altitudeMode" and "heatmap".
    * The altitude of the Polygon is set using this function using [setAltitude]{@link BuildingShape#setAltitude}. If extrude and heatmap are enabled a new color is set for the Polygon.
    * If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulationOSM#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulationOSM#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulationOSM#topSurface}.</p>
    * Applications typically do not call this method directly. It is called by [addRenderablesForGeometry]{@link GeoJSONParser#addRenderablesForGeometry}.
@@ -71,7 +71,7 @@ define(['src/GeoJSONParserTriangulation',
   /**
    * Invokes [lateralSurfaces]{@link GeoJSONParserTriangulationOSM#lateralSurfaces} and/or [topSurface]{@link GeoJSONParserTriangulationOSM#topSurface} to create a {@link TriangleMesh} for [MultiPolygon]{@link GeoJSONGeometryMultiPolygon} geometry.
    * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry. [shapeConfigurationCallback]{@link Shapefile#shapeConfigurationCallback} is extended by three attributes in the {@link OSMBuildingLayer}.
-   * These attributes are "extrude", "heatmap", "altitude" and "altitudeMode".
+   * These attributes are "extrude", altitude", "altitudeMode" and "heatmap".
    * The altitude of the MultiPolygon is set using this function using [setAltitude]{@link BuildingShape#setAltitude}. If extrude and heatmap are enabled a new color is set for the MultiPolygon.
    * If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulationOSM#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulationOSM#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulationOSM#topSurface}.</p>
    * Applications typically do not call this method directly. It is called by [addRenderablesForGeometry]{@link GeoJSONParser#addRenderablesForGeometry}.
