@@ -17,8 +17,9 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         'src/OSMBuildingLayer',
         'src/GeoJSONParserTriangulationOSM',
         'jquery',
-        'osmtogeojson'],
-       function (MemoryCache, ArgumentError, Logger, BoundingBox, Sector, GestureRecognizer, DragRecognizer, PanRecognizer, ClickRecognizer, TapRecognizer, PinchRecognizer, RotationRecognizer, TiltRecognizer, OSMBuildingLayer, GeoJSONParserTriangulationOSM, $, osmtogeojson) {
+        'osmtogeojson',
+        'geojson-vt'],
+       function (MemoryCache, ArgumentError, Logger, BoundingBox, Sector, GestureRecognizer, DragRecognizer, PanRecognizer, ClickRecognizer, TapRecognizer, PinchRecognizer, RotationRecognizer, TiltRecognizer, OSMBuildingLayer, GeoJSONParserTriangulationOSM, $, osmtogeojson, geojsonvt) {
   "use strict";
 
   /**
@@ -137,13 +138,13 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
           this.addBySector(this._sectors[sectorIndex].sector);
       }
 
-      var dragRecognizer = new DragRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // desktop
-      var panRecognizer = new PanRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // mobile
-      var clickRecognizer = new ClickRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // desktop
-      var tapRecognizer = new TapRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // mobile
-      var pinchRecognizer = new PinchRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // mobile
-      var rotationRecognizer = new RotationRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // mobile
-      var tiltRecognizer = new TiltRecognizer(this.worldWindow, this.gestureRecognizerCallback.bind(this)); // mobile
+      var dragRecognizer = new DragRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // desktop
+      var panRecognizer = new PanRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
+      var clickRecognizer = new ClickRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // desktop
+      var tapRecognizer = new TapRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
+      var pinchRecognizer = new PinchRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
+      var rotationRecognizer = new RotationRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
+      var tiltRecognizer = new TiltRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
     }
     else {
       throw new ArgumentError(
@@ -175,6 +176,9 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
       type: 'POST',
       success: function(dataOverpass) {
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
+
+        // var tileIndex = geojsonvt(dataOverpassGeoJSON);
+
         var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
         var OSMTBuildingLayer = new WorldWind.RenderableLayer("OSMTBuildingLayer");
         var OSMTBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(dataOverpassGeoJSONString);
