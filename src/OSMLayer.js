@@ -286,7 +286,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
       var OSMLayer = new WorldWind.RenderableLayer("OSMLayer");
       var OSMLayerGeoJSON = new GeoJSONParser(JSON.stringify(_self.data));
       OSMLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMLayer);
-      self._worldWindow.addLayer(OSMLayer);
+      _self._worldWindow.addLayer(OSMLayer);
     });
   };
 
