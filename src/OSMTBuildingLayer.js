@@ -2,8 +2,6 @@
  * @exports OSMTBuildingLayer
  */
 define(['libraries/WebWorldWind/src/cache/MemoryCache',
-        'libraries/WebWorldWind/src/error/ArgumentError',
-        'libraries/WebWorldWind/src/util/Logger',
         'libraries/WebWorldWind/src/geom/BoundingBox',
         'libraries/WebWorldWind/src/geom/Sector',
         'libraries/WebWorldWind/src/gesture/GestureRecognizer',
@@ -14,20 +12,19 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         'libraries/WebWorldWind/src/gesture/PinchRecognizer',
         'libraries/WebWorldWind/src/gesture/RotationRecognizer',
         'libraries/WebWorldWind/src/gesture/TiltRecognizer',
+        'libraries/WebWorldWind/src/formats/geojson/GeoJSONFeature',
         'src/OSMBuildingLayer',
         'src/GeoJSONParserTriangulationOSM',
-        'jquery',
-        'osmtogeojson',
-        'geojson-vt'],
-       function (MemoryCache, ArgumentError, Logger, BoundingBox, Sector, GestureRecognizer, DragRecognizer, PanRecognizer, ClickRecognizer, TapRecognizer, PinchRecognizer, RotationRecognizer, TiltRecognizer, OSMBuildingLayer, GeoJSONParserTriangulationOSM, $, osmtogeojson, geojsonvt) {
+        'jquery'],
+       function (MemoryCache, BoundingBox, Sector, GestureRecognizer, DragRecognizer, PanRecognizer, ClickRecognizer, TapRecognizer, PinchRecognizer, RotationRecognizer, TiltRecognizer, GeoJSONFeature, OSMBuildingLayer, GeoJSONParserTriangulationOSM, $) {
   "use strict";
 
   /**
    * Creates a sublass of the {@link OSMBuildingLayer} class.
    * @alias OSMTBuildingLayer
    * @constructor
-   * @classdesc Attempts to create tiles (sectors) using the bounding box of the layer with a fixed size for all the zoom levels. For each sector makes a new request to OSM if the sector is visible.
-   * Upon gestures, adds and/or removes the [layers]{@link OSMBuildingLayer} corresponding to the sectors.
+   * @classdesc Creates sectors (tiles) using the bounding box of the layer with a fixed size for all the zoom levels. If there is at least a feature corresponding to a sector, creates an {@link OSMBuildingLayer}
+   * containing the features, caches the layer, adds it if the sector corresponding to it is visible. Upon gestures, adds and/or removes the [layers]{@link OSMBuildingLayer} using the [cache]{@link MemoryCache}.
    * @param {Object} configuration Configuration is used to set the attributes of {@link ShapeAttributes}. Four more attributes can be defined, which are "extrude", "altitude", "altitudeMode" and "heatmap".
    * @param {Object} source Defines the data source of the layer.
    */
@@ -35,56 +32,73 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
     OSMBuildingLayer.call(this, configuration, source);
 
     /**
-     * Holds the {@link OSMBuildingLayer} for each sector.
+     * Holds the {@link RenderableLayer} and {@link GeoJSONParserTriangulationOSM} for each sector. The maximum size of the cache is 10MB.
      * @memberof OSMTBuildingLayer.prototype
      * @type {MemoryCache}
      */
-    this._cache = new MemoryCache(100000, 80000);
+    this._cache = new MemoryCache(10000000, 8000000);
 
     /**
      * An array holding both the sectors making up the layer's bounding box and their state of being added to the {@link WorldWindow} or not.
      * @memberof OSMTBuildingLayer.prototype
      * @type {Object[]}
      */
-    this._sectors = [];
-  };
+     this._sectors = [];
+   };
 
-  OSMTBuildingLayer.prototype = Object.create(OSMBuildingLayer.prototype);
+   OSMTBuildingLayer.prototype = Object.create(OSMBuildingLayer.prototype);
 
-  /**
-   * The callback for [GestureRecognizers]{@link GestureRecognizer}, which are {@link DragRecognizer}, {@link PanRecognizer}, {@link ClickRecognizer}, {@link TapRecognizer}, {@link PinchRecognizer}, {@link RotationRecognizer} and {@link TiltRecognizer}.
-   * For each sector of the layer, checks if it is visible. If it is and its layer is not added to the WorldWindow, checks the cache.
-   * If the layer corresponding to the sector is in the cache uses the cache, otherwise makes a request to OSM. If it is not visible and it is added to the WorldWindow, removes it.
-   */
-  OSMTBuildingLayer.prototype.gestureRecognizerCallback = function(recognizer) {
-    // console.log("sectors -> " + JSON.stringify(this._sectors));
+   /**
+    * The callback for [GestureRecognizers]{@link GestureRecognizer}, which are {@link DragRecognizer}, {@link PanRecognizer}, {@link ClickRecognizer}, {@link TapRecognizer}, {@link PinchRecognizer}, {@link RotationRecognizer} and {@link TiltRecognizer}.
+    * For each sector of the layer, checks if it is visible. If it is and its layer is not added to the WorldWindow, adds it using the [cache]{@link MemoryCache}.
+    * If it is not visible and it is added to the WorldWindow, removes it.
+    */
+   OSMTBuildingLayer.prototype.gestureRecognizerCallback = function(recognizer) {
     for (var sectorIndex = 0; sectorIndex < this._sectors.length; sectorIndex++) {
-      if (this.intersectsVisible(this._sectors[sectorIndex].sector) && !this._sectors[sectorIndex].added) {
-        console.log("The layer in this sector has to be added.");
-        if (this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude) != null) {
-          this.worldWindow.addLayer(this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude));
-          this._sectors[sectorIndex].added = true;
-        }
-        else
-          this.addBySector(this._sectors[sectorIndex]);
+      var key = this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLongitude;
+      if (this.intersectsVisible(this._sectors[sectorIndex].sector) && !this._sectors[sectorIndex].added && this._cache.containsKey(key)) {
+        // console.log("The layer in this sector has to be added.");
+        this.worldWindow.addLayer(this._cache.entryForKey(key).renderableLayer);
+        this._sectors[sectorIndex].added = true;
       }
-      else if (!this.intersectsVisible(this._sectors[sectorIndex].sector) && this._sectors[sectorIndex].added) {
-        console.log("The layer in this sector has to be removed.");
-        this.worldWindow.removeLayer(this._cache.entryForKey(this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.maxLongitude));
+      else if (!this.intersectsVisible(this._sectors[sectorIndex].sector) && this._sectors[sectorIndex].added && this._cache.containsKey(key)) {
+        // console.log("The layer in this sector has to be removed.");
+        this.worldWindow.removeLayer(this._cache.entryForKey(key).renderableLayer);
         this._sectors[sectorIndex].added = false;
       }
-      else {
+      /* else {
         console.log("No need to do something.");
-      }
+      } */
       // console.log("the number of layers -> " + this.worldWindow.layers.length);
     }
   };
 
   /**
-   * Sectorizes a bounding box. Each sector initially will be 0.02 to 0.02 degrees for all the zoom levels.
-   * @param {Float[]} boundingBox The bounding box to be sectorized. Intended to be the bounding box of the whole layer.
+   * Checks if a given sector is visible.
+   * @param {Sector} sector A {@link Sector} of the layer.
+   * @returns {boolean} True if the sector intersects the frustum, otherwise false.
    */
-  OSMTBuildingLayer.prototype.createSectors = function(boundingBox) {
+  OSMTBuildingLayer.prototype.intersectsVisible = function(sector) {
+    var boundingBox = new BoundingBox();
+    boundingBox.setToSector(sector, this.worldWindow.drawContext.globe, 0, 15); // Maximum elevation 15 should be changed.
+
+    return boundingBox.intersectsFrustum(this.worldWindow.drawContext.navigatorState.frustumInModelCoordinates);
+  };
+
+  /**
+   * Sectorizes a bounding box. Each sector initially will be 0.02 to 0.02 degrees for all the zoom levels.
+   */
+  OSMTBuildingLayer.prototype.createSectors = function() {
+    if (this.boundingBox == null) {
+      if (this.source.type == "boundingBox")
+        var boundingBox = this.source.coordinates;
+      else
+        var boundingBox = this.calculateBoundingBox(this.data);
+    }
+    else {
+      var boundingBox = this.boundingBox;
+    }
+
     var sectorSize = 0.02;
     var decimalCount = 5; // Can be derived from the coordinates.
     var sectorsOnXCount = Math.ceil((boundingBox[2]-boundingBox[0]).toFixed(decimalCount)/sectorSize);
@@ -92,6 +106,7 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
 
     for (var indexY = 0; indexY < sectorsOnYCount; indexY++) {
       for (var indexX = 0; indexX < sectorsOnXCount; indexX++) {
+
         var x1 = (boundingBox[0]+sectorSize*indexX).toFixed(decimalCount);
 
         if (indexX+1 == sectorsOnXCount)
@@ -112,91 +127,86 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
   };
 
   /**
-   * Checks if a given sector is visible.
-   * @param {Sector} sector A {@link Sector} of the layer.
-   * @returns {boolean} True if the sector intersects the frustum, otherwise false.
+   * Populates the [cache]{@link MemoryCache} with the features of the OSMTBuildingLayer.
+   * The keys of the entries in the [cache]{@link MemoryCache} are made up of the coordinates of the bounding box of the sector they correspond to.
+   * The entries are the {@link RenderableLayer} and {@link GeoJSONParserTriangulationOSM} for each sector.
+   * If there is no feature corresponding to a sector, its corresponding [cache]{@link MemoryCache} entry is not created.
    */
-  OSMTBuildingLayer.prototype.intersectsVisible = function(sector) {
-    var boundingBox = new BoundingBox();
-    boundingBox.setToSector(sector, this.worldWindow.drawContext.globe, 0, 15); // Maximum elevation 15 should be changed.
+  OSMTBuildingLayer.prototype.cache = function () {
+    var polygons, coordinates;
 
-    return boundingBox.intersectsFrustum(this.worldWindow.drawContext.navigatorState.frustumInModelCoordinates);
+    this._cache.putEntry("entriesCount", {entriesCount: 0}, this.roughSizeOfObject(0));
+
+    featuresLoop:
+    for (var featureIndex = 0; featureIndex < this.data.features.length; featureIndex++) {
+      if (this.data.features[featureIndex].geometry.type == "Polygon" || this.data.features[featureIndex].geometry.type == "MultiPolygon") {
+
+        polygons = this.data.features[featureIndex].geometry.coordinates;
+
+        polygonsLoop:
+        for (var polygonsIndex = 0; polygonsIndex < polygons.length; polygonsIndex++) {
+          coordinatesLoop:
+          for (var coordinatesIndex = 0; coordinatesIndex < polygons[polygonsIndex].length; coordinatesIndex++) {
+            sectorsLoop:
+            for (var sectorIndex = 0; sectorIndex < this._sectors.length; sectorIndex++) {
+              if (this._sectors[sectorIndex].sector.containsLocation(polygons[polygonsIndex][coordinatesIndex][1], polygons[polygonsIndex][coordinatesIndex][0])) {
+
+                var feature = new GeoJSONFeature(this.data.features[featureIndex].geometry, this.data.features[featureIndex].properties, this.data.features[featureIndex].id, this.data.features[featureIndex].bbox);
+                var key = this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLongitude;
+
+                if(!this._cache.containsKey(key)) {
+                  var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
+                  var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(JSON.stringify({"type":"FeatureCollection", "features":[]}));
+                  OSMBuildingLayerGeoJSON.load(null, this.shapeConfigurationCallback.bind(this), OSMBuildingLayer);
+                  this._cache.putEntry(key, {renderableLayer: OSMBuildingLayer, parser: OSMBuildingLayerGeoJSON}, this.roughSizeOfObject({renderableLayer: OSMBuildingLayer, parser: OSMBuildingLayerGeoJSON}));
+                  this._cache.entryForKey("entriesCount").entriesCount += 1;
+                }
+
+                var cached = this._cache.entryForKey(key);
+                cached.parser.addRenderablesForFeature(cached.renderableLayer, feature);
+                this._cache.entries[key].size += this.roughSizeOfObject(feature);
+                this._cache.usedCapacity += this.roughSizeOfObject(feature);
+                this._cache.freeCapacity -= this.roughSizeOfObject(feature);
+
+                break polygonsLoop;
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // console.log(this._cache);
   };
 
   /**
-   * Calls [createSectors]{@link OSMTBuildingLayer#createSectors} and [addBySector]{@link OSMTBuildingLayer#addBySector} if the "type" property of the "source" member variable is "boundingBox" and the "coordinates" property of the "source" member variable is defined.
+   * Sets the "worldWindow" member variable and adds the layer using the [cache]{@link MemoryCache} to the WorldWindow.
+   * The entries stored in the [cache]{@link MemoryCache} are added if they are visible.
    * Also registers the [GestureRecognizers]{@link GestureRecognizer}, which are {@link DragRecognizer}, {@link PanRecognizer}, {@link ClickRecognizer}, {@link TapRecognizer}, {@link PinchRecognizer}, {@link RotationRecognizer} and {@link TiltRecognizer}.
-   * @throws {ArgumentError} If the source definition is wrong.
+   * @param {WorldWindow} worldWindow The WorldWindow where the layer is added to.
    */
   OSMTBuildingLayer.prototype.add = function (worldWindow) {
     this.worldWindow = worldWindow;
-    if (this.source.type == "boundingBox" && this.source.coordinates) {
-      this.boundingBox = this.source.coordinates;
-      this.createSectors(this.boundingBox);
-      for (var sectorIndex = 0; sectorIndex < this._sectors.length; sectorIndex++){
-        if (this.intersectsVisible(this._sectors[sectorIndex].sector))
-          this.addBySector(this._sectors[sectorIndex].sector);
-      }
-
-      var dragRecognizer = new DragRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // desktop
-      var panRecognizer = new PanRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
-      var clickRecognizer = new ClickRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // desktop
-      var tapRecognizer = new TapRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
-      var pinchRecognizer = new PinchRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
-      var rotationRecognizer = new RotationRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
-      var tiltRecognizer = new TiltRecognizer(this.worldWindow.canvas, this.gestureRecognizerCallback.bind(this)); // mobile
-    }
-    else {
-      throw new ArgumentError(
-        Logger.logMessage(Logger.LEVEL_SEVERE, "OSMTBuildingLayer", "add", "The source definition of the layer is wrong.")
-      );
-    }
-  };
-
-  /**
-   * Makes an AJAX request to fetch the OSM building data using the sector's minimum and maximum latitude and longitude and Overpass API, converts it to GeoJSON using osmtogeojson API,
-   * adds the GeoJSON to the {@link WorldWindow} using the {@link GeoJSONParserTriangulationOSM}.
-   * Also caches the {@link OSMBuildingLayer} corresponding to the sector using as id the sector's minimum and maximum latitude and longitude.
-   * @param {Sector} sector A {@link Sector} of the layer.
-   */
-  OSMTBuildingLayer.prototype.addBySector = function (sector) {
-
-    var worldWindow = this.worldWindow;
     var _self = this;
-
-    var data = '[out:json][timeout:25];(';
-    for (var typeIndex = 0; typeIndex < this.type.length; typeIndex++) {
-      data += this.type[typeIndex] + '[' + this.tag + '](' + sector.minLatitude + ',' + sector.minLongitude + ',' + sector.maxLatitude + ',' + sector.maxLongitude + '); ';
-    }
-    data += '); out body; >; out skel qt;';
-
-    $.ajax({
-      url: 'http://overpass-api.de/api/interpreter',
-      data: data,
-      type: 'POST',
-      success: function(dataOverpass) {
-        var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
-
-        // var tileIndex = geojsonvt(dataOverpassGeoJSON);
-
-        var dataOverpassGeoJSONString = JSON.stringify(dataOverpassGeoJSON);
-        var OSMTBuildingLayer = new WorldWind.RenderableLayer("OSMTBuildingLayer");
-        var OSMTBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(dataOverpassGeoJSONString);
-        OSMTBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMTBuildingLayer);
-        _self.worldWindow.addLayer(OSMTBuildingLayer);
-        _self._cache.putEntry(sector.minLatitude + ',' + sector.minLongitude + ',' + sector.maxLatitude + ',' + sector.maxLongitude, OSMTBuildingLayer, dataOverpassGeoJSON.features.length);
-        // var sectorIndex = _self._sectors.findIndex(s => s.sector === sector);
-        var sectorIndex = _self._sectors.map(function(obj, index) {
-          if(obj.sector == sector)
-            return index;
-        }).filter(isFinite);
-        _self._sectors[sectorIndex].added = true;
-      },
-      error: function(e) {
-        throw new ArgumentError(
-          Logger.logMessage(Logger.LEVEL_SEVERE, "OSMTBuildingLayer", "addBySector", "Request failed. Error: " + JSON.stringify(e))
-        );
+    $.when(_self.load()).then(function() {
+      _self.createSectors();
+      _self.cache();
+      for (var sectorIndex = 0; sectorIndex < _self._sectors.length; sectorIndex++){
+        var key = _self._sectors[sectorIndex].sector.minLatitude + ',' + _self._sectors[sectorIndex].sector.maxLatitude + ',' + _self._sectors[sectorIndex].sector.minLongitude + ',' + _self._sectors[sectorIndex].sector.maxLongitude
+        if (_self.intersectsVisible(_self._sectors[sectorIndex].sector) && _self._cache.containsKey(key)) {
+          var cached = _self._cache.entryForKey(key);
+          _self.worldWindow.addLayer(cached.renderableLayer);
+          _self._sectors[sectorIndex].added = true;
+        }
       }
+
+      var dragRecognizer = new DragRecognizer(_self.worldWindow.canvas, _self.gestureRecognizerCallback.bind(_self)); // desktop
+      var panRecognizer = new PanRecognizer(_self.worldWindow.canvas, _self.gestureRecognizerCallback.bind(_self)); // mobile
+      var clickRecognizer = new ClickRecognizer(_self.worldWindow.canvas, _self.gestureRecognizerCallback.bind(_self)); // desktop
+      var tapRecognizer = new TapRecognizer(_self.worldWindow.canvas, _self.gestureRecognizerCallback.bind(_self)); // mobile
+      var pinchRecognizer = new PinchRecognizer(_self.worldWindow.canvas, _self.gestureRecognizerCallback.bind(_self)); // mobile
+      var rotationRecognizer = new RotationRecognizer(_self.worldWindow.canvas, _self.gestureRecognizerCallback.bind(_self)); // mobile
+      var tiltRecognizer = new TiltRecognizer(_self.worldWindow.canvas, _self.gestureRecognizerCallback.bind(_self)); // mobile
     });
   };
 

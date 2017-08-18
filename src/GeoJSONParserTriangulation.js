@@ -47,7 +47,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
     }
 
     var configuration = this.shapeConfigurationCallback(geometry, properties);
-    var boundaries = geometry._coordinates;
+    var boundaries = geometry.coordinates;
     var altitude = configuration.altitude;
 
     if (!this.crs || this.crs.isCRSSupported()) {
@@ -83,7 +83,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
     }
 
     var configuration = this.shapeConfigurationCallback(geometry, properties);
-    var polygons = geometry._coordinates, boundaries = [];
+    var polygons = geometry.coordinates, boundaries = [];
     var altitude = configuration.altitude;
 
     if (!this.crs || this.crs.isCRSSupported()) {

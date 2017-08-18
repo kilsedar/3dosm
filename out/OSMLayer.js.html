@@ -48,11 +48,6 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
    * If the "type" is "GeoJSONData", "data" itself must be defined.
    */
   var OSMLayer = function (configuration, source) {
-    /**
-     * Configuration is used to set the attributes of {@link PlacemarkAttributes} if the geometry is Point or MultiPoint; or of {@link ShapeAttributes} otherwise.
-     * @memberof OSMLayer.prototype
-     * @type {Object}
-     */
     this._configuration = configuration;
     this.source = source;
 
@@ -65,6 +60,19 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
   };
 
   Object.defineProperties (OSMLayer.prototype, {
+    /**
+     * Configuration is used to set the attributes of {@link PlacemarkAttributes} if the geometry is Point or MultiPoint; or of {@link ShapeAttributes} otherwise.
+     * @memberof OSMLayer.prototype
+     * @type {Object}
+     */
+    configuration: {
+      get: function() {
+        return this._configuration;
+      },
+      set: function(configuration) {
+        this._configuration = configuration;
+      }
+    },
     /**
      * The tag of the OSM data. Some examples are "amenity", "amenity=education"; "building", "building=farm" ...
      * @memberof OSMLayer.prototype
@@ -171,8 +179,41 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
   };
 
   /**
+   * Calculates the rough size of a given object.
+   * @param {Object} object The object to be calculated the size of.
+   * @returns {Number} The number of bytes of the object given.
+   */
+  OSMLayer.prototype.roughSizeOfObject = function(object) {
+    var objectList = [];
+    var stack = [object];
+    var bytes = 0;
+
+    while (stack.length) {
+      var value = stack.pop();
+
+      if (typeof value === 'boolean') {
+        bytes += 4;
+      }
+      else if (typeof value === 'string') {
+        bytes += value.length * 2;
+      }
+      else if (typeof value === 'number') {
+        bytes += 8;
+      }
+      else if (typeof value === 'object' &amp;&amp; objectList.indexOf(value) === -1)
+      {
+        objectList.push(value);
+
+        for(var i in value) {
+          stack.push(value[i]);
+        }
+      }
+    }
+    return bytes;
+  };
+
+  /**
    * Calculates the bounding box of a GeoJSON object, where its features are expected to be of type "Polygon" or "MultiPolygon".
-   * It also sets the "boundingBox" member variable.
    * @param {Object} dataGeoJSON GeoJSON object of which the bounding box is calculated.
    * @returns {Float[]} The bounding box for the given GeoJSON data.
    */
@@ -195,7 +236,6 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
         }
       }
     }
-    this.boundingBox = boundingBox;
 
     return boundingBox;
   };
@@ -223,7 +263,6 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
   /**
    * Makes an AJAX request to fetch the OSM building data using the "coordinates" property of the "source" member variable and Overpass API,
    * converts them to GeoJSON using osmtogeojson API, sets "data" and "dataSize" member variables using the GeoJSON data.
-   * It also sets the "boundingBox" member variable.
    * @throws {ArgumentError} If the "coordinates" property of the "source" member variable doesn't have four values.
    * @throws {ArgumentError} If the request to OSM fails.
    */
@@ -234,13 +273,12 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
       );
     }
 
-    this.boundingBox = this.source.coordinates;
     var _self = this;
 
     var data = '[out:json][timeout:25];(';
-    for (var typeIndex = 0; typeIndex &lt; this.type.length; typeIndex++) {
-      // console.log(this.type[typeIndex]);
-      data += this.type[typeIndex] + '[' + this.tag + '](' + this.boundingBox[1] + ',' + this.boundingBox[0] + ',' + this.boundingBox[3] + ',' + this.boundingBox[2] + '); ';
+    for (var typeIndex = 0; typeIndex &lt; this._type.length; typeIndex++) {
+      // console.log(this._type[typeIndex]);
+      data += this._type[typeIndex] + '[' + this._tag + '](' + this.source.coordinates[1] + ',' + this.source.coordinates[0] + ',' + this.source.coordinates[3] + ',' + this.source.coordinates[2] + '); ';
     }
     data += '); out body; >; out skel qt;';
     // console.log(data);
@@ -251,8 +289,8 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
       type: 'POST',
       success: function(dataOverpass) {
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
-        _self.data = dataOverpassGeoJSON;
-        _self.dataSize = JSON.stringify(dataOverpassGeoJSON).length;
+        _self._data = dataOverpassGeoJSON;
+        _self._dataSize = _self.roughSizeOfObject(_self._data);
       },
       error: function(e) {
         throw new ArgumentError(
@@ -284,8 +322,8 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
             Logger.logMessage(Logger.LEVEL_SEVERE, "OSMLayer", "loadByGeoJSONFile", "File is empty.")
           );
         }
-        _self.data = data;
-        _self.dataSize = JSON.stringify(data).length;
+        _self._data = data;
+        _self._dataSize = _self.roughSizeOfObject(_self._data);
       },
       error: function(e) {
         throw new ArgumentError(
@@ -299,8 +337,8 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
    * Sets "data" and "dataSize" member variables using the GeoJSON data assigned to the "data" property of the "source" member variable.
    */
   OSMLayer.prototype.loadByGeoJSONData = function () {
-    this.data = this.source.data;
-    this.dataSize = JSON.stringify(this.source.data).length;
+    this._data = this.source.data;
+    this._dataSize = this.roughSizeOfObject(this._data);
   };
 
   /**
@@ -312,9 +350,9 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
     var _self = this;
     $.when(_self.load()).then(function() {
       var OSMLayer = new WorldWind.RenderableLayer("OSMLayer");
-      var OSMLayerGeoJSON = new GeoJSONParser(JSON.stringify(_self.data));
+      var OSMLayerGeoJSON = new GeoJSONParser(JSON.stringify(_self._data));
       OSMLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMLayer);
-      self._worldWindow.addLayer(OSMLayer);
+      _self._worldWindow.addLayer(OSMLayer);
     });
   };
 
@@ -360,7 +398,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Mon Aug 14 2017 00:04:01 GMT+0300 (+03)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Sat Aug 19 2017 00:35:15 GMT+0300 (+03)
 </footer>
 
 <script> prettyPrint(); </script>

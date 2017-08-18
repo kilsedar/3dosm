@@ -46,7 +46,7 @@ define(['src/GeoJSONParserTriangulation',
     }
 
     var configuration = this.shapeConfigurationCallback(geometry, properties);
-    var boundaries = geometry._coordinates;
+    var boundaries = geometry.coordinates;
     var OSMBuildingPolygon = new BuildingShape(properties);
     OSMBuildingPolygon.setAltitude(configuration);
     var altitude = OSMBuildingPolygon.altitude;
@@ -95,7 +95,7 @@ define(['src/GeoJSONParserTriangulation',
     }
 
     var configuration = this.shapeConfigurationCallback(geometry, properties);
-    var polygons = geometry._coordinates, boundaries = [];
+    var polygons = geometry.coordinates, boundaries = [];
     var OSMBuildingMultiPolygon = new BuildingShape(properties);
     OSMBuildingMultiPolygon.setAltitude(configuration);
     var altitude = OSMBuildingMultiPolygon.altitude;

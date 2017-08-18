@@ -36,18 +36,18 @@ define(['libraries/WebWorldWind/src/error/ArgumentError',
   OSMBuildingLayer.prototype.shapeConfigurationCallback = function (geometry) {
     var configuration = OSMLayer.prototype.shapeConfigurationCallback.call(this, geometry);
 
-    configuration.extrude = this._configuration.extrude ? this._configuration.extrude : false;
-    configuration.altitude = this._configuration.altitude ? this._configuration.altitude : null;
+    configuration.extrude = this.configuration.extrude ? this.configuration.extrude : false;
+    configuration.altitude = this.configuration.altitude ? this.configuration.altitude : null;
     if (configuration.altitude) {
-      configuration.altitude.type = this._configuration.altitude.type ? this._configuration.altitude.type : "number";
+      configuration.altitude.type = this.configuration.altitude.type ? this.configuration.altitude.type : "number";
       if (configuration.altitude.type != "osm")
-        configuration.altitude.value = this._configuration.altitude.value ? this._configuration.altitude.value : 15;
+        configuration.altitude.value = this.configuration.altitude.value ? this.configuration.altitude.value : 15;
     }
-    configuration.altitudeMode = this._configuration.altitudeMode ? this._configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
-    configuration.heatmap = this._configuration.heatmap ? this._configuration.heatmap : false;
+    configuration.altitudeMode = this.configuration.altitudeMode ? this.configuration.altitudeMode : WorldWind.RELATIVE_TO_GROUND;
+    configuration.heatmap = this.configuration.heatmap ? this.configuration.heatmap : false;
     if (configuration.heatmap) {
-      configuration.heatmap.enabled = this._configuration.heatmap.enabled ? this._configuration.heatmap.enabled : false;
-      configuration.heatmap.thresholds = this._configuration.heatmap.thresholds ? this._configuration.heatmap.thresholds : [0, 15, 900];
+      configuration.heatmap.enabled = this.configuration.heatmap.enabled ? this.configuration.heatmap.enabled : false;
+      configuration.heatmap.thresholds = this.configuration.heatmap.thresholds ? this.configuration.heatmap.thresholds : [0, 15, 900];
     }
 
     return configuration;
