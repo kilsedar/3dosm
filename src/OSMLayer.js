@@ -262,7 +262,8 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
       success: function(dataOverpass) {
         var dataOverpassGeoJSON = osmtogeojson(dataOverpass);
         _self._data = dataOverpassGeoJSON;
-        _self._dataSize = _self.roughSizeOfObject(_self._data);
+        if (_self._dataSize == 0)
+          _self._dataSize = _self.roughSizeOfObject(_self._data);
       },
       error: function(e) {
         throw new ArgumentError(
@@ -295,7 +296,8 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
           );
         }
         _self._data = data;
-        _self._dataSize = _self.roughSizeOfObject(_self._data);
+        if (_self._dataSize == 0)
+          _self._dataSize = _self.roughSizeOfObject(_self._data);
       },
       error: function(e) {
         throw new ArgumentError(
@@ -310,7 +312,8 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
    */
   OSMLayer.prototype.loadByGeoJSONData = function () {
     this._data = this.source.data;
-    this._dataSize = this.roughSizeOfObject(this._data);
+    if (this._dataSize == 0)
+      this._dataSize = this.roughSizeOfObject(this._data);
   };
 
   /**

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>3DOSM</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="libraries/bootstrap-3.3.7-dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="libraries/bootstrap-colorpicker/css/bootstrap-colorpicker.min.css">
+  <link rel="stylesheet" href="main.css">
+  <script src="aux.js"></script>
+  <!-- <script data-main="../../require.conf" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.17/require.min.js"></script> -->
+  <script src="main.min.js"></script>
+</head>
+<body onresize="resize()">
+  <div id="globe">
+    <canvas id="canvas">
+      Your browser does not support HTML5 Canvas.
+    </canvas>
+
+    <div class="ldsEclipse">
+      <div></div>
+    </div>
+
+    <div id="searchBox">
+      <input type="text" placeholder="go to..." id="searchText"/><button id="searchButton"><img src="images/magnifier_20.png"></button>
+    </div>
+
+    <div id="menuToLeft"><img src="images/left_arrow_white_40.png"></div>
+    <div id="menuToRight"><img src="images/right_arrow_white_40.png"></div>
+
+    <div id="menu">
+
+      <div id ="menuTitle">
+        <button id="OSMTagTypeTitle">Add OSM using tags.</button>
+        <button id="OSMBuildingsTitle" class="hover">Add OSM buildings.</button>
+      </div>
+
+      <div id="OSMTagTypeContent">
+        <div id="colorTagType">
+          <p class="menuSubtitle">Color</p>
+          <p>Select the color:</p>
+          <div id="colorpickerTagType" class="input-group colorpicker-component">
+            <input type="text" value="#00AABB" class="form-control"/>
+            <span class="input-group-addon"><i></i></span>
+          </div>
+        </div>
+
+        <div id="OSMTag">
+          <p class="menuSubtitle">Tag</p>
+          <p>Write down the tag (example: <i>amenity=restaurant</i>, <i>highway=yes</i>, <i>building=house</i>.)</p>
+          <input type="text" id="inputTextOSMTag" placeholder="OSM tag">
+        </div>
+
+        <div id="OSMType">
+          <p class="menuSubtitle">Type</p>
+          <p>Check one or more of the OSM types below. The types checked should be valid for the tag specified for the OSM data. The tags and their types can be found at <a href="http://wiki.openstreetmap.org/wiki/Map_Features" target="_blank">map features of OSM</a>.</p>
+          <label class="checkbox-inline"><input type="checkbox" id="inputCheckboxOSMTypeNode" value="node">Node</label>
+          <label class="checkbox-inline"><input type="checkbox" id="inputCheckboxOSMTypeWay" value="way">Way</label>
+          <label class="checkbox-inline"><input type="checkbox" id="inputCheckboxOSMTypeRelation" value="relation">Relation</label>
+        </div>
+
+        <div id="dataSourceOSMTagType">
+          <p class="menuSubtitle">Data Source</p>
+          <div class="checkbox">
+            <label><input type="checkbox" id="inputCheckboxByBoundingBox">Click twice to set the lower-left and upper-right corners of the area for which the data is requested.</label>
+          </div>
+        </div>
+
+        <button id="buttonGoOSMTagType">Go!</button>
+      </div>
+
+      <div id="OSMBuildingsContent">
+        <div id="colorBuildings">
+          <p class="menuSubtitle">Color</p>
+          <p>Select the color:</p>
+          <div id="colorpickerBuildings" class="input-group colorpicker-component">
+            <input type="text" value="#00AABB" class="form-control"/>
+            <span class="input-group-addon"><i></i></span>
+          </div>
+        </div>
+
+        <div id="extrusion">
+          <div class="checkbox">
+            <label class="menuSubtitle"><input type="checkbox" id="inputCheckboxExtrusion">Extrusion</label>
+          </div>
+
+          <div id="extrusionSettings">
+            <div class="radio">
+              <label><input type="radio" id="inputRadioAltitudeNumber" name="altitude" disabled>Set the same altitude in meters for all the buildings.</label>
+            </div>
+            <input type="text" id="inputTextAltitudeNumber" placeholder="altitude in meters" disabled>
+
+            <div class="radio">
+              <label><input type="radio" id="inputRadioAltitudeOSM" name="altitude" disabled>Use OSM height information for extrusion.</label>
+            </div>
+
+            <div class="radio">
+              <label><input type="radio" id="inputRadioAltitudeProperty" name="altitude" disabled>Use a property that exists in the data.</label>
+            </div>
+            <input type="text" id="inputTextAltitudeProperty" placeholder="a property name" disabled>
+          </div>
+        </div>
+
+        <div id="heatmap">
+          <div class="checkbox">
+            <label class="menuSubtitle"><input type="checkbox" id="inputCheckboxHeatmap" disabled>Heatmap</label>
+          </div>
+          <p>Enter the comma-seperated thresholds for building heights:</p>
+          <input type="text" id="inputTextHeatmapThresholds" placeholder="0, 30, 200" disabled>
+        </div>
+
+        <div id="dataSourceOSMBuildings">
+          <p class="menuSubtitle">Data Source</p>
+
+          <div id="byBoundingBox">
+            <div class="radio">
+              <label><input type="radio" id="inputRadioByBoundingBox" name="method">Click twice to set the lower-left and upper-right corners of the area for which the data is requested.</label>
+            </div>
+          </div>
+
+          <div id="byGeoJSONData">
+            <div class="radio">
+              <label><input type="radio" id="inputRadioByGeoJSONData" name="method">Upload a GeoJSON file.</label>
+            </div>
+            <!-- <input type="file" id="inputFile"> -->
+            <div id="buttonFileUpload">
+              <span>Browse...</span>
+              <input type="file" id="inputFile" disabled>
+            </div>
+          </div>
+        </div>
+
+        <button id="buttonGoOSMBuildings">Go!</button>
+      </div>
+    </div>
+
+    <!-- <div id="legend"></div> -->
+  </div>
+</body>
+</html>

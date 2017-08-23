@@ -1,0 +1,204 @@
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,400italic,600,600italic,800,800italic");
+body, input {
+  font-family: "Open Sans", Helvetica, sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  letter-spacing: 0.075em;
+  line-height: 1.65em;
+}
+body {
+  color: rgba(255, 255, 255, 1.0);
+}
+input {
+  color: rgba(34, 34, 34, 1.0);
+}
+.form-control {
+  color: rgba(34, 34, 34, 1.0);
+}
+#globe {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+}
+#canvas {
+  width: 100%;
+  height: 100%;
+  background-color: rgba(17, 17, 17, 1.0);
+}
+#menuToRight, #menuToLeft {
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  background-color: rgba(33, 178, 166, 0.9);
+  border-radius: 0px 5px 5px 0px;
+}
+#menuToRight {
+  left: -40px;
+}
+#menuToLeft:hover, #menuToRight:hover {
+  cursor: pointer;
+}
+#menu {
+  position: absolute;
+  left: 0px;
+  margin: 10px;
+  max-width: calc(100% - 60px);
+  width: 500px;
+  background-color: rgba(33, 178, 166, 0.9);
+  border-radius: 5px 0px 5px 5px;
+  color: rgba(255, 255, 255, 1.0);
+  overflow: auto;
+  text-align: justify;
+}
+#menu:after {
+  content: "";
+  height: 10px;
+  display: block;
+}
+#menuTitle {
+  padding: 0px 10px;
+  text-align: center;
+}
+#menuTitle button {
+  font-weight: bold;
+  width: 220px;
+}
+.menuSubtitle {
+  font-weight: bold !important;
+}
+input[type="text"] {
+  border-radius: 3px;
+  padding: 1px 0px 1px 5px;
+  border: none;
+  width: auto;
+}
+button {
+  font-family: "Open Sans", Helvetica, sans-serif;
+  font-weight: normal;
+  font-size: 16px;
+  letter-spacing: 0.075em;
+  line-height: 1.65em;
+  text-align: center;
+  color: rgba(255, 255, 255, 1.0);
+  background-color: rgba(80, 83, 147, 1.0);
+  border: none;
+  border-radius: 3px;
+  padding: 5px 10px;
+}
+#buttonFileUpload {
+  position: relative;
+  overflow: hidden;
+  background-color: rgba(80, 83, 147, 1.0);
+  border-radius: 3px;
+  padding: 5px 10px;
+  text-align: center;
+  width: 88px;
+  display: inline-block;
+}
+#buttonFileUpload input#inputFile {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
+  font-size: 20px;
+}
+@keyframes ldsEclipse {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  50% {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+@-webkit-keyframes ldsEclipse {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+  50% {
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+.ldsEclipse {
+  position: absolute;
+  display: none;
+  left: calc(50% - 40px);
+  top: calc(50% - 40px);
+  width: 80px !important;
+  height: 80px !important;
+  -webkit-transform: translate(-40px, -40px) scale(0.4) translate(40px, 40px);
+  transform: translate(-40px, -40px) scale(0.4) translate(40px, 40px);
+}
+.ldsEclipse div {
+  -webkit-animation: ldsEclipse 1s linear infinite;
+  animation: ldsEclipse 1s linear infinite;
+  width: 160px;
+  height: 160px;
+  top: 20px;
+  left: 20px;
+  border-radius: 50%;
+  box-shadow: 0 16px 0 0 #ed8422;
+  -webkit-transform-origin: 80px 88px;
+  transform-origin: 80px 88px;
+}
+#OSMType, #OSMTag, #heatmap {
+  margin-bottom: 10px;
+}
+#OSMType label {
+  padding-right: 10px;
+}
+#OSMBuildingsContent {
+  display: none;
+}
+#OSMTagTypeContent, #OSMBuildingsContent {
+  padding: 10px 10px 0px 10px;
+}
+#OSMTagTypeTitle, #OSMBuildingsTitle {
+  border-radius: 0px 0px 10px 10px;
+}
+#OSMTagTypeTitle {
+  background-color: rgba(80, 83, 147, 1.0);
+}
+#OSMBuildingsTitle {
+  background-color: rgba(80, 83, 147, 0.3);
+}
+.hover:hover {
+  background-color: rgba(80, 83, 147, 0.6) !important;
+}
+#colorTagType {
+  padding-bottom: 10px;
+}
+#searchBox {
+  position: absolute;
+  margin: 10px;
+}
+#searchText {
+  margin-right: 10px;
+}
+#searchButton {
+  line-height: 1.0em;
+  padding: 5px;
+}
+@media (max-width: 767px) {
+  body {
+    font-size: 12px;
+  }
+  button {
+    font-size: 14px;
+  }
+}

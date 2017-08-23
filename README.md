@@ -1,6 +1,6 @@
 # 2017 GSoC project "3D OSM Plugin API"
 
-The goal of this project is to create a plugin API to display OpenStreetMap (OSM) data on <a href="https://github.com/NASAWorldWind/WebWorldWind" target="_blank">NASA Web WorldWind</a> virtual globe in three dimensions. The API fetches the OSM data in real time based on a bounding box, or uses a local file or the data itself in GeoJSON format. The project focuses on the performance of the visualization of 3D OSM buildings, and for this purpose creates triangle meshes based on the footprint available in OSM database. Height information for the buildings may come from the OSM database, a property in GeoJSON file may be used or an arbitrary value may be assigned to the buildings. The API can also create a heatmap based on the heights of the buildings. The API also offers caching and sectorizing (tiling) to improve the performance.
+The goal of this project is to create a plugin API to display OpenStreetMap (OSM) data on <a href="https://github.com/NASAWorldWind/WebWorldWind target="_blank">NASA Web WorldWind</a> virtual globe in three dimensions. The API fetches the OSM data in real time based on a bounding box, or uses a local file or the data itself in GeoJSON format. The project focuses on the performance of the visualization of 3D OSM buildings, and for this purpose creates triangle meshes based on the footprint available in OSM database. Height to the buildings can be assigned using the OSM database, a property in a GeoJSON file or an arbitrary value. The API can also create a heatmap based on the heights of the buildings. The API also offers caching and sectorizing (tiling) to improve the performance.
 
 More can be found at <a href="http://osm.eoapps.eu/" target="_blank">http://osm.eoapps.eu/</a>.
 
@@ -14,13 +14,15 @@ More can be found at <a href="http://osm.eoapps.eu/" target="_blank">http://osm.
 
 sudo apt-get install apache2
 
-sudo apt-get install git
+cd /var/www/html/
 
-cd /var/www/html/3dosm
+sudo apt-get install git
 
 sudo git clone https://github.com/kilsedar/3dosm.git
 
-Visit http://localhost/3dosm/example
+Visit http://localhost/3dosm/examples/NASAEuropaChallenge
+
+<b>NOTE:</b> switching between examples requires to edit the require.conf.js file.
 
 ### To run the unit tests follow the following steps:
 
