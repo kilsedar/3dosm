@@ -5,10 +5,10 @@ The goal of this project is to create a plugin API to display OpenStreetMap (OSM
 More can be found at <a href="http://osm.eoapps.eu/" target="_blank">http://osm.eoapps.eu/</a>.
 
 <b>Milan buildings in 3D, where the height of the buildings is extracted from Lidar using GRASS. A local file is used.</b>
-![milan](example/screenshots/milan.png)
+![milan](examples/screenshots/milan.png)
 
 <b>New York buildings in 3D, where the height information is coming from OSM. The data is fetched in real time.</b>
-![newYork](example/screenshots/newYork_2.png)
+![newYork](examples/screenshots/newYork_2.png)
 
 ## Installation instructions for Ubuntu 16.04:
 
