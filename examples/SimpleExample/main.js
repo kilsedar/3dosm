@@ -34,7 +34,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
     // var source = {type: "boundingBox", coordinates: [9.1705, 45.4557, 9.2021, 45.4735]}; // Milan (center)
     // var source = {type: "boundingBox", coordinates: [9.2, 45.48, 9.21, 45.49]}; // Milan (buggy region - nodes)
     // var source = {type: "boundingBox", coordinates: [9.48, 45.18, 9.53, 45.19]}; // region tested in GRASS
-    // var source = {type: "GeoJSONFile", path: "../data/prin_small_med.geojson"};
+    // var source = {type: "GeoJSONFile", path: "data/prin_small_med.geojson"};
     // var source = {type: "GeoJSONData", data: {"type":"FeatureCollection","features":[{"type":"Feature","properties":{},"geometry":{"type":"Polygon","coordinates":[[[37.0458984375,40.85537053192494],[36.639404296875,40.3130432088809],[36.881103515625,39.95185892663005],[37.056884765625,40.23760536584024],[37.55126953125,40.772221877329024],[37.0458984375,40.85537053192494]]]}}]}};
 
     var configuration = {
