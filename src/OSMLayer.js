@@ -196,10 +196,10 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
       if (dataGeoJSON.features[featureIndex].geometry.type == "Polygon" || dataGeoJSON.features[featureIndex].geometry.type == "MultiPolygon") {
         polygons = dataGeoJSON.features[featureIndex].geometry.coordinates;
 
-        for (var polygonsIndex = 0; polygonsIndex < polygons.length; polygonsIndex++) {
-          for (var coordinatesIndex = 0; coordinatesIndex < polygons[polygonsIndex].length; coordinatesIndex++) {
-            longitude = polygons[polygonsIndex][coordinatesIndex][0];
-            latitude = polygons[polygonsIndex][coordinatesIndex][1];
+        for (var polygonIndex = 0; polygonIndex < polygons.length; polygonIndex++) {
+          for (var coordinatesIndex = 0; coordinatesIndex < polygons[polygonIndex].length; coordinatesIndex++) {
+            longitude = polygons[polygonIndex][coordinatesIndex][0];
+            latitude = polygons[polygonIndex][coordinatesIndex][1];
             boundingBox[0] = boundingBox[0] < longitude ? boundingBox[0] : longitude; // minimum longitude (x1)
             boundingBox[1] = boundingBox[1] < latitude ? boundingBox[1] : latitude; // minimum latitude (y1)
             boundingBox[2] = boundingBox[2] > longitude ? boundingBox[2] : longitude; // maximum longitude (x2)

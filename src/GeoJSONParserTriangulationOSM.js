@@ -107,8 +107,8 @@ define(['src/GeoJSONParserTriangulation',
     // console.log("altitude --> " + altitude);
 
     if (!this.crs || this.crs.isCRSSupported()) {
-      for (var polygonsIndex = 0; polygonsIndex < polygons.length; polygonsIndex++) {
-        boundaries = polygons[polygonsIndex];
+      for (var polygonIndex = 0; polygonIndex < polygons.length; polygonIndex++) {
+        boundaries = polygons[polygonIndex];
         if (configuration.extrude == true)
           this.lateralSurfaces(configuration, altitude, boundaries);
         this.topSurface(configuration, altitude, boundaries);

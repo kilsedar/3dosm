@@ -144,12 +144,12 @@ define(['libraries/WebWorldWind/src/cache/MemoryCache',
         polygons = this.data.features[featureIndex].geometry.coordinates;
 
         polygonsLoop:
-        for (var polygonsIndex = 0; polygonsIndex < polygons.length; polygonsIndex++) {
+        for (var polygonIndex = 0; polygonIndex < polygons.length; polygonIndex++) {
           coordinatesLoop:
-          for (var coordinatesIndex = 0; coordinatesIndex < polygons[polygonsIndex].length; coordinatesIndex++) {
+          for (var coordinatesIndex = 0; coordinatesIndex < polygons[polygonIndex].length; coordinatesIndex++) {
             sectorsLoop:
             for (var sectorIndex = 0; sectorIndex < this._sectors.length; sectorIndex++) {
-              if (this._sectors[sectorIndex].sector.containsLocation(polygons[polygonsIndex][coordinatesIndex][1], polygons[polygonsIndex][coordinatesIndex][0])) {
+              if (this._sectors[sectorIndex].sector.containsLocation(polygons[polygonIndex][coordinatesIndex][1], polygons[polygonIndex][coordinatesIndex][0])) {
 
                 var feature = new GeoJSONFeature(this.data.features[featureIndex].geometry, this.data.features[featureIndex].properties, this.data.features[featureIndex].id, this.data.features[featureIndex].bbox);
                 var key = this._sectors[sectorIndex].sector.minLatitude + ',' + this._sectors[sectorIndex].sector.maxLatitude + ',' + this._sectors[sectorIndex].sector.minLongitude + ',' + this._sectors[sectorIndex].sector.maxLongitude;

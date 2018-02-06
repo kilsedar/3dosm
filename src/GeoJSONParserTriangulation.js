@@ -87,8 +87,8 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
     var altitude = configuration.altitude;
 
     if (!this.crs || this.crs.isCRSSupported()) {
-      for (var polygonsIndex = 0; polygonsIndex < polygons.length; polygonsIndex++) {
-        boundaries = polygons[polygonsIndex];
+      for (var polygonIndex = 0; polygonIndex < polygons.length; polygonIndex++) {
+        boundaries = polygons[polygonIndex];
         if (configuration.extrude == true)
           this.lateralSurfaces(configuration, altitude, boundaries);
         this.topSurface(configuration, altitude, boundaries);
@@ -105,11 +105,11 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
   GeoJSONParserTriangulation.prototype.lateralSurfaces = function (configuration, altitude, boundaries) {
     var points = [], positions = [], indices = [], longitude_0, latitude_0, reprojectedCoordinate_0, longitude_1, latitude_1, reprojectedCoordinate_1, position;
 
-    for (var boundariesIndex = 0; boundariesIndex < boundaries.length; boundariesIndex++) {
+    for (var boundaryIndex = 0; boundaryIndex < boundaries.length; boundaryIndex++) {
 
-      // console.log("boundariesIndex -- > " + boundariesIndex);
+      // console.log("boundaryIndex -- > " + boundaryIndex);
 
-      points = boundaries[boundariesIndex];
+      points = boundaries[boundaryIndex];
       // console.log("points --> " + points);
 
       for (var positionIndex = 0; positionIndex < points.length-1; positionIndex++) {

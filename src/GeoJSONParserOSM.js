@@ -44,8 +44,8 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
       OSMBuildingPolygon.setColor(configuration);
 
     if (!this.crs || this.crs.isCRSSupported()) {
-      for (var boundariesIndex = 0; boundariesIndex < boundaries.length; boundariesIndex++) {
-        var points = boundaries[boundariesIndex];
+      for (var boundaryIndex = 0; boundaryIndex < boundaries.length; boundaryIndex++) {
+        var points = boundaries[boundaryIndex];
         var positions = [];
 
         for (var positionIndex = 0;  positionIndex < points.length; positionIndex++) {
@@ -100,11 +100,11 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
       OSMBuildingMultiPolygon.setColor(configuration);
 
     if (!this.crs || this.crs.isCRSSupported()) {
-      for (var polygonsIndex = 0; polygonsIndex < polygons.length; polygonsIndex++) {
-        boundaries = polygons[polygonsIndex];
+      for (var polygonIndex = 0; polygonIndex < polygons.length; polygonIndex++) {
+        boundaries = polygons[polygonIndex];
 
-        for (var boundariesIndex = 0; boundariesIndex < boundaries.length; boundariesIndex++) {
-          var points = boundaries[boundariesIndex];
+        for (var boundaryIndex = 0; boundaryIndex < boundaries.length; boundaryIndex++) {
+          var points = boundaries[boundaryIndex];
           var positions = [];
 
           for (var positionIndex = 0;  positionIndex < points.length; positionIndex++) {
