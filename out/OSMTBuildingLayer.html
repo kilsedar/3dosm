@@ -30,8 +30,8 @@
     
         <h2><span class="attribs"><span class="type-signature"></span></span>OSMTBuildingLayer<span class="signature">(configuration, source)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Creates sectors (tiles) using the bounding box of the layer with a fixed size for all the zoom levels. If there is at least a feature corresponding to a sector, creates an OSMBuildingLayer
-containing the features, caches the layer, adds it if the sector corresponding to it is visible. Upon gestures, adds and/or removes the layers using the cache.</div>
+            <div class="class-description">Attempts to create tiles (sectors) using the bounding box of the layer with a fixed size for all the zoom levels. For each sector makes a new request to OSM if the sector is visible.
+Upon gestures, adds and/or removes the <a href="OSMBuildingLayer.html">layers</a> corresponding to the sectors.</div>
         
     
 </header>
@@ -54,7 +54,7 @@ containing the features, caches the layer, adds it if the sector corresponding t
 
 
 <div class="description">
-    Creates a sublass of the OSMBuildingLayer class.
+    Creates a sublass of the <a href="OSMBuildingLayer.html">OSMBuildingLayer</a> class.
 </div>
 
 
@@ -170,7 +170,7 @@ containing the features, caches the layer, adds it if the sector corresponding t
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="OSMTBuildingLayer.js.html">OSMTBuildingLayer.js</a>, <a href="OSMTBuildingLayer.js.html#line31">line 31</a>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line33">line 33</a>
     </li></ul></dd>
     
 
@@ -217,6 +217,122 @@ containing the features, caches the layer, adds it if the sector corresponding t
 
     
         <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="add"><span class="type-signature"></span>add<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Calls <a href="OSMTBuildingLayer.html#createSectors">createSectors</a> and <a href="OSMTBuildingLayer.html#addBySector">addBySector</a> if the "type" property of the "source" member variable is "boundingBox" and the "coordinates" property of the "source" member variable is defined.
+Also registers the GestureRecognizers, which are DragRecognizer, PanRecognizer, ClickRecognizer, TapRecognizer, PinchRecognizer, RotationRecognizer and TiltRecognizer.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line130">line 130</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If the source definition is wrong.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">ArgumentError</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+
+
+
+
 
         
             
@@ -361,6 +477,143 @@ Also registers the GestureRecognizers, which are DragRecognizer, PanRecognizer, 
     
 
     
+    <h4 class="name" id="addBySector"><span class="type-signature"></span>addBySector<span class="signature">(sector)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Makes an AJAX request to fetch the OSM building data using the sector's minimum and maximum latitude and longitude and Overpass API, converts it to GeoJSON using osmtogeojson API,
+adds the GeoJSON to the WorldWindow using the <a href="GeoJSONParserTriangulationOSM.html">GeoJSONParserTriangulationOSM</a>.
+Also caches the <a href="OSMBuildingLayer.html">OSMBuildingLayer</a> corresponding to the sector using as id the sector's minimum and maximum latitude and longitude.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Sector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A Sector of the layer.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line160">line 160</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="cache"><span class="type-signature"></span>cache<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
@@ -371,7 +624,7 @@ Also registers the GestureRecognizers, which are DragRecognizer, PanRecognizer, 
 <div class="description">
     Populates the cache with the features of the OSMTBuildingLayer.
 The keys of the entries in the cache are made up of the coordinates of the bounding box of the sector they correspond to.
-The entries are the RenderableLayer and GeoJSONParserTriangulationOSM for each sector.
+The entries are the RenderableLayer and <a href="GeoJSONParserTriangulationOSM.html">GeoJSONParserTriangulationOSM</a> for each sector.
 If there is no feature corresponding to a sector, its corresponding cache entry is not created.
 </div>
 
@@ -417,6 +670,141 @@ If there is no feature corresponding to a sector, its corresponding cache entry 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="OSMTBuildingLayer.js.html">OSMTBuildingLayer.js</a>, <a href="OSMTBuildingLayer.js.html#line135">line 135</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="createSectors"><span class="type-signature"></span>createSectors<span class="signature">(boundingBox)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sectorizes a bounding box. Each sector initially will be 0.02 to 0.02 degrees for all the zoom levels.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>boundingBox</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Float></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The bounding box to be sectorized. Intended to be the bounding box of the whole layer.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line86">line 86</a>
     </li></ul></dd>
     
 
@@ -503,6 +891,94 @@ If there is no feature corresponding to a sector, its corresponding cache entry 
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="OSMTBuildingLayer.js.html">OSMTBuildingLayer.js</a>, <a href="OSMTBuildingLayer.js.html#line91">line 91</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="gestureRecognizerCallback"><span class="type-signature"></span>gestureRecognizerCallback<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    The callback for GestureRecognizers, which are DragRecognizer, PanRecognizer, ClickRecognizer, TapRecognizer, PinchRecognizer, RotationRecognizer and TiltRecognizer.
+For each sector of the layer, checks if it is visible. If it is and its layer is not added to the WorldWindow, checks the cache.
+If the layer corresponding to the sector is in the cache uses the cache, otherwise makes a request to OSM. If it is not visible and it is added to the WorldWindow, removes it.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line58">line 58</a>
     </li></ul></dd>
     
 
@@ -725,6 +1201,1563 @@ If it is not visible and it is added to the WorldWindow, removes it.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line118">line 118</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    True if the sector intersects the frustum, otherwise false.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="intersectsVisible"><span class="type-signature"></span>intersectsVisible<span class="signature">(sector)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Checks if a given sector is visible.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Sector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A Sector of the layer.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer.js.html">OSMTBuildingLayer.js</a>, <a href="OSMTBuildingLayer.js.html#line81">line 81</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    True if the sector intersects the frustum, otherwise false.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2><span class="attribs"><span class="type-signature"></span></span>OSMTBuildingLayer<span class="signature">(configuration, source)</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description">Creates sectors (tiles) using the bounding box of the layer with a fixed size for all the zoom levels. If there is at least a feature corresponding to a sector, creates an <a href="OSMBuildingLayer.html">OSMBuildingLayer</a>
+containing the features, caches the layer, adds it if the sector corresponding to it is visible. Upon gestures, adds and/or removes the <a href="OSMBuildingLayer.html">layers</a> using the cache.</div>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+
+    
+    <h2>Constructor</h2>
+    
+
+    
+    <h4 class="name" id="OSMTBuildingLayer"><span class="type-signature"></span>new OSMTBuildingLayer<span class="signature">(configuration, source)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Creates a sublass of the <a href="OSMBuildingLayer.html">OSMBuildingLayer</a> class.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>configuration</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Configuration is used to set the attributes of ShapeAttributes. Four more attributes can be defined, which are "extrude", "altitude", "altitudeMode" and "heatmap".</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Defines the data source of the layer.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer.js.html">OSMTBuildingLayer.js</a>, <a href="OSMTBuildingLayer.js.html#line31">line 31</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="add"><span class="type-signature"></span>add<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Calls <a href="OSMTBuildingLayer.html#createSectors">createSectors</a> and <a href="OSMTBuildingLayer.html#addBySector">addBySector</a> if the "type" property of the "source" member variable is "boundingBox" and the "coordinates" property of the "source" member variable is defined.
+Also registers the GestureRecognizers, which are DragRecognizer, PanRecognizer, ClickRecognizer, TapRecognizer, PinchRecognizer, RotationRecognizer and TiltRecognizer.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line130">line 130</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+<h5>Throws:</h5>
+
+        
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        If the source definition is wrong.
+        </div>
+    </dt>
+    <dd></dd>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">ArgumentError</span>
+
+
+            </dd>
+        </dl>
+    </dt>
+    <dd></dd>
+</dl>
+
+
+    
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="add"><span class="type-signature"></span>add<span class="signature">(worldWindow)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sets the "worldWindow" member variable and adds the layer using the cache to the WorldWindow.
+The entries stored in the cache are added if they are visible.
+Also registers the GestureRecognizers, which are DragRecognizer, PanRecognizer, ClickRecognizer, TapRecognizer, PinchRecognizer, RotationRecognizer and TiltRecognizer.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>worldWindow</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">WorldWindow</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The WorldWindow where the layer is added to.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer.js.html">OSMTBuildingLayer.js</a>, <a href="OSMTBuildingLayer.js.html#line188">line 188</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="addBySector"><span class="type-signature"></span>addBySector<span class="signature">(sector)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Makes an AJAX request to fetch the OSM building data using the sector's minimum and maximum latitude and longitude and Overpass API, converts it to GeoJSON using osmtogeojson API,
+adds the GeoJSON to the WorldWindow using the <a href="GeoJSONParserTriangulationOSM.html">GeoJSONParserTriangulationOSM</a>.
+Also caches the <a href="OSMBuildingLayer.html">OSMBuildingLayer</a> corresponding to the sector using as id the sector's minimum and maximum latitude and longitude.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Sector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A Sector of the layer.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line160">line 160</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="cache"><span class="type-signature"></span>cache<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Populates the cache with the features of the OSMTBuildingLayer.
+The keys of the entries in the cache are made up of the coordinates of the bounding box of the sector they correspond to.
+The entries are the RenderableLayer and <a href="GeoJSONParserTriangulationOSM.html">GeoJSONParserTriangulationOSM</a> for each sector.
+If there is no feature corresponding to a sector, its corresponding cache entry is not created.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer.js.html">OSMTBuildingLayer.js</a>, <a href="OSMTBuildingLayer.js.html#line135">line 135</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="createSectors"><span class="type-signature"></span>createSectors<span class="signature">(boundingBox)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sectorizes a bounding box. Each sector initially will be 0.02 to 0.02 degrees for all the zoom levels.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>boundingBox</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;Float></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The bounding box to be sectorized. Intended to be the bounding box of the whole layer.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line86">line 86</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="createSectors"><span class="type-signature"></span>createSectors<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Sectorizes a bounding box. Each sector initially will be 0.02 to 0.02 degrees for all the zoom levels.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer.js.html">OSMTBuildingLayer.js</a>, <a href="OSMTBuildingLayer.js.html#line91">line 91</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="gestureRecognizerCallback"><span class="type-signature"></span>gestureRecognizerCallback<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    The callback for GestureRecognizers, which are DragRecognizer, PanRecognizer, ClickRecognizer, TapRecognizer, PinchRecognizer, RotationRecognizer and TiltRecognizer.
+For each sector of the layer, checks if it is visible. If it is and its layer is not added to the WorldWindow, checks the cache.
+If the layer corresponding to the sector is in the cache uses the cache, otherwise makes a request to OSM. If it is not visible and it is added to the WorldWindow, removes it.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line58">line 58</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="gestureRecognizerCallback"><span class="type-signature"></span>gestureRecognizerCallback<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    The callback for GestureRecognizers, which are DragRecognizer, PanRecognizer, ClickRecognizer, TapRecognizer, PinchRecognizer, RotationRecognizer and TiltRecognizer.
+For each sector of the layer, checks if it is visible. If it is and its layer is not added to the WorldWindow, adds it using the cache.
+If it is not visible and it is added to the WorldWindow, removes it.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer.js.html">OSMTBuildingLayer.js</a>, <a href="OSMTBuildingLayer.js.html#line56">line 56</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="intersectsVisible"><span class="type-signature"></span>intersectsVisible<span class="signature">(sector)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Checks if a given sector is visible.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Sector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A Sector of the layer.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="OSMTBuildingLayer_0.js.html">OSMTBuildingLayer_0.js</a>, <a href="OSMTBuildingLayer_0.js.html#line118">line 118</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    True if the sector intersects the frustum, otherwise false.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="intersectsVisible"><span class="type-signature"></span>intersectsVisible<span class="signature">(sector)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Checks if a given sector is visible.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Sector</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A Sector of the layer.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
         <a href="OSMTBuildingLayer.js.html">OSMTBuildingLayer.js</a>, <a href="OSMTBuildingLayer.js.html#line81">line 81</a>
     </li></ul></dd>
     
@@ -791,13 +2824,13 @@ If it is not visible and it is added to the WorldWindow, removes it.
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="OSMTBuildingLayer.html">OSMTBuildingLayer</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="GeoJSONParserOSM.html">GeoJSONParserOSM</a></li><li><a href="GeoJSONParserTriangulation.html">GeoJSONParserTriangulation</a></li><li><a href="GeoJSONParserTriangulationOSM.html">GeoJSONParserTriangulationOSM</a></li><li><a href="OSMBuildingLayer.html">OSMBuildingLayer</a></li><li><a href="OSMLayer.html">OSMLayer</a></li><li><a href="OSMTBuildingLayer.html">OSMTBuildingLayer</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Sat Aug 19 2017 00:35:24 GMT+0300 (+03)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Feb 06 2018 18:08:52 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

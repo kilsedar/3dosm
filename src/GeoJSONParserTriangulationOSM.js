@@ -10,7 +10,7 @@ define(['src/GeoJSONParserTriangulation',
    * Creates a subclass of the {@link GeoJSONParserTriangulation} class.
    * @alias GeoJSONParserTriangulationOSM
    * @constructor
-   * @classdesc Triangulates polygons, which can be {@link Polygon}s or {@link MultiPolygon}s. Triangulated polygons improves rendering and painting performance compared to extruded polygons.
+   * @classdesc Triangulates polygons, which can be {@link GeoJSONGeometryPolygon}s or {@link GeoJSONGeometryMultiPolygon}s. Triangulated polygons improves rendering and painting performance compared to extruded polygons.
    * @param {String} dataSource The data source in GeoJSON format. Can be a string or a URL for the data.
    */
   var GeoJSONParserTriangulationOSM = function (dataSource) {

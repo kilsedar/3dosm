@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: GeoJSONParserTriangulationOSM</title>
+    <title>JSDoc: Class: GeoJSONParserOSM</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: GeoJSONParserTriangulationOSM</h1>
+    <h1 class="page-title">Class: GeoJSONParserOSM</h1>
 
     
 
@@ -28,9 +28,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>GeoJSONParserTriangulationOSM<span class="signature">(dataSource)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>GeoJSONParserOSM<span class="signature">(dataSource)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Triangulates polygons, which can be GeoJSONGeometryPolygons or GeoJSONGeometryMultiPolygons. Triangulated polygons improves rendering and painting performance compared to extruded polygons.</div>
+            <div class="class-description">Extrudes GeoJSONGeometryPolygons and GeoJSONGeometryMultiPolygons, and uses ShapeAttributes extended by "extrude", "altitude", "altitudeMode" and "heatmap" in the <a href="OSMBuildingLayer.html">OSMBuildingLayer</a>.</div>
         
     
 </header>
@@ -45,7 +45,7 @@
     
 
     
-    <h4 class="name" id="GeoJSONParserTriangulationOSM"><span class="type-signature"></span>new GeoJSONParserTriangulationOSM<span class="signature">(dataSource)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="GeoJSONParserOSM"><span class="type-signature"></span>new GeoJSONParserOSM<span class="signature">(dataSource)</span><span class="type-signature"></span></h4>
     
 
     
@@ -53,7 +53,7 @@
 
 
 <div class="description">
-    Creates a subclass of the <a href="GeoJSONParserTriangulation.html">GeoJSONParserTriangulation</a> class.
+    Creates a subclass of the GeoJSONParser class.
 </div>
 
 
@@ -146,7 +146,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="GeoJSONParserTriangulationOSM.js.html">GeoJSONParserTriangulationOSM.js</a>, <a href="GeoJSONParserTriangulationOSM.js.html#line16">line 16</a>
+        <a href="GeoJSONParserOSM.js.html">GeoJSONParserOSM.js</a>, <a href="GeoJSONParserOSM.js.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -208,12 +208,7 @@
 
 
 <div class="description">
-    Invokes lateralSurfaces and/or topSurface to create a TriangleMesh for MultiPolygon geometry.
-<p>This method also invokes this GeoJSON's shapeConfigurationCallback for the geometry. shapeConfigurationCallback is extended by three attributes in the <a href="OSMBuildingLayer.html">OSMBuildingLayer</a>.
-These attributes are "extrude", altitude", "altitudeMode" and "heatmap".
-The altitude of the MultiPolygon is set using this function using setAltitude. If extrude and heatmap are enabled a new color is set for the MultiPolygon.
-If extrude is true, this function calls lateralSurfaces and topSurface. Otherwise it only calls topSurface.</p>
-Applications typically do not call this method directly. It is called by addRenderablesForGeometry.
+    Adds an extruded Polygon if extrude is set to true, otherwise adds a SurfacePolygon for each ring in the GeoJSONGeometryPolygons in the GeoJSONGeometryMultiPolygon.
 </div>
 
 
@@ -352,7 +347,7 @@ Applications typically do not call this method directly. It is called by addRend
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="GeoJSONParserTriangulationOSM.js.html">GeoJSONParserTriangulationOSM.js</a>, <a href="GeoJSONParserTriangulationOSM.js.html#line84">line 84</a>
+        <a href="GeoJSONParserOSM.js.html">GeoJSONParserOSM.js</a>, <a href="GeoJSONParserOSM.js.html#line97">line 97</a>
     </li></ul></dd>
     
 
@@ -450,12 +445,7 @@ Applications typically do not call this method directly. It is called by addRend
 
 
 <div class="description">
-    Invokes lateralSurfaces and/or topSurface to create a TriangleMesh for Polygon geometry.
-<p>This method also invokes this GeoJSON's shapeConfigurationCallback for the geometry. shapeConfigurationCallback is extended by four attributes in the <a href="OSMBuildingLayer.html">OSMBuildingLayer</a>.
-These attributes are "extrude", "altitude", "altitudeMode" and "heatmap".
-The altitude of the Polygon is set using this function using setAltitude. If extrude and heatmap are enabled a new color is set for the Polygon.
-If extrude is true, this function calls lateralSurfaces and topSurface. Otherwise it only calls topSurface.</p>
-Applications typically do not call this method directly. It is called by addRenderablesForGeometry.
+    Adds an extruded Polygon if extrude is set to true, otherwise adds a SurfacePolygon for each ring in the GeoJSONGeometryPolygon.
 </div>
 
 
@@ -594,7 +584,7 @@ Applications typically do not call this method directly. It is called by addRend
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="GeoJSONParserTriangulationOSM.js.html">GeoJSONParserTriangulationOSM.js</a>, <a href="GeoJSONParserTriangulationOSM.js.html#line35">line 35</a>
+        <a href="GeoJSONParserOSM.js.html">GeoJSONParserOSM.js</a>, <a href="GeoJSONParserOSM.js.html#line33">line 33</a>
     </li></ul></dd>
     
 

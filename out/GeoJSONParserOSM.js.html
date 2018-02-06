@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: GeoJSONParserOSM.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: GeoJSONParserOSM.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @exports GeoJSONParserOSM
  */
 define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
@@ -48,15 +76,15 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
     var OSMBuildingPolygon = new BuildingShape(properties);
     OSMBuildingPolygon.setAltitude(configuration);
     var altitude = OSMBuildingPolygon.altitude;
-    if (configuration.extrude && configuration.heatmap.enabled)
+    if (configuration.extrude &amp;&amp; configuration.heatmap.enabled)
       OSMBuildingPolygon.setColor(configuration);
 
     if (!this.crs || this.crs.isCRSSupported()) {
-      for (var boundaryIndex = 0; boundaryIndex < boundaries.length; boundaryIndex++) {
+      for (var boundaryIndex = 0; boundaryIndex &lt; boundaries.length; boundaryIndex++) {
         var points = boundaries[boundaryIndex];
         var positions = [];
 
-        for (var positionIndex = 0;  positionIndex < points.length; positionIndex++) {
+        for (var positionIndex = 0;  positionIndex &lt; points.length; positionIndex++) {
           var longitude = points[positionIndex][0];
           var latitude = points[positionIndex][1];
           var reprojectedCoordinate = this.getReprojectedIfRequired(latitude, longitude, this.crs);
@@ -65,20 +93,20 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
         }
 
         if (configuration.extrude) {
-          var shape = new Polygon(positions, configuration && configuration.attributes ? configuration.attributes : null);
+          var shape = new Polygon(positions, configuration &amp;&amp; configuration.attributes ? configuration.attributes : null);
           shape.extrude = configuration.extrude;
         }
         else
-          var shape = new SurfacePolygon(positions, configuration && configuration.attributes ? configuration.attributes : null);
+          var shape = new SurfacePolygon(positions, configuration &amp;&amp; configuration.attributes ? configuration.attributes : null);
 
         shape.altitudeMode = configuration.altitudeMode;
         if (configuration.highlightAttributes) {
           shape.highlightAttributes = configuration.highlightAttributes;
         }
-        if (configuration && configuration.pickDelegate) {
+        if (configuration &amp;&amp; configuration.pickDelegate) {
           shape.pickDelegate = configuration.pickDelegate;
         }
-        if (configuration && configuration.userProperties) {
+        if (configuration &amp;&amp; configuration.userProperties) {
           shape.userProperties = configuration.userProperties;
         }
         this.layer.addRenderable(shape);
@@ -112,18 +140,18 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
     var OSMBuildingMultiPolygon = new BuildingShape(properties);
     OSMBuildingMultiPolygon.setAltitude(configuration);
     var altitude = OSMBuildingMultiPolygon.altitude;
-    if (configuration.extrude && configuration.heatmap.enabled)
+    if (configuration.extrude &amp;&amp; configuration.heatmap.enabled)
       OSMBuildingMultiPolygon.setColor(configuration);
 
     if (!this.crs || this.crs.isCRSSupported()) {
-      for (var polygonIndex = 0; polygonIndex < polygons.length; polygonIndex++) {
+      for (var polygonIndex = 0; polygonIndex &lt; polygons.length; polygonIndex++) {
         boundaries = polygons[polygonIndex];
 
-        for (var boundaryIndex = 0; boundaryIndex < boundaries.length; boundaryIndex++) {
+        for (var boundaryIndex = 0; boundaryIndex &lt; boundaries.length; boundaryIndex++) {
           var points = boundaries[boundaryIndex];
           var positions = [];
 
-          for (var positionIndex = 0;  positionIndex < points.length; positionIndex++) {
+          for (var positionIndex = 0;  positionIndex &lt; points.length; positionIndex++) {
             var longitude = points[positionIndex][0];
             var latitude = points[positionIndex][1];
             var reprojectedCoordinate = this.getReprojectedIfRequired(latitude, longitude, this.crs);
@@ -132,20 +160,20 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
           }
 
           if (configuration.extrude) {
-            var shape = new Polygon(positions, configuration && configuration.attributes ? configuration.attributes : null);
+            var shape = new Polygon(positions, configuration &amp;&amp; configuration.attributes ? configuration.attributes : null);
             shape.extrude = configuration.extrude;
           }
           else
-            var shape = new SurfacePolygon(positions, configuration && configuration.attributes ? configuration.attributes : null);
+            var shape = new SurfacePolygon(positions, configuration &amp;&amp; configuration.attributes ? configuration.attributes : null);
 
           shape.altitudeMode = configuration.altitudeMode;
           if (configuration.highlightAttributes) {
             shape.highlightAttributes = configuration.highlightAttributes;
           }
-          if (configuration && configuration.pickDelegate) {
+          if (configuration &amp;&amp; configuration.pickDelegate) {
             shape.pickDelegate = configuration.pickDelegate;
           }
-          if (configuration && configuration.userProperties) {
+          if (configuration &amp;&amp; configuration.userProperties) {
             shape.userProperties = configuration.userProperties;
           }
           this.layer.addRenderable(shape);
@@ -156,3 +184,26 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
 
   return GeoJSONParserOSM;
 });
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="GeoJSONParserOSM.html">GeoJSONParserOSM</a></li><li><a href="GeoJSONParserTriangulation.html">GeoJSONParserTriangulation</a></li><li><a href="GeoJSONParserTriangulationOSM.html">GeoJSONParserTriangulationOSM</a></li><li><a href="OSMBuildingLayer.html">OSMBuildingLayer</a></li><li><a href="OSMLayer.html">OSMLayer</a></li><li><a href="OSMTBuildingLayer.html">OSMTBuildingLayer</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Feb 06 2018 18:08:52 GMT+0100 (CET)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

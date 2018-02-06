@@ -40,7 +40,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
    * Creates a subclass of the {@link GeoJSONParser} class.
    * @alias GeoJSONParserTriangulation
    * @constructor
-   * @classdesc Triangulates polygons, which can be {@link Polygon}s or {@link MultiPolygon}s. Triangulated polygons improves rendering and painting performance compared to extruded polygons.
+   * @classdesc Triangulates polygons, which can be {@link GeoJSONGeometryPolygon}s or {@link GeoJSONGeometryMultiPolygon}s. Triangulated polygons improves rendering and painting performance compared to extruded polygons.
    * @param {String} dataSource The data source in GeoJSON format. Can be a string or a URL for the data.
    */
   var GeoJSONParserTriangulation = function (dataSource) {
@@ -52,7 +52,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
   /**
    * Invokes [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and/or [topSurface]{@link GeoJSONParserTriangulation#topSurface} to create a {@link TriangleMesh} for [Polygon]{@link GeoJSONGeometryPolygon} geometry.
    * &lt;p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry.
-   * It assumes extude and altitude is set in the configuration.
+   * It assumes extrude and altitude is set in the configuration.
    * If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulation#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulation#topSurface}.&lt;/p>
    * Applications typically do not call this method directly. It is called by [addRenderablesForGeometry]{@link GeoJSONParser#addRenderablesForGeometry}.
    * @param {RenderableLayer} layer The layer in which to place the newly created shapes.
@@ -88,7 +88,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
   /**
    * Invokes [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and/or [topSurface]{@link GeoJSONParserTriangulation#topSurface} to create a {@link TriangleMesh} for [MultiPolygon]{@link GeoJSONGeometryMultiPolygon} geometry.
    * &lt;p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry.
-   * It assumes extude and altitude is set in the configuration.
+   * It assumes extrude and altitude is set in the configuration.
    * If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulation#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulation#topSurface}.&lt;/p>
    * Applications typically do not call this method directly. It is called by [addRenderablesForGeometry]{@link GeoJSONParser#addRenderablesForGeometry}.
    * @param {RenderableLayer} layer The layer in which to place the newly created shapes.
@@ -115,8 +115,8 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
     var altitude = configuration.altitude;
 
     if (!this.crs || this.crs.isCRSSupported()) {
-      for (var polygonsIndex = 0; polygonsIndex &lt; polygons.length; polygonsIndex++) {
-        boundaries = polygons[polygonsIndex];
+      for (var polygonIndex = 0; polygonIndex &lt; polygons.length; polygonIndex++) {
+        boundaries = polygons[polygonIndex];
         if (configuration.extrude == true)
           this.lateralSurfaces(configuration, altitude, boundaries);
         this.topSurface(configuration, altitude, boundaries);
@@ -133,11 +133,11 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
   GeoJSONParserTriangulation.prototype.lateralSurfaces = function (configuration, altitude, boundaries) {
     var points = [], positions = [], indices = [], longitude_0, latitude_0, reprojectedCoordinate_0, longitude_1, latitude_1, reprojectedCoordinate_1, position;
 
-    for (var boundariesIndex = 0; boundariesIndex &lt; boundaries.length; boundariesIndex++) {
+    for (var boundaryIndex = 0; boundaryIndex &lt; boundaries.length; boundaryIndex++) {
 
-      // console.log("boundariesIndex -- > " + boundariesIndex);
+      // console.log("boundaryIndex -- > " + boundaryIndex);
 
-      points = boundaries[boundariesIndex];
+      points = boundaries[boundaryIndex];
       // console.log("points --> " + points);
 
       for (var positionIndex = 0; positionIndex &lt; points.length-1; positionIndex++) {
@@ -243,13 +243,13 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="GeoJSONParserTriangulation.html">GeoJSONParserTriangulation</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="GeoJSONParserOSM.html">GeoJSONParserOSM</a></li><li><a href="GeoJSONParserTriangulation.html">GeoJSONParserTriangulation</a></li><li><a href="GeoJSONParserTriangulationOSM.html">GeoJSONParserTriangulationOSM</a></li><li><a href="OSMBuildingLayer.html">OSMBuildingLayer</a></li><li><a href="OSMLayer.html">OSMLayer</a></li><li><a href="OSMTBuildingLayer.html">OSMTBuildingLayer</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.3</a> on Sat Aug 19 2017 00:34:42 GMT+0300 (+03)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Feb 06 2018 18:08:52 GMT+0100 (CET)
 </footer>
 
 <script> prettyPrint(); </script>

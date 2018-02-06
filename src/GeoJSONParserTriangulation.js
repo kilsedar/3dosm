@@ -12,7 +12,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
    * Creates a subclass of the {@link GeoJSONParser} class.
    * @alias GeoJSONParserTriangulation
    * @constructor
-   * @classdesc Triangulates polygons, which can be {@link Polygon}s or {@link MultiPolygon}s. Triangulated polygons improves rendering and painting performance compared to extruded polygons.
+   * @classdesc Triangulates polygons, which can be {@link GeoJSONGeometryPolygon}s or {@link GeoJSONGeometryMultiPolygon}s. Triangulated polygons improves rendering and painting performance compared to extruded polygons.
    * @param {String} dataSource The data source in GeoJSON format. Can be a string or a URL for the data.
    */
   var GeoJSONParserTriangulation = function (dataSource) {
@@ -24,7 +24,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
   /**
    * Invokes [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and/or [topSurface]{@link GeoJSONParserTriangulation#topSurface} to create a {@link TriangleMesh} for [Polygon]{@link GeoJSONGeometryPolygon} geometry.
    * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry.
-   * It assumes extude and altitude is set in the configuration.
+   * It assumes extrude and altitude is set in the configuration.
    * If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulation#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulation#topSurface}.</p>
    * Applications typically do not call this method directly. It is called by [addRenderablesForGeometry]{@link GeoJSONParser#addRenderablesForGeometry}.
    * @param {RenderableLayer} layer The layer in which to place the newly created shapes.
@@ -60,7 +60,7 @@ define(['libraries/WebWorldWind/src/formats/geojson/GeoJSONParser',
   /**
    * Invokes [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and/or [topSurface]{@link GeoJSONParserTriangulation#topSurface} to create a {@link TriangleMesh} for [MultiPolygon]{@link GeoJSONGeometryMultiPolygon} geometry.
    * <p>This method also invokes this GeoJSON's [shapeConfigurationCallback]{@link GeoJSONParser#shapeConfigurationCallback} for the geometry.
-   * It assumes extude and altitude is set in the configuration.
+   * It assumes extrude and altitude is set in the configuration.
    * If extrude is true, this function calls [lateralSurfaces]{@link GeoJSONParserTriangulation#lateralSurfaces} and [topSurface]{@link GeoJSONParserTriangulation#topSurface}. Otherwise it only calls [topSurface]{@link GeoJSONParserTriangulation#topSurface}.</p>
    * Applications typically do not call this method directly. It is called by [addRenderablesForGeometry]{@link GeoJSONParser#addRenderablesForGeometry}.
    * @param {RenderableLayer} layer The layer in which to place the newly created shapes.
