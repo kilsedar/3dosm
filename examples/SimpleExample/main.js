@@ -41,6 +41,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
       // interiorColor: new WorldWind.Color(0.1, 0.7, 0.8, 1.0),
       // interiorColor: new WorldWind.Color(0.02, 0.2, 0.7, 1.0),
       interiorColor: new WorldWind.Color(1.0, 0.1, 0.1, 1.0),
+      outlineColor: new WorldWind.Color(1.0, 0.1, 0.1, 1.0), // Needed in case triangulation is not used.
       applyLighting: true,
       extrude: true,
       altitude: {type: "osm"},
@@ -50,7 +51,7 @@ define(['libraries/WebWorldWind/src/WorldWind',
       heatmap: {enabled: true, thresholds: [0, 10, 30, 50, 900]}
     };
 
-    var test = new OSMTBuildingLayer(configuration, source);
+    var test = new OSMBuildingLayer(configuration, source);
     test.add(worldWindow);
     test.boundingBox = source.coordinates;
     // test.boundingBox = [9.15651, 45.44919, 9.20246, 45.48449]; // prin_small_med.geojson

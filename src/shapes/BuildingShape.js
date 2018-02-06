@@ -67,6 +67,7 @@ define([], function () {
       for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
         if (this._altitude > configuration.heatmap.thresholds[thresholdIndex] && this._altitude <= configuration.heatmap.thresholds[thresholdIndex+1]) {
           configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red+heat*thresholdIndex, configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, configuration.attributes.interiorColor.alpha);
+          configuration.attributes.outlineColor = configuration.attributes.interiorColor; // Needed in case triangulation is not used.
         }
       }
     }
@@ -74,6 +75,7 @@ define([], function () {
       for (var thresholdIndex = 0; thresholdIndex < numberOfThresholds-1; thresholdIndex++) {
         if (this._altitude > configuration.heatmap.thresholds[thresholdIndex] && this._altitude <= configuration.heatmap.thresholds[thresholdIndex+1])
           configuration.attributes.interiorColor = new WorldWind.Color(configuration.attributes.interiorColor.red-heat*(numberOfThresholds-thresholdIndex), configuration.attributes.interiorColor.green, configuration.attributes.interiorColor.blue, configuration.attributes.interiorColor.alpha);
+          configuration.attributes.outlineColor = configuration.attributes.interiorColor; // Needed in case triangulation is not used.
       }
     }
     this._color = configuration.attributes.interiorColor;
