@@ -9,4 +9,4 @@ requirejs.config({
   }
 });
 
-requirejs(['examples/NASAEuropaChallenge/main']);
+requirejs(['examples/NASAEuropaChallenge/main.min']);
