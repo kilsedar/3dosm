@@ -1,2 +1,4 @@
 node_modules
 example/data/prin*
+examples/triangulation
+examples/extrusion
