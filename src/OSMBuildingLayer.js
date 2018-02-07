@@ -63,7 +63,7 @@ define(['libraries/WebWorldWind/src/error/ArgumentError',
     var _self = this;
     $.when(_self.load()).then(function() {
       var OSMBuildingLayer = new WorldWind.RenderableLayer("OSMBuildingLayer");
-      var OSMBuildingLayerGeoJSON = new GeoJSONParserOSM(JSON.stringify(_self.data));
+      var OSMBuildingLayerGeoJSON = new GeoJSONParserTriangulationOSM(JSON.stringify(_self.data));
       OSMBuildingLayerGeoJSON.load(null, _self.shapeConfigurationCallback.bind(_self), OSMBuildingLayer);
       _self.worldWindow.addLayer(OSMBuildingLayer);
     });
