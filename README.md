@@ -10,15 +10,15 @@ More can be found at <a href="http://osm.eoapps.eu/">http://osm.eoapps.eu/</a>.
 <b>New York buildings in 3D, where the height information is coming from OSM. The data is fetched in real time.</b>
 ![newYork](examples/screenshots/newYork_2.png)
 
-## Installation instructions for Ubuntu 16.04:
+## Installation instructions for Ubuntu 16.04
 
-sudo apt-get install apache2
+    sudo apt-get install apache2
 
-cd /var/www/html/
+    cd /var/www/html/
 
-sudo apt-get install git
+    sudo apt-get install git
 
-sudo git clone https://github.com/kilsedar/3dosm.git
+    sudo git clone https://github.com/kilsedar/3dosm.git
 
 Visit http://localhost/3dosm/examples/NASAEuropaChallenge
 
@@ -26,14 +26,14 @@ Visit http://localhost/3dosm/examples/NASAEuropaChallenge
 
 ### To run the unit tests follow the following steps:
 
-curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
+    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
 
-sudo apt-get install nodejs
+    sudo apt-get install nodejs
 
-sudo npm install -g karma-cli
+    sudo npm install -g karma-cli
 
-karma start
+    karma start
 
 ### To install JSDoc run the following:
 
-npm install -g jsdoc
+    npm install -g jsdoc
